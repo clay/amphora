@@ -18,10 +18,10 @@ TK: Yeoman for init options.
 ## Table of Contents
 * [Introduction]()
 * [Organization]()
-  * [Components]()
-  * [Layouts]()
-  * [Sites]()
-  * [Global]()
+* [Components]()
+* [Layouts]()
+* [Sites]()
+* [Global]()
 * [Compilation]()
 * [Tooling]()
 * [Advanced Topics]()
@@ -51,7 +51,7 @@ Byline eschews the typical MVC folder structure, separating concerns into four a
 
 Each scope has a clear purpose, allowing us to smartly organize around their specific needs. Let's jump into what each scope is capable of.
 
-### Components
+## Components
 Web Components are reusable, configurable, and self-contained, but the open standard around them is still evolving.
 
 Byline offers a way to embrace the philosophy of tomorrow's web components with the tools of today. No need to wait for browsers to implement a common standard or to endlessly shim on the client-side, to the detriment of performance.
@@ -94,7 +94,7 @@ That's all Byline needs to identify a component.
 TK: templating options
 TK: should we automatically place the class and data-component on compilation?
 
-#### Good Markup Matters
+### Good Markup Matters
 Writing HTML in Byline is the same as writing good markup anywhere:
 - Keep it semantic: Use the right tag for the right job.
 - Keep it accessible. [Apps for All by Heydon Pickering](https://shop.smashingmagazine.com/apps-for-all-coding-accessible-web-applications.html) is an excellent resource on the subject.
@@ -102,7 +102,7 @@ Writing HTML in Byline is the same as writing good markup anywhere:
 
 ### CSS in Web Components (all.css)
 There's only one hard rule to writing CSS for web components in Byline:
-1. Start every rule with the unique name of your component as it's class.
+1. Start every rule with the unique name of your component as its class.
 
 For Example, if your component is called my-component:
 ```HTML
@@ -116,8 +116,8 @@ Every css rule should start with .my-component:
 }
 ```
 
-#### Responsive Components Made Easy with filename-breakpoints
-Byline uses [filename-breakpoints]() so that every component can have it's own set of responsive breakpoints. Put simply, filename-breakpoints wrap a file's CSS in a mediaquery derived from it's filename.
+### Responsive Components Made Easy with filename-breakpoints
+Byline uses [filename-breakpoints]() so that every component can have its own set of responsive breakpoints. Put simply, filename-breakpoints wrap a file's CSS in a mediaquery derived from its filename.
 
 Breakpoints can be defined as number ranges, as well as by keywords, like print TK
 ```
@@ -172,13 +172,13 @@ TK: Component Namespacing
 byline-* for default packages
 yourname-* for your install?
 
-### Sites in Byline
+## Sites in Byline
 TK
 
-### Layouts in Byline
+## Layouts in Byline
 TK
 
-### Global in Byline
+## Global in Byline
 TK
 
 ## Compilation
