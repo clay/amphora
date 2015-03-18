@@ -45,7 +45,7 @@ Byline eschews the typical MVC folder structure, separating concerns into four a
 ```
 /components  (web components)
 /layouts     (the grids on which components live)
-/sites       (site-level settings and assets)
+/sites       (site-level routing, settings, and assets)
 /global      (global settings and assets)
 ```
 
