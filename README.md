@@ -4,7 +4,7 @@ Codename: New York Byline
 📰 _"Catchy super fun slogan here!"_
 
 A full-stack framework for creating the web.
-The tools the bring devs, designers and creators together to make great things online.
+The tools to bring devs, designers and creators together to make great things online.
 
 Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://thecut.com/), [Grub Street](http://www.grubstreet.com/), and [The Science of Us](http://www.scienceofus.com/).  
 Created by New York Media.
