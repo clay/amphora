@@ -38,7 +38,7 @@ By separating how we organize our work from how we deliver it, we can let each p
 Finally, by having a clear standard for organizing and compiling our work, we can create [Tooling](##tooling) that makes our goals easier to achieve. Tooling is optional, so use what's useful to you and ignore the rest.
 
 
-  ## Organization
+## Organization
 Byline eschews the typical MVC folder structure, separating concerns into four areas.
 
 ### The Four Scopes of Byline
@@ -51,7 +51,7 @@ Byline eschews the typical MVC folder structure, separating concerns into four a
 
 Each scope has a clear purpose, allowing us to smartly organize around their specific needs. Let's jump into what each scope is capable of.
 
-## Web Components
+### Components
 Web Components are reusable, configurable, and self-contained, but the open standard around them is still evolving.
 
 Byline offers a way to embrace the philosophy of tomorrow's web components with the tools of today. No need to wait for browsers to implement a common standard or to endlessly shim on the client-side, to the detriment of performance.
@@ -79,7 +79,7 @@ All files shown here are optional. Use what's useful. Ignore the rest.
 Components in Byline have three requirements:
 
 1. Wrap your markup in a semantically appropriate tag.  
-2. Add a data-component attribute with the name of the component as it's value.  
+2. Add a data-component attribute with the name of the component as its value.  
 (The value should be unique, lowercase, with words hyphen-separated.)
 
 Example:
