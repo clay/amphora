@@ -76,39 +76,37 @@ How components are organized:
 All files shown here are optional. Use what's useful. Ignore the rest.
 
 #### HTML in Web Components (template.html)
-Components in Byline have three requirements:
+Components in Byline have one requirement:
 
 1. Wrap your markup in a semantically appropriate tag.  
-2. Add a data-component attribute with the name of the component as its value.  
-(The value should be unique, lowercase, with words hyphen-separated.)
 
 Example:
 ```HTML
-<article data-component="my-component">
+<article>
   Put your component's markup here.
 </article>
 ```
 
-That's all Byline needs to identify a component.
+#### Template Language Support
+Byline supports numorous templating languages. Simply end your template file with the appropriate extension.
 
-TK: templating options
-TK: should we automatically place the class and data-component on compilation?
+- template.html (no templating)
+- [nunjucks](https://github.com/mozilla/nunjucks)
+- [jade](https://github.com/jadejs/jade)
+- TK
 
 #### CSS in Web Components (all.css)
-There's only one hard rule to writing CSS for web components in Byline:
-1. Start every rule with the unique name of your component as its class.
+Styles written in a component's CSS file will be scoped to that component on compilation.
 
-For Example, if your component is called my-component:
-```HTML
-<aside data-component="my-component" class="my-component">
-```
-
-Every css rule should start with .my-component:
+For example, to style the anchors of your component, simply write:
 ```CSS
-.my-component a {
-  /* anchor styles for my-component */
+a {
+  /* anchor styles */
 }
 ```
+
+#### Using CSS Preprocessors
+TK
 
 #### Responsive Components Made Easy with filename-breakpoints
 Byline uses [filename-breakpoints]() so that every component can have its own set of responsive breakpoints. Put simply, filename-breakpoints wrap a file's CSS in a mediaquery derived from its filename.
