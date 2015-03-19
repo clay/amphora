@@ -94,12 +94,6 @@ That's all Byline needs to identify a component.
 TK: templating options
 TK: should we automatically place the class and data-component on compilation?
 
-#### Good Markup Matters
-Writing HTML in Byline is the same as writing good markup anywhere:
-- Keep it semantic: Use the right tag for the right job.
-- Keep it accessible. [Apps for All by Heydon Pickering](https://shop.smashingmagazine.com/apps-for-all-coding-accessible-web-applications.html) is an excellent resource on the subject.
-- Keep it simple. Don't wrap something in two (or three, or seven) tags when one will do.
-
 #### CSS in Web Components (all.css)
 There's only one hard rule to writing CSS for web components in Byline:
 1. Start every rule with the unique name of your component as its class.
