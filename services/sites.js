@@ -4,7 +4,7 @@ var yaml = require('js-yaml'),
   _ = require('lodash'),
   log = require('./log'),
   files = require('./files'),
-  instanceSitesFolder = __dirname + '/../../../sites/',
+  instanceSitesFolder = process.cwd() + '/sites/',
   sites = files.getFolders(instanceSitesFolder);
 
 /**
