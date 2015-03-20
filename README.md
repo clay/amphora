@@ -49,10 +49,14 @@ Byline eschews the typical MVC folder structure, separating concerns into four a
 /global      (global settings and assets)
 ```
 
+TK: Illustration of scopes.
+
 Each scope has a clear purpose, allowing us to smartly organize around their specific needs. Let's jump into what each scope is capable of.
 
 ### Components
 Web Components are reusable, configurable, and self-contained, but the open standard around them is still evolving.
+
+TK: Illustration of component scope.
 
 Byline offers a way to embrace the philosophy of tomorrow's web components with the tools of today. No need to wait for browsers to implement a common standard or to endlessly shim on the client-side, to the detriment of performance.
 
@@ -93,7 +97,7 @@ Byline supports numorous templating languages. Simply end your template file wit
 - template.html (no templating)
 - [nunjucks](https://github.com/mozilla/nunjucks)
 - [jade](https://github.com/jadejs/jade)
-- TK
+- [mustache](https://github.com/mustache/mustache.github.com)
 
 #### CSS in Web Components (all.css)
 Styles written in a component's CSS file will be scoped to that component on compilation.
