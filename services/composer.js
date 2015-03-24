@@ -1,12 +1,11 @@
 'use strict';
-var glob = require('glob'),
-  _ = require('lodash'),
-  path = require('path'),
-  log = require('./log'),
-  config = require('config'),
+var log = require('./log'),
   siteService = require('./sites'),
-  layoutsFolder = 'layouts/',
-  templateName = config.get('names.template') || 'template'; // defaults to template.ext
+  nunjucks = require('byline-nunjucks'),
+  embed = require('byline-embed');
+
+// add filters to nunjucks env
+nunjucks(embed.engines.nunjucks);
 
 module.exports = function (req, res) {
   var site = siteService.sites()[res.locals.site],
@@ -16,33 +15,15 @@ module.exports = function (req, res) {
       site: site,
       layout: layout,
       locals: locals
-    },
-    filePath, templates, ext;
+    };
 
   if (site && layout) {
-    filePath = layoutsFolder + layout + '/' + templateName;
-    templates = glob.sync(filePath + '.*');
-    console.log(templates)
-    // prefer nunjucks template if it exists
-    if (templates.length && _.map(templates, function (tpl) { return _.contains(tpl, '.nunjucks'); })) {
-      ext = '.nunjucks';
-    } else if (templates.length) {
-      // otherwise just use the first template you find
-      ext = path.extname(templates[0]);
-    } else {
-      res.status(500).send('No template found for ' + layout);
+    try {
+      res.send(embed.render(layout, data, 'layout'));
+    } catch(e) {
+      log.error(e.message, e.stack);
+      res.status(500).send('ERROR: Cannot render template!');
     }
-
-    console.log(filePath + ext)
-
-    res.render(filePath + ext, data, function (err, html) {
-      if (err) {
-        log.error(err.message, err.stack);
-        res.status(500).send('Cannot render this page.');
-      } else {
-        res.send(html);
-      }
-    });
   } else {
     // log.error('404 not found: ', req.hostname + req.originalUrl);
     res.status(404).send('404 Not Found');
