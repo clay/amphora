@@ -6,7 +6,12 @@
   "scripts": {
     "test": "mocha test/index.js"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nymag/byline.git"
+  },
+  "homepage": "https://github.com/nymag/byline",
+  "author": "New York Media",
   "license": "MIT",
   "dependencies": {
     "bluebird": "^2.9.14",
