@@ -10,9 +10,6 @@ module.exports = function () {
   //add routes
   routes(app);
 
-  // point the renderer towards the layouts folder
-  app.set('views', 'layouts/');
-
   // pass all route handlers into the composer
   app.use(composer);
 

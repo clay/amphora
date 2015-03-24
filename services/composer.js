@@ -1,9 +1,11 @@
 'use strict';
 var log = require('./log'),
-  config = require('config'),
   siteService = require('./sites'),
-  layoutsFolder = 'layouts/',
-  templateName = config.get('names.template') || 'template'; // defaults to template.ext
+  nunjucks = require('byline-nunjucks'),
+  embed = require('byline-embed');
+
+// add filters to nunjucks env
+nunjucks(embed.engines.nunjucks);
 
 module.exports = function (req, res) {
   var site = siteService.sites()[res.locals.site],
@@ -16,14 +18,12 @@ module.exports = function (req, res) {
     };
 
   if (site && layout) {
-    res.render(layoutsFolder + layout + '/' + templateName, data, function (err, html) {
-      if (err) {
-        log.error(err.message, err.stack);
-        res.status(500).send('Cannot render this page.');
-      } else {
-        res.send(html);
-      }
-    });
+    try {
+      res.send(embed.render(layout, data, 'layout'));
+    } catch(e) {
+      log.error(e.message, e.stack);
+      res.status(500).send('ERROR: Cannot render template!');
+    }
   } else {
     // log.error('404 not found: ', req.hostname + req.originalUrl);
     res.status(404).send('404 Not Found');
