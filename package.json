@@ -4,18 +4,27 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha test/index.js"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "bluebird": "^2.9.14",
+    "byline-nunjucks": "^0.1.1",
     "config": "^1.12.0",
     "consolidate": "^0.11.0",
     "express": "^4.12.2",
+    "glob": "^5.0.3",
+    "jade": "^1.9.2",
     "js-yaml": "^3.2.7",
     "lodash": "^3.5.0",
+    "mustache-express": "^1.2.1",
     "vhost": "^3.0.0",
     "winston": "^0.9.0"
+  },
+  "devDependencies": {
+    "chai": "^2.1.2",
+    "mocha": "^2.2.1",
+    "sinon": "^1.14.1"
   }
 }

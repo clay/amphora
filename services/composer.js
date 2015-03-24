@@ -1,5 +1,8 @@
 'use strict';
-var log = require('./log'),
+var glob = require('glob'),
+  _ = require('lodash'),
+  path = require('path'),
+  log = require('./log'),
   config = require('config'),
   siteService = require('./sites'),
   layoutsFolder = 'layouts/',
@@ -13,10 +16,26 @@ module.exports = function (req, res) {
       site: site,
       layout: layout,
       locals: locals
-    };
+    },
+    filePath, templates, ext;
 
   if (site && layout) {
-    res.render(layoutsFolder + layout + '/' + templateName, data, function (err, html) {
+    filePath = layoutsFolder + layout + '/' + templateName;
+    templates = glob.sync(filePath + '.*');
+    console.log(templates)
+    // prefer nunjucks template if it exists
+    if (templates.length && _.map(templates, function (tpl) { return _.contains(tpl, '.nunjucks'); })) {
+      ext = '.nunjucks';
+    } else if (templates.length) {
+      // otherwise just use the first template you find
+      ext = path.extname(templates[0]);
+    } else {
+      res.status(500).send('No template found for ' + layout);
+    }
+
+    console.log(filePath + ext)
+
+    res.render(filePath + ext, data, function (err, html) {
       if (err) {
         log.error(err.message, err.stack);
         res.status(500).send('Cannot render this page.');
