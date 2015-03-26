@@ -74,7 +74,7 @@ How components are organized:
     template.html   (HTML, preferably semantic)
     all.css         (CSS, w/support for Responsive Design via filename-breakpoints)
     client.js       (javascript delivered to the client)
-    schema.json     (data and settings)
+    schema.yml     (data and settings)
 ```
 
 All files shown here are optional. Use what's useful. Ignore the rest.
@@ -125,7 +125,7 @@ print.css      -> @media print { ... }
 ```
 
 By default, all components get the following print style unless you specify differently with a print.css file.
-```
+```css
   @media print {
     display: none;
   }
@@ -146,7 +146,7 @@ And are available at:
 ```
 
 You can include these assets in your HTML like so:
-```HTML
+```html
 <img src="/media/component-name/file.jpg" alt="">
 ```
 
@@ -156,6 +156,97 @@ Any javascript you write in client.js gets minified and delivered with any page 
 TK: Illustrate typical choices as well as dollar-slice.
 
 [Dollar Slice](https://github.com/nymag/dollar-slice)
+
+#### Defining Data for Your Component (schema.yml)
+To take advatage of Byline's built-in CMS, describe the data your component expects with a schema.yml.
+
+Given this simple component template:
+```html
+<article>
+  <h1>{{ title }}</h1>
+  <p>{{ story }}</p>
+</article>
+```
+
+Define the expected values, in this case ```{{ title }}``` and ```{{ story }}```, with schema.yml:
+```yaml
+title:
+  _type: text
+  _required: true
+  _placeholder: Type your title here
+story:
+  _type: textarea
+  _required: true
+  _placeholder: Type your life story here
+```
+
+All values are optional. If you don't define a ```_type```, if will default to ```_type: text```.
+
+##### General Attributes
+```yaml
+  _value: default value   #-> <input value="default value"...
+  _label: First Name      #-> <label>First Name <input...
+  _placeholder: Jane Doe  #-> <input placeholder="Jane Doe"...
+  _required: true         #-> <input required...
+  _pattern: [a-zA-Z0-9]+  #-> <input pattern="[a-zA-Z0-9]+"...
+```
+
+##### Strings
+```yaml
+  # Text Types
+  _type: text     #-> <input type="text"...
+  _type: textarea #-> <textarea...
+  _type: url      #-> <input type="url"...
+  _type: email    #-> <input type="email"...
+  _type: tel      #-> <input type="tel"...
+  _type: color    #-> <input type="color"...
+
+  # Text Attributes (optional)
+  _minlength: 1   #-> <input minLength="1"...
+  _maxlength: 10  #-> <input maxLength="1"...
+```
+
+##### Numbers
+```yaml
+  # Number Types
+  _type: number   #-> <input type="number"...
+  _type: range    #-> <input type="range"...
+
+  # Number Attributes (optional)
+  _min: 1     #-> <input min="1"...
+  _max: 100   #-> <input min="100"...
+  _step: 10   #-> <input min="10"...
+```
+
+##### Dates
+```yaml
+  # Date Types
+  _type: date           #-> <input type="date"...
+  _type: datetime       #-> <input type="datetime"...
+  _type: datetime-local #-> <input type="datetime-local"...
+  _type: time           #-> <input type="time"...
+  _type: month          #-> <input type="month"...
+  _type: week           #-> <input type="week"...
+
+  # Date Attributes (optional)
+  _min: 1     #-> <input min="1"...
+  _max: 100   #-> <input max="100"...
+  _step: 10   #-> <input step="10"...
+```
+
+##### Files and Binary Data
+```yaml
+_type: file   #-> <input type="file"...
+```
+
+TK:
+- lists
+- autocomplete?
+- autosave?
+- disabled?
+- spellcheck toggle?
+- custom _type: image, video, etc?
+- list -> datalist?
 
 #### Viewing and Testing Your Component
 - TK: easy component view
