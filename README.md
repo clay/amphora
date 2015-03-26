@@ -168,7 +168,7 @@ Given this simple component template:
 </article>
 ```
 
-Define the expected values, in this case ```{{ title }}```, ```{{ published }}``` and ```{{ story }}```, with schema.yml:
+Define the expected values, in this case ```{{ title }}``` and ```{{ story }}```, with schema.yml:
 ```yaml
 title:
   _type: text
