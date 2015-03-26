@@ -175,10 +175,9 @@ title:
   _required: true
   _placeholder: Type your title here
 story:
-  _type: text
+  _type: textarea
   _required: true
   _placeholder: Type your life story here
-  _multiline: true
 ```
 
 All values are optional. If you don't define a ```_type```, if will default to ```_type: text```.
@@ -196,6 +195,7 @@ All values are optional. If you don't define a ```_type```, if will default to `
 ```yaml
   # Text Types
   _type: text     #-> <input type="text"...
+  _type: textarea #-> <textarea...
   _type: url      #-> <input type="url"...
   _type: email    #-> <input type="email"...
   _type: tel      #-> <input type="tel"...
