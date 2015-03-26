@@ -74,7 +74,7 @@ How components are organized:
     template.html   (HTML, preferably semantic)
     all.css         (CSS, w/support for Responsive Design via filename-breakpoints)
     client.js       (javascript delivered to the client)
-    schema.yaml     (data and settings)
+    schema.yml     (data and settings)
 ```
 
 All files shown here are optional. Use what's useful. Ignore the rest.
