@@ -239,13 +239,13 @@ All values are optional. If you don't define a ```_type```, if will default to `
 _type: file   #-> <input type="file"...
 ```
 
-TODO:
+TK:
 - lists
 - autocomplete?
 - autosave?
 - disabled?
-- spellcheck?
-- customer _type: image, etc?
+- spellcheck toggle?
+- custom _type: image, video, etc?
 - list -> datalist?
 
 #### Viewing and Testing Your Component
