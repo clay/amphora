@@ -7,7 +7,7 @@ var fs = require('fs'),
  * @param  {string} dir enclosing folder
  * @return {[]}     array of folder names
  */
-exports.getFolders = function (dir) {
+module.exports.getFolders = function (dir) {
   if (fs.existsSync(dir)) {
     return fs.readdirSync(dir)
       .filter(function (file) {
