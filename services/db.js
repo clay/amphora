@@ -1,23 +1,20 @@
 //for now, use memory.
-var db = require('levelup')('whatever', { db: require('memdown') });
+var db = require('levelup')('whatever', { db: require('memdown') }),
+  bluebird = require('bluebird');
 
 /**
  * Use ES6 promises
  * @returns {{}}
  */
 function defer() {
-  var defer = {};
-  defer.promise = new Promise(function (resolve, reject) {
-    defer.resolve = resolve;
-    defer.reject = reject;
-    defer.apply = function (err, result) {
-      if (err) {
-        defer.reject(err);
-      } else {
-        defer.resolve(result);
-      }
+  var defer = bluebird.defer();
+  defer.apply = function (err, result) {
+    if (err) {
+      defer.reject(err);
+    } else {
+      defer.resolve(result);
     }
-  });
+  };
   return defer;
 }
 
