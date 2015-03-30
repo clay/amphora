@@ -2,7 +2,8 @@
 var log = require('./log'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters'),
-  multiplex = require('multiplex-templates')({nunjucks: nunjucks()});
+  multiplex = require('multiplex-templates')({nunjucks: nunjucks()}),
+  db = require('./db');
 
 module.exports = function (req, res) {
   var site = siteService.sites()[res.locals.site],
