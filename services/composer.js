@@ -1,7 +1,6 @@
 'use strict';
 var config = require('config'),
   glob = require('glob'),
-  _ = require('lodash'),
   log = require('./log'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters'),
@@ -33,11 +32,12 @@ module.exports = function (req, res) {
       layout: layout,
       locals: locals,
       getTemplate: getTemplate
-    };
+    },
+    layoutFile = 'layouts/' + layout + '/' + config.get('names.template') + '.nunjucks'; // hardcoded until layouts are in components
 
   if (site && layout) {
     try {
-      res.send(multiplex.render(layout, data, 'layout'));
+      res.send(multiplex.render(layoutFile, data));
     } catch (e) {
       log.error(e.message, e.stack);
       res.status(500).send('ERROR: Cannot render template!');
