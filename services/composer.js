@@ -5,7 +5,8 @@ var config = require('config'),
   log = require('./log'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters'),
-  multiplex = require('multiplex-templates')({nunjucks: nunjucks()});
+  multiplex = require('multiplex-templates')({nunjucks: nunjucks()}),
+  db = require('./db');
 
 /**
  * get full filename w/ extension
