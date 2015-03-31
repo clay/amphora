@@ -1,8 +1,28 @@
 'use strict';
-var log = require('./log'),
+var config = require('config'),
+  glob = require('glob'),
+  _ = require('lodash'),
+  log = require('./log'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters'),
   multiplex = require('multiplex-templates')({nunjucks: nunjucks()});
+
+/**
+ * get full filename w/ extension
+ * @param  {string} name e.g. "entrytext"
+ * @return {string}          e.g. "components/entrytext/template.jade"
+ */
+function getTemplate(name) {
+  var filePath = 'components/' + name + '/' + config.get('names.template'),
+    possibleTemplates = glob.sync(filePath + '.*');
+
+  if (!possibleTemplates.length) {
+    throw new Error('No template files found for ' + filePath);
+  }
+
+  // return the first template found
+  return possibleTemplates[0];
+}
 
 module.exports = function (req, res) {
   var site = siteService.sites()[res.locals.site],
@@ -11,13 +31,14 @@ module.exports = function (req, res) {
     data = {
       site: site,
       layout: layout,
-      locals: locals
+      locals: locals,
+      getTemplate: getTemplate
     };
 
   if (site && layout) {
     try {
       res.send(multiplex.render(layout, data, 'layout'));
-    } catch(e) {
+    } catch (e) {
       log.error(e.message, e.stack);
       res.status(500).send('ERROR: Cannot render template!');
     }
@@ -26,3 +47,5 @@ module.exports = function (req, res) {
     res.status(404).send('404 Not Found');
   }
 };
+
+module.exports.getTemplate = getTemplate; // for testing
