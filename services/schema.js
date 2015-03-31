@@ -65,16 +65,6 @@ function getSchemaComponents(dir) {
 }
 
 /**
- *
- * @param {{}} data
- * @param {string} schema
- * @returns {null||[Error]}
- */
-function validateData(data, schema) {
-  var schema = getSchema(schema);
-}
-
-/**
  * Find all _ref, and recursively expand them.
  */
 function resolveDataReferences(data) {
@@ -95,5 +85,4 @@ module.exports.isComponent = isComponent;
 module.exports.listDeepObjects = listDeepObjects;
 module.exports.getSchema = getSchema;
 module.exports.getSchemaComponents = getSchemaComponents;
-module.exports.validateData = validateData;
 module.exports.resolveDataReferences = resolveDataReferences;
