@@ -6,7 +6,10 @@ var _ = require('lodash'),
   siteService = require('./sites'),
   sitesMap = siteService.sites(),
   siteHosts = siteService.hosts(),
-  sitesFolder = siteService.sitesFolder;
+  sitesFolder = siteService.sitesFolder,
+  db = require('./db'),
+  bodyParser = require('body-parser'),
+  winston = require('winston');
 
 /**
  * add site.slug to locals for each site
@@ -33,6 +36,65 @@ function setLayout(route, layout) {
   });
 }
 
+/**
+ * This route is not implemented.
+ * @param req
+ * @param res
+ */
+function notImplemented(req, res) {
+  winston.warn('Not Implemented', 501, req.url, req.params);
+  res.sendStatus(501);
+}
+
+/**
+ * This route gets straight from the db.
+ * @param req
+ * @param res
+ */
+function getRouteTypically(req, res) {
+  db.get(req.url)
+    .then(JSON.parse)
+    .then(function (result) {
+      res.json(result);
+    }).catch(function (err) {
+      if (err.name === 'NotFoundError') {
+        res.status(404).send('Not Found');
+      } else {
+        winston.error(err.stack);
+        res.status(500).send(err.message);
+      }
+    });
+}
+
+/**
+ * This route puts staight to the db.
+ * @param req
+ * @param res
+ */
+function putRouteTypically(req, res) {
+  db.put(req.url, JSON.stringify(req.body)).then(function (result) {
+    res.json(result);
+  }).catch(function (err) {
+    winston.error(err.stack);
+    res.status(500).send(err.message);
+  });
+}
+
+/**
+ * Add component routes to this router.
+ * @param router
+ */
+function addComponentRoutes(router) {
+  router.use(bodyParser.json());
+
+  router.get('/components', notImplemented);
+  router.get('/components/:name', getRouteTypically);
+  router.put('/components/:name', putRouteTypically);
+  router.get('/components/:name/instances', notImplemented);
+  router.get('/components/:name/instances/:id', getRouteTypically);
+  router.put('/components/:name/instances/:id', putRouteTypically);
+}
+
 module.exports = function (app) {
   // iterate through the hosts
   _.map(siteHosts, function (host) {
@@ -55,6 +117,8 @@ module.exports = function (app) {
       hostMiddleware.use(site.path, require(siteController)(siteRouter));
       // add res.locals.site (slug) to every request
       hostMiddleware.use(site.path, addSiteLocals(site.slug));
+
+      addComponentRoutes(hostMiddleware);
     });
 
     // once all sites are added, wrap them in a vhost
