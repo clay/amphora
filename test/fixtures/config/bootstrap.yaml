@@ -1,0 +1,45 @@
+---
+components:
+  base:
+    site-name: Default site name
+    facebook: http://defaultSiteName.face.bom
+    layoutName: index
+    layoutData:
+      _ref: /components/index/instances/0
+    instances:
+      -
+        site-name: Some blog name
+        facebook: http://someBlogName.facebook.com
+        ads:
+          -
+            hey: heyo
+            zone: left
+          -
+            what: where
+            zone: right
+        layoutName: index
+        layoutData:
+          _ref: /components/index/instances/0
+  index:
+    instances:
+      -
+        title: Hi!
+        author: [annie, betty, cathy]
+        story:
+          _ref: /components/story/instances/0
+  story:
+    instances:
+      -
+        text:
+          _ref: /components/text/instances/0
+        image:
+          _ref: /components/image/instances/0
+  text:
+    instances:
+      -
+        text: Hey, this is text.
+  image:
+    instances:
+      -
+        src: http://placekitten.com/400/600
+        alt: adorable kittens
