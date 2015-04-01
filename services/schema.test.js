@@ -74,8 +74,8 @@ describe('schema', function () {
       };
 
     mock = sandbox.mock(db);
-    mock.expects('get').withArgs('b').once().returns(bluebird.resolve({g: 'h'}));
-    mock.expects('get').withArgs('e').once().returns(bluebird.resolve({i: 'j'}));
+    mock.expects('get').withArgs('b').once().returns(bluebird.resolve(JSON.stringify({g: 'h'})));
+    mock.expects('get').withArgs('e').once().returns(bluebird.resolve(JSON.stringify({i: 'j'})));
 
     schema.resolveDataReferences(data).done(function (result) {
       sandbox.verify();
@@ -95,9 +95,9 @@ describe('schema', function () {
       };
 
     mock = sandbox.mock(db);
-    mock.expects('get').withArgs('b').once().returns(bluebird.resolve({g: 'h'}));
-    mock.expects('get').withArgs('e').once().returns(bluebird.resolve({i: 'j', 'k': {_ref:'m'}}));
-    mock.expects('get').withArgs('m').once().returns(bluebird.resolve({n: 'o'}));
+    mock.expects('get').withArgs('b').once().returns(bluebird.resolve(JSON.stringify({g: 'h'})));
+    mock.expects('get').withArgs('e').once().returns(bluebird.resolve(JSON.stringify({i: 'j', 'k': {_ref:'m'}})));
+    mock.expects('get').withArgs('m').once().returns(bluebird.resolve(JSON.stringify({n: 'o'})));
 
     schema.resolveDataReferences(data).done(function (result) {
       sandbox.verify();

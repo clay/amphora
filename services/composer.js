@@ -5,7 +5,11 @@ var config = require('config'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters'),
   multiplex = require('multiplex-templates')({nunjucks: nunjucks()}),
-  db = require('./db');
+  db = require('./db'),
+  schema = require('./schema'),
+  winston = require('winston'),
+  _ = require('lodash'),
+  chalk = require('chalk');
 
 /**
  * get full filename w/ extension
@@ -25,28 +29,50 @@ function getTemplate(name) {
 }
 
 module.exports = function (req, res) {
-  var site = siteService.sites()[res.locals.site],
+  var baseTemplate, data,
+    site = siteService.sites()[res.locals.site],
     layout = res.locals.layout, // todo: get layout object
     locals = res.locals,
-    data = {
+    state = {
       site: site,
       layout: layout,
       locals: locals,
       getTemplate: getTemplate
-    },
-    layoutFile = 'layouts/' + layout + '/' + config.get('names.template') + '.nunjucks'; // hardcoded until layouts are in components
+    };
 
-  if (site && layout) {
-    try {
-      res.send(multiplex.render(layoutFile, data));
-    } catch (e) {
-      log.error(e.message, e.stack);
-      res.status(500).send('ERROR: Cannot render template!');
+  db.get('/pages/' + new Buffer(req.vhost.hostname + req.url).toString('base64')).then(function (result) {
+
+    baseTemplate = getTemplate(/components\/(.*?)\//.exec(result)[1]);
+
+    winston.info('rendering ' + baseTemplate);
+
+    return db.get(result)
+  }).then(JSON.parse).then(function (result) {
+    return schema.resolveDataReferences(result);
+  }).then(function (result) {
+
+    winston.info(chalk.dim('serving ' + require('util').inspect(result, true, 5)));
+
+    //ata = result;
+
+    data = _.assign(state, result);
+    data.state = state;
+    return data;
+  }).catch(function (err) {
+    winston.warn(req.vhost.hostname + req.url + '\n' + chalk.dim(err.stack));
+  }).finally(function () {
+    if (site && layout) {
+      try {
+        res.send(multiplex.render(baseTemplate, data));
+      } catch (e) {
+        log.error(e.message, e.stack);
+        res.status(500).send('ERROR: Cannot render template!');
+      }
+    } else {
+      // log.error('404 not found: ', req.hostname + req.originalUrl);
+      res.status(404).send('404 Not Found');
     }
-  } else {
-    // log.error('404 not found: ', req.hostname + req.originalUrl);
-    res.status(404).send('404 Not Found');
-  }
+  });
 };
 
 module.exports.getTemplate = getTemplate; // for testing
