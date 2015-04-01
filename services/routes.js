@@ -93,6 +93,10 @@ function addComponentRoutes(router) {
   router.get('/components/:name/instances', notImplemented);
   router.get('/components/:name/instances/:id', getRouteTypically);
   router.put('/components/:name/instances/:id', putRouteTypically);
+
+  router.get('/pages', notImplemented);
+  router.get('/pages/:name', getRouteTypically);
+  router.put('/pages/:name', putRouteTypically);
 }
 
 module.exports = function (app) {

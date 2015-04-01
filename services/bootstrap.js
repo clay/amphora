@@ -28,36 +28,59 @@ function getConfig(dir) {
  * @param {{}} thing
  * @param {[]} promises
  */
-function saveThing(name, thing, promises) {
-  thing._ref = name;
+function saveObject(name, thing, promises) {
   winston.info('saving ' + name + '\n' + chalk.dim(require('util').inspect(thing, true, 5)));
-  promises.push(db.put(name, JSON.stringify(thing)));
+  promises.push(db.put(name, JSON.stringify(_.defaults({_ref: name}, thing))));
+}
+
+function saveString(name, str, promises) {
+  winston.info('saving ' + name + '\n' + chalk.dim(require('util').inspect(str, true, 5)));
+  promises.push(db.put(name, str));
 }
 
 /**
- *
- * @param {{}} componentList
+ * Component specific loading.
+ * @param {{}} list
  * @param {[]} promises
  */
-function saveComponents(componentList, promises) {
+function saveComponents(list, promises) {
   var name;
 
-  if (componentList) {
-    _.each(componentList, function (component, componentName) {
+  if (list) {
+    _.each(list, function (item, itemName) {
 
-      //load component defaults
-      name = '/components/' + componentName;
-      saveThing(name, _.omit(component, 'instances'), promises);
+      //load item defaults
+      name = '/components/' + itemName;
+      saveObject(name, _.omit(item, 'instances'), promises);
 
-      if (component.instances) {
-        _.each(component.instances, function (instance, instanceId) {
+      if (item.instances) {
+        _.each(item.instances, function (instance, instanceId) {
 
           //load instances
-          name = '/components/' + componentName + '/instance/' + instanceId;
-          saveThing(name, instance, promises);
+          name = '/components/' + itemName + '/instances/' + instanceId;
+          saveObject(name, instance, promises);
 
         });
       }
+    });
+  }
+}
+
+/**
+ * Page specific loading.  This will probably grow differently than component loading, so different function to
+ *   contain it.
+ * @param {{}} list
+ * @param {[]} promises
+ */
+function savePages(list, promises) {
+  var name;
+
+  if (list) {
+    _.each(list, function (item, itemName) {
+
+      //load item defaults
+      name = '/pages/' + new Buffer(itemName).toString('base64');
+      saveString(name, item, promises);
     });
   }
 }
@@ -70,6 +93,7 @@ module.exports = function (path) {
   var bootstrap = getConfig(path),
     promises = [];
 
+  savePages(bootstrap.pages, promises);
   saveComponents(bootstrap.components, promises);
 
   return bluebird.all(promises).filter(_.identity);

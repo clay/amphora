@@ -72,7 +72,7 @@ function resolveDataReferences(data) {
     placeholders = listDeepObjects(data, referenceProperty);
 
   return bluebird.all(placeholders).each(function (placeholder) {
-    return db.get(placeholder[referenceProperty]).then(function (obj) {
+    return db.get(placeholder[referenceProperty]).then(JSON.parse).then(function (obj) {
       //the thing we got back might have its own references
       return resolveDataReferences(obj).finally(function () {
         _.assign(placeholder, _.omit(obj, referenceProperty));

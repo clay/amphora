@@ -1,6 +1,7 @@
 ---
 components:
   base:
+    title: I'm a title
     site-name: Default site name
     facebook: http://defaultSiteName.face.bom
     layoutName: index

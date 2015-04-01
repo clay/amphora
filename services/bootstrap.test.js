@@ -4,7 +4,7 @@ var bootstrap = require('./bootstrap'),
   sinon = require('sinon'),
   winston = require('winston');
 
-describe('schema', function () {
+describe('bootstrap', function () {
   var sandbox;
 
   beforeEach(function () {
@@ -21,11 +21,11 @@ describe('schema', function () {
 
     bootstrap('./test/fixtures/config/bootstrap.yaml').then(function (results) {
       expect(results).to.deep.equal([]);
-      db.get('/components/image/instance/0').then(JSON.parse).done(function (results) {
+      db.get('/components/image/instances/0').then(JSON.parse).done(function (results) {
         expect(results).to.deep.equal({
           src: 'http://placekitten.com/400/600',
           alt: 'adorable kittens',
-          _ref: '/components/image/instance/0'
+          _ref: '/components/image/instances/0'
         });
         sandbox.verify();
         done();
