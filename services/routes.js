@@ -9,7 +9,14 @@ var _ = require('lodash'),
   sitesFolder = siteService.sitesFolder,
   db = require('./db'),
   bodyParser = require('body-parser'),
-  winston = require('winston');
+  log = require('./log'),
+  schema = require('./schema'),
+  composer = require('./composer'),
+  path = require('path');
+
+function removeExtension(path) {
+  return path.split('.').shift();
+}
 
 /**
  * add site.slug to locals for each site
@@ -42,7 +49,7 @@ function setLayout(route, layout) {
  * @param res
  */
 function notImplemented(req, res) {
-  winston.warn('Not Implemented', 501, req.url, req.params);
+  log.warn('Not Implemented', 501, req.url, req.params);
   res.sendStatus(501);
 }
 
@@ -52,22 +59,27 @@ function notImplemented(req, res) {
  * @param res
  */
 function getRouteTypically(req, res) {
-  db.get(req.url)
+  db.get(removeExtension(req.url))
     .then(JSON.parse)
     .then(function (result) {
+      log.info('yes?', result);
       res.json(result);
     }).catch(function (err) {
       if (err.name === 'NotFoundError') {
+        log.info('no?', err);
         res.status(404).send('Not Found');
       } else {
-        winston.error(err.stack);
+        log.error(err.stack);
         res.status(500).send(err.message);
       }
     });
 }
 
 /**
- * This route puts staight to the db.
+ * This route puts straight to the db.
+ *
+ * Assumptions:
+ * - that there is no extension if they're putting data.
  * @param req
  * @param res
  */
@@ -75,9 +87,38 @@ function putRouteTypically(req, res) {
   db.put(req.url, JSON.stringify(req.body)).then(function (result) {
     res.json(result);
   }).catch(function (err) {
-    winston.error(err.stack);
+    log.error(err.stack);
     res.status(500).send(err.message);
   });
+}
+
+/**
+ * Return a schema for a component
+ * @param req
+ * @param res
+ */
+function getSchema(req, res) {
+  var componentName = schema.getComponentNameFromPath(removeExtension(req.url));
+  var componentSchema = schema.getSchema(path.resolve('components', componentName));
+  res.json(componentSchema);
+}
+
+function renderComponent(req, res) {
+  composer.renderComponent(removeExtension(req.url), res);
+}
+
+function routeByExtension(req, res) {
+  log.info('routeByExtension', req.params);
+
+  switch(req.params.ext.toLowerCase()) {
+    case 'html':
+      renderComponent(req, res);
+      break;
+    case 'json':
+    default:
+      getRouteTypically(req, res);
+      break;
+  }
 }
 
 /**
@@ -88,15 +129,21 @@ function addComponentRoutes(router) {
   router.use(bodyParser.json());
 
   router.get('/components', notImplemented);
+  router.get('/components/:name.:ext', routeByExtension);
   router.get('/components/:name', getRouteTypically);
   router.put('/components/:name', putRouteTypically);
+
   router.get('/components/:name/instances', notImplemented);
+  router.get('/components/:name/instances/:id.:ext', routeByExtension);
   router.get('/components/:name/instances/:id', getRouteTypically);
   router.put('/components/:name/instances/:id', putRouteTypically);
+
+  router.get('/components/:name/schema', getSchema);
 
   router.get('/pages', notImplemented);
   router.get('/pages/:name', getRouteTypically);
   router.put('/pages/:name', putRouteTypically);
+
 }
 
 module.exports = function (app) {

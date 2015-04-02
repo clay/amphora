@@ -7,8 +7,19 @@ var fs = require('fs'),
   bluebird = require('bluebird');
 
 /**
- *
- *
+ * Takes a url path, and returns the component name within it.
+ * @param {string} path
+ * @returns {string}
+ * @example /components/base  returns base
+ * @example /components/text/instances/0  returns text
+ * @example /components/image.html  returns image
+ */
+function getComponentNameFromPath(path) {
+  var result = /components\/(.*?)[\/\.]/.exec(path);
+  return result && result[1];
+}
+
+/**
  * Duck-typing
  */
 function isComponent(obj) {
@@ -37,16 +48,12 @@ function listDeepObjects(obj, filter) {
 }
 
 /**
- * Get a single schema
+ * Get a single schema from a specific directory (maybe including those in node_modules??)
  * @param {string} dir
  * @returns {{}}
  */
 function getSchema(dir) {
-  if (fs.existsSync(dir)) {
-    return yaml.safeLoad(fs.readFileSync(path.resolve(dir, 'schema.yaml'), 'utf8'));
-  } else {
-    return null;
-  }
+  return yaml.safeLoad(fs.readFileSync(path.resolve(dir, 'schema.yaml'), 'utf8'));
 }
 
 /**
@@ -82,6 +89,7 @@ function resolveDataReferences(data) {
 }
 
 module.exports.isComponent = isComponent;
+module.exports.getComponentNameFromPath = getComponentNameFromPath;
 module.exports.listDeepObjects = listDeepObjects;
 module.exports.getSchema = getSchema;
 module.exports.getSchemaComponents = getSchemaComponents;
