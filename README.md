@@ -218,6 +218,15 @@ All values are optional. If you don't define a ```_type```, if will default to `
   _step: 10   #-> <input min="10"...
 ```
 
+##### Boolean
+```yaml
+  # Boolean Type
+  _type: bool   #-> <input type="checkbox"...
+
+  # Boolean Attribute (optional)
+  _checked: true   #-> <input checked...
+```
+
 ##### Dates
 ```yaml
   # Date Types
