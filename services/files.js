@@ -40,6 +40,23 @@ getComponents = function () {
   return getFolders(cwd + '/components').concat(npmComponents);
 };
 
+/**
+ * get path to component folder
+ * @param  {string} name
+ * @return {string}
+ */
+function getComponentPath(name) {
+  // make sure it's a component we have (either in components or node_modules)
+  if (!_.contains(getComponents(), name)) {
+    throw new Error(name + ' is not a recognized component!');
+  } else if (fs.existsSync(cwd + '/components/' + name)) {
+    return cwd + '/components/' + name;
+  } else if (fs.existsSync(cwd + '/node_modules/' + name)) {
+    return cwd + '/node_modules/' + name;
+  }
+}
+
 exports.getFolders = getFolders;
 exports.getSites = getSites;
 exports.getComponents = getComponents;
+exports.getComponentPath = getComponentPath;
