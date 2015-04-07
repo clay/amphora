@@ -84,8 +84,8 @@ function getRouteTypically(req, res) {
  * @param res
  */
 function putRouteTypically(req, res) {
-  db.put(req.url, JSON.stringify(req.body)).then(function (result) {
-    res.json(result);
+  db.put(req.url, JSON.stringify(req.body)).then(function () {
+    res.json(req.body);
   }).catch(function (err) {
     log.error(err.stack);
     res.status(500).send(err.message);
@@ -98,9 +98,23 @@ function putRouteTypically(req, res) {
  * @param res
  */
 function getSchema(req, res) {
-  var componentName = schema.getComponentNameFromPath(removeExtension(req.url));
-  var componentSchema = schema.getSchema(path.resolve('components', componentName));
-  res.json(componentSchema);
+  var componentSchema,
+    componentName = schema.getComponentNameFromPath(removeExtension(req.url));
+
+  if (componentName) {
+    try {
+      componentSchema = schema.getSchema(path.resolve('components', componentName));
+      res.json(componentSchema);
+    } catch(err) {
+      if (err.message.indexOf('ENOENT') !== -1) {
+        res.sendStatus(404);
+      } else {
+        res.status(500).send(err.message);
+      }
+    }
+  } else {
+    res.sendStatus(404);
+  }
 }
 
 function renderComponent(req, res) {
