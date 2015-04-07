@@ -29,6 +29,10 @@ describe('files', function () {
     it('gets a list of folders', function () {
       expect(files.getFolders('.')).to.contain('components', 'sites', 'node_modules');
     });
+
+    it('returns empty array if arg is not a folder', function () {
+      expect(files.getFolders('foo')).to.eql([]);
+    });
   });
 
   describe('getSites()', function () {
