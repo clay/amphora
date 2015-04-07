@@ -25,7 +25,7 @@
     "lodash": "^3.5",
     "memdown": "^1.0.0",
     "multiplex-templates": "^1.0",
-    "nunjucks-filters": "^0.1.1",
+    "nunjucks-filters": "^1.0",
     "vhost": "^3.0.0",
     "winston": "^0.9"
   },
