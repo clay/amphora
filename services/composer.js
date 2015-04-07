@@ -6,6 +6,7 @@ var config = require('config'),
   nunjucks = require('nunjucks-filters')(),
   multiplex = require('multiplex-templates')({nunjucks: nunjucks}),
   db = require('./db'),
+  files = require('./files'),
   schema = require('./schema'),
   _ = require('lodash'),
   chalk = require('chalk');
@@ -16,15 +17,20 @@ var config = require('config'),
  * @return {string}          e.g. "components/entrytext/template.jade"
  */
 function getTemplate(name) {
-
-  //if there are slashes in this name, they've given us a reference like /components/name/instances/id
+  // if there are slashes in this name, they've given us a reference like /components/name/instances/id
   if (name.indexOf('/') !== -1) {
-    console.log('getTemplate', name);
     name = schema.getComponentNameFromPath(name);
   }
 
-  var filePath = 'components/' + name + '/' + config.get('names.template'),
+  var filePath = files.getComponentPath(name),
+    possibleTemplates;
+
+  if (_.contains(filePath, 'node_modules')) {
+    possibleTemplates = [filePath + '/' + require(filePath + '/package.json').template];
+  } else {
+    filePath += '/' + config.get('names.template');
     possibleTemplates = glob.sync(filePath + '.*');
+  }
 
   if (!possibleTemplates.length) {
     throw new Error('No template files found for ' + filePath);

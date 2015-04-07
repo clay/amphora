@@ -5,7 +5,7 @@ var yaml = require('js-yaml'),
   log = require('./log'),
   files = require('./files'),
   instanceSitesFolder = process.cwd() + '/sites/',
-  sites = files.getFolders(instanceSitesFolder);
+  sites = files.getSites();
 
 /**
  * generate site config map
