@@ -1,15 +1,11 @@
 'use strict';
-var mockFS = require('mock-fs'),
+var mock = require('mock-fs'),
   expect = require('chai').expect,
-  sinon = require('sinon'),
-  fs = require('fs'),
   files = require('./files');
 
 describe('files', function () {
-  var mock, sandbox;
-
   before(function () {
-    mock = mockFS.fs({
+    mock({
       components: {
         c1: {},
         c2: {}
@@ -25,20 +21,8 @@ describe('files', function () {
     });
   });
 
-  beforeEach(function () {
-    sandbox = sinon.sandbox.create();
-    // stub out fs methods
-    sandbox.stub(fs, 'existsSync', mock.existsSync);
-    sandbox.stub(fs, 'readdirSync', mock.readdirSync);
-    sandbox.stub(fs, 'statSync', mock.statSync);
-  });
-
-  afterEach(function () {
-    sandbox.restore();
-  });
-
   after(function () {
-    mockFS.restore();
+    mock.restore();
   });
 
   describe('getFolders()', function () {
