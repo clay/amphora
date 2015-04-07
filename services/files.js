@@ -11,9 +11,14 @@ var _ = require('lodash'),
  * @return {[]}     array of folder names
  */
 getFolders = _.memoize(function (dir) {
-  return fs.readdirSync(dir).filter(function (file) {
-    return fs.statSync(path.join(dir, file)).isDirectory();
-  });
+  if (fs.existsSync(dir)) {
+    return fs.readdirSync(dir)
+      .filter(function (file) {
+        return fs.statSync(path.join(dir, file)).isDirectory();
+      });
+  } else {
+    return [];
+  }
 });
 
 /**
@@ -21,7 +26,7 @@ getFolders = _.memoize(function (dir) {
  * @return {[]}
  */
 getSites = function () {
-  return getFolders('sites');
+  return getFolders('./sites');
 };
 
 /**
@@ -29,9 +34,9 @@ getSites = function () {
  * @return {[]}
  */
 getComponents = function () {
-  var npmComponents = getFolders('node_modules').filter(function (name) { return _.contains(name, 'byline-'); });
+  var npmComponents = getFolders('./node_modules').filter(function (name) { return _.contains(name, 'byline-'); });
 
-  return getFolders('components').concat(npmComponents);
+  return getFolders('./components').concat(npmComponents);
 };
 
 exports.getFolders = getFolders;

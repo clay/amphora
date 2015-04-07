@@ -6,7 +6,7 @@ var mockFS = require('mock-fs'),
   files = require('./files');
 
 describe('files', function () {
-  var mock, files, sandbox;
+  var mock, sandbox;
 
   before(function () {
     mock = mockFS.fs({
@@ -19,8 +19,8 @@ describe('files', function () {
         site2: {}
       },
       node_modules: { // jshint ignore:line
-        c3: {},
-        c4: {}
+        'byline-c3': {},
+        'byline-c4': {}
       }
     });
   });
@@ -28,6 +28,7 @@ describe('files', function () {
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
     // stub out fs methods
+    sandbox.stub(fs, 'existsSync', mock.existsSync);
     sandbox.stub(fs, 'readdirSync', mock.readdirSync);
     sandbox.stub(fs, 'statSync', mock.statSync);
   });
@@ -40,41 +41,21 @@ describe('files', function () {
     mockFS.restore();
   });
 
-  // describe('getFolders()', function () {
-  //   it('gets a list of folders', function () {
-  //     expect(files.getFolders('.')).to.eql(['components', 'sites', 'node_modules']);
-  //   });
+  describe('getFolders()', function () {
+    it('gets a list of folders', function () {
+      expect(files.getFolders('.')).to.contain('components', 'sites', 'node_modules');
+    });
   });
 
-  // describe('getSites()', function () {
-  //   var sandbox;
+  describe('getSites()', function () {
+    it('gets a list of sites', function () {
+      expect(files.getSites()).to.contain('site1', 'site2');
+    });
+  });
 
-  //   beforeEach(function () {
-  //     sandbox = sinon.sandbox.create();
-  //   });
-
-  //   afterEach(function () {
-  //     sandbox.restore();
-  //   });
-
-  //   it('gets a list of folders', function () {
-  //     sandbox.stub(fs, 'readFileSync')
-  //   });
-  // });
-
-  // describe('getComponents()', function () {
-  //   var sandbox;
-
-  //   beforeEach(function () {
-  //     sandbox = sinon.sandbox.create();
-  //   });
-
-  //   afterEach(function () {
-  //     sandbox.restore();
-  //   });
-
-  //   it('gets a list of folders', function () {
-  //     sandbox.stub(fs, 'readFileSync')
-  //   });
-  // });
+  describe('getComponents()', function () {
+    it('gets a list of components', function () {
+      expect(files.getComponents()).to.contain('c1', 'c2', 'byline-c3', 'byline-c4');
+    });
+  });
 });
