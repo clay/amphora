@@ -3,8 +3,8 @@ var config = require('config'),
   glob = require('glob'),
   log = require('./log'),
   siteService = require('./sites'),
-  nunjucks = require('nunjucks-filters'),
-  multiplex = require('multiplex-templates')({nunjucks: nunjucks()}),
+  nunjucks = require('nunjucks-filters')(),
+  multiplex = require('multiplex-templates')({nunjucks: nunjucks}),
   db = require('./db'),
   schema = require('./schema'),
   _ = require('lodash'),
@@ -16,6 +16,13 @@ var config = require('config'),
  * @return {string}          e.g. "components/entrytext/template.jade"
  */
 function getTemplate(name) {
+
+  //if there are slashes in this name, they've given us a reference like /components/name/instances/id
+  if (name.indexOf('/') !== -1) {
+    console.log('getTemplate', name);
+    name = schema.getComponentNameFromPath(name);
+  }
+
   var filePath = 'components/' + name + '/' + config.get('names.template'),
     possibleTemplates = glob.sync(filePath + '.*');
 
@@ -45,6 +52,50 @@ function addState(state) {
 }
 
 /**
+ * Render a template based on some generic data provided.
+ *
+ * Data should contain:
+ *
+ * {object} site - global information about the site being displayed
+ * {string} baseTemplate - name of a component that has a template (some components may not, no assumptions)
+ * {function} getTemplate - returns a template for the template multiplexer (no assumptions, can be custom?)
+ *
+ * @param res
+ */
+function renderTemplate(res) {
+  return function (data) {
+    if (data.site) {
+      try {
+        res.send(multiplex.render(getTemplate(data.baseTemplate), data));
+      } catch (e) {
+        log.error(e.message, e.stack);
+        res.status(500).send('ERROR: Cannot render template!');
+      }
+    } else {
+      res.status(404).send('404 Not Found');
+    }
+  };
+}
+
+/**
+ * Get state object that is used to render the templates
+ * @param componentReference
+ * @param res
+ * @returns {{site: object, locals: object, baseTemplate: string, getTemplate: getTemplate}}
+ */
+function getState(componentReference, res) {
+  var baseTemplate = schema.getComponentNameFromPath(componentReference),
+    site = siteService.sites()[res.locals.site],
+    locals = res.locals;
+  return {
+    site: site,
+    locals: locals,
+    baseTemplate: baseTemplate,
+    getTemplate: getTemplate
+  };
+}
+
+/**
  * Given a component reference of the form /components/<name> or /components/<name>/instances/<id>, render that component.
  * @param {string} componentReference
  * @param res
@@ -59,32 +110,13 @@ function renderComponent(componentReference, res) {
     throw new Error('missing res.locals.site');
   }
 
-  var data,
-    baseTemplate = getTemplate(schema.getComponentNameFromPath(componentReference)),
-    site = siteService.sites()[res.locals.site],
-    locals = res.locals,
-    state = {
-      site: site,
-      locals: locals,
-      getTemplate: getTemplate
-    };
+  var state = getState(componentReference, res);
 
   return db.get(componentReference)
     .then(JSON.parse)
     .then(schema.resolveDataReferences)
     .then(addState(state))
-    .then(function (data) {
-      if (site) {
-        try {
-          res.send(multiplex.render(baseTemplate, data));
-        } catch (e) {
-          log.error(e.message, e.stack);
-          res.status(500).send('ERROR: Cannot render template!');
-        }
-      } else {
-        res.status(404).send('404 Not Found');
-      }
-    });
+    .then(renderTemplate(res));
 }
 
 
