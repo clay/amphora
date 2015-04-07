@@ -3,6 +3,7 @@
 var _ = require('lodash'),
   fs = require('fs'),
   path = require('path'),
+  cwd = process.cwd(),
   getFolders, getSites, getComponents;
 
 /**
@@ -26,7 +27,7 @@ getFolders = _.memoize(function (dir) {
  * @return {[]}
  */
 getSites = function () {
-  return getFolders('./sites');
+  return getFolders(cwd + '/sites');
 };
 
 /**
@@ -34,9 +35,9 @@ getSites = function () {
  * @return {[]}
  */
 getComponents = function () {
-  var npmComponents = getFolders('./node_modules').filter(function (name) { return _.contains(name, 'byline-'); });
+  var npmComponents = getFolders(cwd + '/node_modules').filter(function (name) { return _.contains(name, 'byline-'); });
 
-  return getFolders('./components').concat(npmComponents);
+  return getFolders(cwd + '/components').concat(npmComponents);
 };
 
 exports.getFolders = getFolders;
