@@ -12,7 +12,9 @@ var _ = require('lodash'),
   log = require('./log'),
   schema = require('./schema'),
   composer = require('./composer'),
-  path = require('path');
+  path = require('path'),
+  // allowable query string variables
+  queryStringOptions = ['ignore-data'];
 
 function removeExtension(path) {
   return path.split('.').shift();
@@ -118,7 +120,10 @@ function getSchema(req, res) {
 }
 
 function renderComponent(req, res) {
-  composer.renderComponent(removeExtension(req.url), res);
+  //block bad variables
+  var options = _.pick(req.query, queryStringOptions);
+
+  composer.renderComponent(removeExtension(req.url), res, options);
 }
 
 function routeByExtension(req, res) {

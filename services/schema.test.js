@@ -31,6 +31,29 @@ describe('schema', function () {
     });
   });
 
+  describe('getComponentNameFromPath', function () {
+    it('finds /components/name', function () {
+      var result = schema.getComponentNameFromPath('/components/name');
+
+      expect(result).to.equal('name');
+    });
+    it('finds /components/name/', function () {
+      var result = schema.getComponentNameFromPath('/components/name/');
+
+      expect(result).to.equal('name');
+    });
+    it('finds /components/name/instances/id', function () {
+      var result = schema.getComponentNameFromPath('/components/name/instances/id');
+
+      expect(result).to.equal('name');
+    });
+    it('finds /components/name.ext', function () {
+      var result = schema.getComponentNameFromPath('/components/name.ext');
+
+      expect(result).to.equal('name');
+    });
+  });
+
   it('getSchemaComponents gets all components', function () {
     var result = schema.getSchemaComponents('test/fixtures/text');
 

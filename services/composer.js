@@ -9,7 +9,9 @@ var config = require('config'),
   files = require('./files'),
   schema = require('./schema'),
   _ = require('lodash'),
-  chalk = require('chalk');
+  chalk = require('chalk'),
+  ignoreDataProperty = 'ignore-data',
+  baseTemplateProperty = 'baseTemplate';  //configurable
 
 /**
  * get full filename w/ extension
@@ -43,10 +45,18 @@ function getTemplate(name) {
 /**
  * Add state to result, which adds functionality and information about this request to the templates.
  * @param state
+ * @param options
  * @returns {Function}
  */
-function addState(state) {
+function addState(state, options) {
   return function (result) {
+
+    //remove all the properties mentioned here
+    if (options[ignoreDataProperty]) {
+      //todo: Maybe allow deep-has omiting i.e., ignore-data=story.some.thing,story.thing
+      result = _.omit(result, options[ignoreDataProperty]);
+    }
+
     log.info(chalk.dim('serving ' + require('util').inspect(result, true, 5)));
 
     //the circle of life;  this is equivalent to what was here before.
@@ -72,12 +82,13 @@ function renderTemplate(res) {
   return function (data) {
     if (data.site) {
       try {
-        res.send(multiplex.render(getTemplate(data.baseTemplate), data));
+        res.send(multiplex.render(getTemplate(data[baseTemplateProperty]), data));
       } catch (e) {
         log.error(e.message, e.stack);
         res.status(500).send('ERROR: Cannot render template!');
       }
     } else {
+      //log.warn('Missing data.site');
       res.status(404).send('404 Not Found');
     }
   };
@@ -87,27 +98,38 @@ function renderTemplate(res) {
  * Get state object that is used to render the templates
  * @param componentReference
  * @param res
- * @returns {{site: object, locals: object, baseTemplate: string, getTemplate: getTemplate}}
+ * @returns {{site: object, locals: object, getTemplate: getTemplate}}
  */
 function getState(componentReference, res) {
-  var baseTemplate = schema.getComponentNameFromPath(componentReference),
-    site = siteService.sites()[res.locals.site],
+  var site = siteService.sites()[res.locals.site],
     locals = res.locals;
-  return {
+
+  var state = {
     site: site,
     locals: locals,
-    baseTemplate: baseTemplate,
     getTemplate: getTemplate
   };
+
+  state[baseTemplateProperty] = schema.getComponentNameFromPath(componentReference);
+
+  return state;
 }
 
 /**
  * Given a component reference of the form /components/<name> or /components/<name>/instances/<id>, render that component.
+ *
+ * Available optional options:
+ *
+ * {boolean} allowCustomBaseTemplate - If false, disallow custom base templates from db
+ *
  * @param {string} componentReference
  * @param res
+ * @param {{}} [options]
  * @returns {Promise}
  */
-function renderComponent(componentReference, res) {
+function renderComponent(componentReference, res, options) {
+  //this is a possible entry point, so guarantee this existence
+  options = options || {};
 
   //assertions
   if (!res.locals) {
@@ -121,7 +143,7 @@ function renderComponent(componentReference, res) {
   return db.get(componentReference)
     .then(JSON.parse)
     .then(schema.resolveDataReferences)
-    .then(addState(state))
+    .then(addState(state, options))
     .then(renderTemplate(res));
 }
 
