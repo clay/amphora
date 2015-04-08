@@ -15,7 +15,8 @@ var fs = require('fs'),
  * @example /components/image.html  returns image
  */
 function getComponentNameFromPath(path) {
-  var result = /components\/(.*?)[\/\.]/.exec(path);
+  var result = /components\/(.+?)[\/\.]/.exec(path) || /components\/(.+)/.exec(path);
+
   return result && result[1];
 }
 
