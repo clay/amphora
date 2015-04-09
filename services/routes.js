@@ -26,6 +26,7 @@ function removeExtension(path) {
  */
 function addSiteLocals(slug) {
   return function (req, res, next) {
+    res.locals.url = req.protocol + '://' + req.get('host') + req.originalUrl;
     res.locals.site = slug;
     next();
   };
@@ -107,7 +108,7 @@ function getSchema(req, res) {
     try {
       componentSchema = schema.getSchema(path.resolve('components', componentName));
       res.json(componentSchema);
-    } catch(err) {
+    } catch (err) {
       if (err.message.indexOf('ENOENT') !== -1) {
         res.sendStatus(404);
       } else {
@@ -129,11 +130,11 @@ function renderComponent(req, res) {
 function routeByExtension(req, res) {
   log.info('routeByExtension', req.params);
 
-  switch(req.params.ext.toLowerCase()) {
+  switch (req.params.ext.toLowerCase()) {
     case 'html':
       renderComponent(req, res);
       break;
-    case 'json':
+    case 'json': // jshint ignore:line
     default:
       getRouteTypically(req, res);
       break;

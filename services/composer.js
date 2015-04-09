@@ -68,6 +68,20 @@ function addState(state, options) {
 }
 
 /**
+ * calls server.js if it exists
+ * @param {{}} state
+ * @return {Promise|{}}
+ */
+function addDynamicState(state) {
+  try {
+    return require(files.getComponentPath(state.baseTemplate) + '/server.js')(state.locals.url, state);
+  } catch (e) {
+    // if there's no server.js, pass through state
+    return state;
+  }
+}
+
+/**
  * Render a template based on some generic data provided.
  *
  * Data should contain:
@@ -144,6 +158,7 @@ function renderComponent(componentReference, res, options) {
     .then(JSON.parse)
     .then(schema.resolveDataReferences)
     .then(addState(state, options))
+    .then(addDynamicState)
     .then(renderTemplate(res));
 }
 
