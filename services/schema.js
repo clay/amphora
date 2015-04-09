@@ -6,6 +6,8 @@ var fs = require('fs'),
   db = require('./db'),
   bluebird = require('bluebird');
 
+_.mixin(require('lodash-ny-util'));
+
 /**
  * Takes a url path, and returns the component name within it.
  * @param {string} path
@@ -28,27 +30,6 @@ function isComponent(obj) {
 }
 
 /**
- * @param obj
- * @param filter
- *
- * NOTE:  Should probably put this in our lodash utils
- */
-function listDeepObjects(obj, filter) {
-  var cursor, items,
-    list = [],
-    queue = [obj];
-
-  while(queue.length) {
-    cursor = queue.pop();
-    items = _.filter(cursor, _.isObject);
-    list = list.concat(_.filter(items, filter || _.identity));
-    queue = queue.concat(items);
-  }
-
-  return list;
-}
-
-/**
  * Get a single schema from a specific directory (maybe including those in node_modules??)
  * @param {string} dir
  * @returns {{}}
@@ -66,7 +47,7 @@ function getSchemaComponents(dir) {
   var schema = getSchema(dir);
 
   if (schema) {
-    return listDeepObjects(schema, isComponent);
+    return _.listDeepObjects(schema, isComponent);
   } else {
     return null;
   }
@@ -77,7 +58,7 @@ function getSchemaComponents(dir) {
  */
 function resolveDataReferences(data) {
   var referenceProperty = '_ref',
-    placeholders = listDeepObjects(data, referenceProperty);
+    placeholders = _.listDeepObjects(data, referenceProperty);
 
   return bluebird.all(placeholders).each(function (placeholder) {
     return db.get(placeholder[referenceProperty]).then(JSON.parse).then(function (obj) {
@@ -91,7 +72,6 @@ function resolveDataReferences(data) {
 
 module.exports.isComponent = isComponent;
 module.exports.getComponentNameFromPath = getComponentNameFromPath;
-module.exports.listDeepObjects = listDeepObjects;
 module.exports.getSchema = getSchema;
 module.exports.getSchemaComponents = getSchemaComponents;
 module.exports.resolveDataReferences = resolveDataReferences;

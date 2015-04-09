@@ -68,27 +68,6 @@ describe('schema', function () {
     ]);
   });
 
-  it('listDeepObjects gets all deep objects', function () {
-    var result = schema.listDeepObjects({a:{b:{c:{d:"e"}}, f:{g:{h:"e"}}}});
-
-    expect(result).to.have.length(5);
-  });
-
-  it('listDeepObjects can filter by existence of properties', function () {
-    var result = schema.listDeepObjects({a:{b:{c:{d:"e"}}, f:{d:{g:"e"}}}}, "d");
-
-    expect(result).to.have.length(2);
-  });
-
-  it('listDeepObjects can filter by component', function () {
-    var result = schema.listDeepObjects({a: {_type:'yarn'}, b: {c: {_type:'sweater'}}}, schema.isComponent);
-
-    expect(result).to.deep.equal([
-      {_type:'yarn'},
-      {_type:'sweater'}
-    ]);
-  });
-
   it('resolveDataReferences looks up references', function (done) {
     var mock,
       data = {
