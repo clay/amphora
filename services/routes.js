@@ -183,10 +183,11 @@ module.exports = function (app) {
       // add support for site.setLayout sugar
       siteRouter.setLayout = setLayout;
 
-      // add the routes for that site's path
-      hostMiddleware.use(site.path, require(siteController)(siteRouter));
       // add res.locals.site (slug) to every request
       hostMiddleware.use(site.path, addSiteLocals(site.slug));
+      // add the routes for that site's path
+      hostMiddleware.use(site.path, require(siteController)(siteRouter, composer));
+
 
       addComponentRoutes(hostMiddleware);
     });
@@ -194,4 +195,5 @@ module.exports = function (app) {
     // once all sites are added, wrap them in a vhost
     app.use(vhost(envHost, hostMiddleware));
   });
+  return app;
 };

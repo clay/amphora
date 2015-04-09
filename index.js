@@ -7,11 +7,5 @@ var express = require('express'),
   app = express();
 
 module.exports = function () {
-  //add routes
-  routes(app);
-
-  // pass all route handlers into the composer
-  app.use(composer);
-
-  return app;
+  return routes(app);
 };
