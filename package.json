@@ -23,6 +23,7 @@
     "js-yaml": "^3.2.7",
     "levelup": "^0.19",
     "lodash": "^3.5",
+    "lodash-ny-util": "^0.1.0",
     "memdown": "^1.0.0",
     "multiplex-templates": "^1.0",
     "nunjucks-filters": "^1.0",
