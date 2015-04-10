@@ -4,7 +4,8 @@ var yaml = require('js-yaml'),
   _ = require('lodash'),
   log = require('./log'),
   files = require('./files'),
-  instanceSitesFolder = process.cwd() + '/sites/',
+  path = require('path'),
+  instanceSitesFolder = path.resolve('sites'),
   sites = files.getSites();
 
 /**
@@ -13,9 +14,9 @@ var yaml = require('js-yaml'),
  */
 function getSites() {
   const fullConfig = {};
-
+  
   sites.forEach(function (site) {
-    let siteConfig = yaml.safeLoad(fs.readFileSync(instanceSitesFolder + site + '/config.yaml', 'utf8'));
+    let siteConfig = yaml.safeLoad(fs.readFileSync(path.join(instanceSitesFolder, site, 'config.yaml'), 'utf8'));
 
     // check to make sure sites have default properties
     if (!siteConfig.slug || !siteConfig.host || !siteConfig.path) {

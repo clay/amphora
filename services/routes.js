@@ -178,7 +178,7 @@ module.exports = function (app) {
 
     // iterate through the sites on this host, add routers
     _.map(sitesOnThisHost, function (site) {
-      var siteController = sitesFolder + site.slug,
+      var siteController = path.join(sitesFolder, site.slug),
         siteRouter = express.Router();
 
       // add support for site.setLayout sugar
