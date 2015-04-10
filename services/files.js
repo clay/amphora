@@ -73,7 +73,7 @@ function getComponentName(filePath) {
   }
 
   // get the next folder after the parent folder, e.g. node_modules/<get this>/foo/bar.css
-  return filePath.split(parentFolder)[1].split('/')[0];
+  return filePath.split(parentFolder)[1].split(path.sep)[0];
 }
 
 exports.getFolders = getFolders;
