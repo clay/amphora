@@ -65,9 +65,9 @@ function getComponentName(filePath) {
   var parentFolder;
 
   if (_.contains(filePath, 'node_modules/')) {
-    parentFolder = 'node_modules/';
+    parentFolder = 'node_modules' + path.sep;
   } else if (_.contains(filePath, 'components/')) {
-    parentFolder = 'components/';
+    parentFolder = 'components' + path.sep;
   }
 
   // get the next folder after the parent folder, e.g. node_modules/<get this>/foo/bar.css
