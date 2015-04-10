@@ -5,6 +5,7 @@ var config = require('config'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters')(),
   multiplex = require('multiplex-templates')({nunjucks: nunjucks}),
+  path = require('path'),
   db = require('./db'),
   files = require('./files'),
   schema = require('./schema'),
@@ -28,9 +29,9 @@ function getTemplate(name) {
     possibleTemplates;
 
   if (_.contains(filePath, 'node_modules')) {
-    possibleTemplates = [filePath + '/' + require(filePath + '/package.json').template];
+    possibleTemplates = [path.join(filePath, require(filePath + '/package.json').template)];
   } else {
-    filePath += '/' + config.get('names.template');
+    filePath = path.join(filePath, config.get('names.template'));
     possibleTemplates = glob.sync(filePath + '.*');
   }
 
@@ -74,7 +75,7 @@ function addState(state, options) {
  */
 function addDynamicState(state) {
   try {
-    return require(files.getComponentPath(state.baseTemplate) + '/server.js')(state.locals.url, state);
+    return require(path.join(files.getComponentPath(state.baseTemplate), 'server.js'))(state.locals.url, state);
   } catch (e) {
     // if there's no server.js, pass through state
     return state;

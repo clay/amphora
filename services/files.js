@@ -3,7 +3,6 @@
 var _ = require('lodash'),
   fs = require('fs'),
   path = require('path'),
-  cwd = process.cwd(),
   getFolders, getSites, getComponents;
 
 /**
@@ -27,7 +26,7 @@ getFolders = _.memoize(function (dir) {
  * @return {[]}
  */
 getSites = function () {
-  return getFolders(cwd + '/sites');
+  return getFolders(path.resolve('sites'));
 };
 
 /**
@@ -35,9 +34,9 @@ getSites = function () {
  * @return {[]}
  */
 getComponents = function () {
-  var npmComponents = getFolders(cwd + '/node_modules').filter(function (name) { return _.contains(name, 'byline-'); });
+  var npmComponents = getFolders(path.resolve('node_modules')).filter(function (name) { return _.contains(name, 'byline-'); });
 
-  return getFolders(cwd + '/components').concat(npmComponents);
+  return getFolders(path.resolve('components')).concat(npmComponents);
 };
 
 /**
@@ -49,10 +48,10 @@ function getComponentPath(name) {
   // make sure it's a component we have (either in components or node_modules)
   if (!_.contains(getComponents(), name)) {
     throw new Error(name + ' is not a recognized component!');
-  } else if (fs.existsSync(cwd + '/components/' + name)) {
-    return cwd + '/components/' + name;
-  } else if (fs.existsSync(cwd + '/node_modules/' + name)) {
-    return cwd + '/node_modules/' + name;
+  } else if (fs.existsSync(path.resolve('components', name))) {
+    return path.resolve('components', name);
+  } else if (fs.existsSync(path.resolve('node_modules', name))) {
+    return path.resolve('node_modules', name);
   }
 }
 
