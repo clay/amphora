@@ -63,4 +63,18 @@ describe('files', function () {
       expect(files.getComponents()).to.contain('c1', 'c2', 'byline-c3', 'byline-c4');
     });
   });
+
+  describe('getComponentName()', function () {
+    it('gets a node_modules component name', function () {
+      expect(files.getComponentName('node_modules/bar')).to.equal('bar');
+      expect(files.getComponentName('foo/node_modules/bar')).to.equal('bar');
+      expect(files.getComponentName('foo/node_modules/bar/baz.css')).to.equal('bar');
+    });
+
+    it('gets a components/ name', function () {
+      expect(files.getComponentName('components/bar')).to.equal('bar');
+      expect(files.getComponentName('foo/components/bar')).to.equal('bar');
+      expect(files.getComponentName('foo/components/bar/baz.css')).to.equal('bar');
+    });
+  });
 });
