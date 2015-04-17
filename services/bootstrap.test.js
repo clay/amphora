@@ -24,8 +24,7 @@ describe('bootstrap', function () {
       db.get('/components/image/instances/0').then(JSON.parse).done(function (results) {
         expect(results).to.deep.equal({
           src: 'http://placekitten.com/400/600',
-          alt: 'adorable kittens',
-          _ref: '/components/image/instances/0'
+          alt: 'adorable kittens'
         });
         sandbox.verify();
         done();
