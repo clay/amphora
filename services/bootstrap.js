@@ -30,7 +30,7 @@ function getConfig(dir) {
  */
 function saveObject(name, thing, promises) {
   winston.info('saving ' + name + '\n' + chalk.dim(require('util').inspect(thing, true, 5)));
-  promises.push(db.put(name, JSON.stringify(_.defaults({_ref: name}, thing))));
+  promises.push(db.put(name, JSON.stringify(thing)));
 }
 
 function saveString(name, str, promises) {
@@ -53,7 +53,7 @@ function saveComponents(list, promises) {
       name = '/components/' + itemName;
       saveObject(name, _.omit(item, 'instances'), promises);
 
-      if (item.instances) {
+      if (item && item.instances) {
         _.each(item.instances, function (instance, instanceId) {
 
           //load instances
@@ -80,7 +80,7 @@ function savePages(list, promises) {
 
       //load item defaults
       name = '/pages/' + new Buffer(itemName).toString('base64');
-      saveString(name, item, promises);
+      saveObject(name, item, promises);
     });
   }
 }

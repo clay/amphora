@@ -70,10 +70,16 @@ function getRouteTypically(req, res) {
     }).catch(function (err) {
       if (err.name === 'NotFoundError') {
         log.info('no?', err);
-        res.status(404).send('Not Found');
+        res.status(404).send({
+          message: 'Not Found',
+          code: 404
+        });
       } else {
         log.error(err.stack);
-        res.status(500).send(err.message);
+        res.status(500).send({
+          message: err.message,
+          code: 500
+        });
       }
     });
 }

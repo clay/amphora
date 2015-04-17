@@ -42,29 +42,29 @@ describe('Composer', function () {
 
     it('gets a nunjucks template', function () {
       sandbox.stub(glob, 'sync').returns(['template.nunjucks']);
-      expect(composer.getTemplate('')).to.eql('template.nunjucks');
+      expect(composer.getTemplate('/components/whatever')).to.eql('template.nunjucks');
     });
 
     it('gets a jade template', function () {
       sandbox.stub(glob, 'sync').returns(['template.jade']);
-      expect(composer.getTemplate('')).to.eql('template.jade');
+      expect(composer.getTemplate('/components/whatever')).to.eql('template.jade');
     });
 
     it('gets a mustache template', function () {
       sandbox.stub(glob, 'sync').returns(['template.mustache']);
-      expect(composer.getTemplate('')).to.eql('template.mustache');
+      expect(composer.getTemplate('/components/whatever')).to.eql('template.mustache');
     });
 
     it('getTemplate basic case', function () {
       sandbox.stub(glob, 'sync').returns(['template.mustache']);
-      composer.getTemplate('');
+      composer.getTemplate('/components/whatever');
     });
 
     it('renderComponent basic case', function (done) {
       sandbox.stub(log, 'info', _.noop);
       sandbox.stub(db, 'get').returns(bluebird.delay(JSON.stringify({}), 0));
       var mockRes = createMockRes();
-      composer.renderComponent('', mockRes).then(function () {
+      composer.renderComponent('/components/whatever', mockRes).then(function () {
         done();
       });
     });
@@ -76,7 +76,7 @@ describe('Composer', function () {
 
       sandbox.mock(mockRes).expects('send').once().withArgs('404 Not Found');
 
-      composer.renderComponent('', mockRes).then(function () {
+      composer.renderComponent('/components/whatever', mockRes).then(function () {
         sandbox.verify();
         done();
       });
@@ -91,25 +91,7 @@ describe('Composer', function () {
 
       sandbox.mock(mockRes).expects('send').once().withArgs('asdf');
 
-      composer.renderComponent('', mockRes).then(function () {
-        sandbox.verify();
-        done();
-      });
-    });
-
-    it('renderComponent option: ignore-data ignores baseTemplate from data', function (done) {
-      var mockRes = createMockRes(),
-        someGoodComponentName = 'someGoodComponentName',
-        someGoodComponentReference = '/components/' + someGoodComponentName,
-        someBadComponentName = '/components/someBadComponentName';
-      sandbox.stub(log, 'info', _.noop);
-      sandbox.stub(db, 'get').returns(bluebird.delay(JSON.stringify({site: 'Hey', baseTemplate: someBadComponentName}), 0));
-      sandbox.stub(glob, 'sync').returns(['template.jade']);
-
-      sandbox.mock(plex).expects('render').withArgs(sinon.match.string, sinon.match({baseTemplate: someGoodComponentName})).returns('asdf');
-      sandbox.mock(mockRes).expects('send').once().withArgs('asdf');
-
-      composer.renderComponent(someGoodComponentReference, mockRes, {'ignore-data': 'baseTemplate'}).then(function () {
+      composer.renderComponent('/components/whatever', mockRes).then(function () {
         sandbox.verify();
         done();
       });
