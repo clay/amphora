@@ -107,7 +107,7 @@ function renderComponent(componentReference, res, options) {
   assertions.exists(res.locals.site, 'res.locals.site');
   assertions.exists(componentName, 'component name');
 
-  return references.getComponentData(componentReference)
+  return references.getComponentData(componentReference, res.locals)
     .then(function (data) {
       //assertions
       assertions.isObject(data);
