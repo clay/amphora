@@ -1,59 +1,31 @@
+/**
+ * Handles all template-rendering functionality.
+ *
+ * @module
+ */
+
 'use strict';
-var config = require('config'),
-  glob = require('glob'),
-  log = require('./log'),
+var log = require('./log'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters')(),
   multiplex = require('multiplex-templates')({nunjucks: nunjucks}),
-  path = require('path'),
-  db = require('./db'),
-  files = require('./files'),
+  references = require('./references'),
   schema = require('./schema'),
   _ = require('lodash'),
   chalk = require('chalk'),
-  ignoreDataProperty = 'ignore-data';
-
-/**
- * get full filename w/ extension
- * @param  {string} name e.g. "entrytext"
- * @return {string}          e.g. "components/entrytext/template.jade"
- */
-function getTemplate(name) {
-  if (!name) {
-    throw new Error('Missing template ' + name);
-  }
-
-  // if there are slashes in this name, they've given us a reference like /components/name/instances/id
-  if (name.indexOf('/') !== -1) {
-    name = schema.getComponentNameFromPath(name);
-  }
-
-  var filePath = files.getComponentPath(name),
-    possibleTemplates;
-
-  if (_.contains(filePath, 'node_modules')) {
-    possibleTemplates = [path.join(filePath, require(filePath + '/package.json').template)];
-  } else {
-    filePath = path.join(filePath, config.get('names.template'));
-    possibleTemplates = glob.sync(filePath + '.*');
-  }
-
-  if (!possibleTemplates.length) {
-    throw new Error('No template files found for ' + filePath);
-  }
-
-  // return the first template found
-  return possibleTemplates[0];
-}
+  ignoreDataProperty = 'ignore-data',
+  assertions = require('./assertions');
 
 /**
  * Add state to result, which adds functionality and information about this request to the templates.
  * @param options
+ * @param res
  * @returns {Function}
  */
 function applyOptions(options, res) {
   return function (result) {
-    var site = siteService.sites()[res.locals.site],
+    var state,
+      site = siteService.sites()[res.locals.site],
       locals = res.locals;
 
     //remove all the properties mentioned here
@@ -71,10 +43,10 @@ function applyOptions(options, res) {
     log.info(chalk.dim('serving ' + require('util').inspect(result, true, 5)));
 
     //options are done at this point; now mix with the data and bind into a self-referencing chain of globals
-    var state = {
+    state = {
       site: site,
       locals: locals,
-      getTemplate: getTemplate
+      getTemplate: references.getTemplate
     };
 
     //the circle of life;  this is equivalent to what was here before.
@@ -86,41 +58,15 @@ function applyOptions(options, res) {
 }
 
 /**
- * calls server.js if it exists
- * @param {{}} state
- * @return {Promise|{}}
- */
-function addDynamicState(state) {
-  try {
-    return require(path.join(files.getComponentPath(state.template), 'server.js'))(state.locals.url, state);
-  } catch (e) {
-    // if there's no server.js, pass through state
-    return state;
-  }
-}
-
-/**
  * Render a template based on some generic data provided.
- *
- * Data should contain:
- *
- * {object} site - global information about the site being displayed
- * {function} getTemplate - returns a template for the template multiplexer (no assumptions, can be custom?)
- *
- * @param res
  */
-function renderTemplate(res) {
+function renderTemplate() {
   return function (data) {
-    if (data.site) {
-      try {
-        res.send(multiplex.render(getTemplate(data.template), data));
-      } catch (e) {
-        log.error(e.message, e.stack);
-        res.status(500).send('ERROR: Cannot render template!');
-      }
-    } else {
-      res.status(404).send('404 Not Found');
-    }
+    //assertions
+    assertions.exists(data.site, 'data.site');
+    assertions.exists(data.template, 'data.template');
+
+    return multiplex.render(references.getTemplate(data.template), data);
   };
 }
 
@@ -133,19 +79,14 @@ function renderTemplate(res) {
 function renderByConfiguration(options, res) {
 
   //assertions
-  if (!res.locals) {
-    throw new Error('missing res.locals');
-  } else if (!res.locals.site) {
-    throw new Error('missing res.locals.site');
-  } else if (!_.isObject(options.data)) {
-    throw new Error('missing options.data');
-  } else if (!_.isString(options.data.template)) {
-    throw new Error('missing options.data.template');
-  }
+  assertions.exists(res.locals, 'res.locals');
+  assertions.exists(res.locals.site, 'res.locals.site');
+  assertions.isObject(options.data, 'options.data');
+  assertions.exists(options.data.template, 'options.data.template');
 
   return schema.resolveDataReferences(options.data)
     .then(applyOptions(options, res))
-    .then(renderTemplate(res));
+    .then(renderTemplate());
 }
 
 /**
@@ -161,17 +102,16 @@ function renderComponent(componentReference, res, options) {
   var componentName = schema.getComponentNameFromPath(componentReference);
 
   //assertions
-  if (!res.locals) {
-    throw new Error('missing res.locals', componentReference);
-  } else if (!res.locals.site) {
-    throw new Error('missing res.locals.site', componentReference, res.locals);
-  } else if (!componentName) {
-    throw new Error('missing component name', componentReference);
-  }
+  //assertions
+  assertions.exists(res.locals, 'res.locals');
+  assertions.exists(res.locals.site, 'res.locals.site');
+  assertions.exists(componentName, 'component name');
 
-  return db.get(componentReference)
-    .then(JSON.parse)
+  return references.getComponentData(componentReference)
     .then(function (data) {
+      //assertions
+      assertions.isObject(data);
+
       //apply rule: data.template > componentName
       //  If there is a template mentioned in the data, assume they know what they're doing
       data.template = data.template || componentName;
@@ -191,7 +131,7 @@ function mapLayoutToPageData(pageData, layoutData) {
           //if there is a match, assign whatever matches in pageData as a reference
           list[index] = {
             _ref: pageData[item]
-          }
+          };
         } else {
           //if there is no match, that's a problem with configuration/editing
           log.warn('Missing reference in layout: ', item, pageData, layoutData)
@@ -214,8 +154,7 @@ function renderPage(pageReference, res) {
   log.info('rendering page ' + pageReference);
 
   //look up page alias' component instance
-  return db.get(pageReference)
-    .then(JSON.parse)
+  return references.getComponentData(pageReference)
     .then(function (result) {
 
       var layoutReference = result.layout,
@@ -228,8 +167,7 @@ function renderPage(pageReference, res) {
         log.info('using ', layoutReference, layoutComponentName);
       }
 
-      return db.get(layoutReference)
-        .then(JSON.parse)
+      return references.getComponentData(layoutReference)
         .then(mapLayoutToPageData.bind(this, pageData))
         .then(function (result) {
           log.info('result ' + JSON.stringify(result));
@@ -249,6 +187,5 @@ module.exports = function (req, res) {
     });
 };
 
-module.exports.getTemplate = getTemplate; // for testing
 module.exports.renderPage = renderPage;
 module.exports.renderComponent = renderComponent;

@@ -1,3 +1,11 @@
+/**
+ * Handling all routing.
+ *
+ * This is the only file that should be saying things like res.send, or res.json.
+ *
+ * @module
+ */
+
 'use strict';
 var _ = require('lodash'),
   express = require('express'),
@@ -10,12 +18,18 @@ var _ = require('lodash'),
   db = require('./db'),
   bodyParser = require('body-parser'),
   log = require('./log'),
-  schema = require('./schema'),
   composer = require('./composer'),
   path = require('path'),
-  // allowable query string variables
+  references = require('./references'),
+  bluebird = require('bluebird'),
+// allowable query string variables
   queryStringOptions = ['ignore-data'];
 
+/**
+ * Remove extension from route / path.
+ * @param {string} path
+ * @returns {string}
+ */
 function removeExtension(path) {
   return path.split('.').shift();
 }
@@ -57,31 +71,138 @@ function notImplemented(req, res) {
 }
 
 /**
+ * All "Not Found" errors are routed like this.
+ * @param {Error} [err]
+ * @param res
+ */
+function notFound(err, res) {
+  if (err instanceof Error) {
+    log.info('Not found: ' + err.stack);
+  } else if (err) {
+    res = err;
+  }
+
+  //hide error from user of api.
+  res.status(404).format({
+    json: function () {
+      //send the message as well
+      res.send({
+        message: 'Not Found',
+        code: 404
+      });
+    },
+    html: function () {
+      //send some html (should probably be some default, or render of a 404 page).
+      res.send('404 Not Found');
+    },
+    'default': function () {
+      //send whatever is default for this type of data with this status code.
+      res.sendStatus(404);
+    }
+  });
+}
+
+/**
+ * All server errors should look like this.
+ *
+ * In general, 500s represent a _developer mistake_.  We should try to replace them with more descriptive errors.
+ * @param {Error} err
+ * @param res
+ */
+function serverError(err, res) {
+  //error is required to be logged
+  log.error(err.stack);
+
+  res.status(500).format({
+    json: function () {
+      //send the message as well
+      res.send({
+        message: err.message,
+        code: 500
+      });
+    },
+    html: function () {
+      //send some html (should probably be some default, or a render of a 500 page).
+      res.send('500 Server Error');
+    },
+    'default': function () {
+      //send whatever is default for this type of data with this status code.
+      res.sendStatus(500);
+    }
+  });
+}
+
+function handleError(res) {
+  return function (err) {
+    if ((err.name === 'NotFoundError') ||
+      (err.message.indexOf('ENOENT') !== -1) ||
+      (err.message.indexOf('not found') !== -1)) {
+      notFound(err, res);
+    } else {
+      serverError(err, res);
+    }
+  };
+}
+
+/**
+ * Reusable code to return JSON data, both for good results AND errors.
+ *
+ * Captures and hides appropriate errors.
+ *
+ * These return JSON always, because these endpoints are JSON-only.
+ * @param {function} fn
+ * @param res
+ */
+function expectJSON(fn, res) {
+  bluebird.try(fn).then(function (result) {
+    res.json(result);
+  }).catch(handleError(res));
+}
+
+/**
+ * Reusable code to return JSON data, both for good results AND errors.
+ *
+ * Captures and hides appropriate errors.
+ *
+ * These return HTML always, because these endpoints are HTML-only.
+ * @param {function} fn
+ * @param res
+ */
+function expectHTML(fn, res) {
+  bluebird.try(fn).then(function (result) {
+    res.send(result);
+  }).catch(handleError(res));
+}
+
+/**
+ * @param req
+ * @param res
+ */
+function getRouteFromComponent(req, res) {
+  expectJSON(function () {
+    return references.getComponentData(removeExtension(req.url));
+  }, res);
+}
+
+/**
+ * @param req
+ * @param res
+ */
+function putRouteFromComponent(req, res) {
+  expectJSON(function () {
+    return references.putComponentData(removeExtension(req.url), req.body);
+  }, res);
+}
+
+/**
  * This route gets straight from the db.
  * @param req
  * @param res
  */
-function getRouteTypically(req, res) {
-  db.get(removeExtension(req.url))
-    .then(JSON.parse)
-    .then(function (result) {
-      log.info('yes?', result);
-      res.json(result);
-    }).catch(function (err) {
-      if (err.name === 'NotFoundError') {
-        log.info('no?', err);
-        res.status(404).send({
-          message: 'Not Found',
-          code: 404
-        });
-      } else {
-        log.error(err.stack);
-        res.status(500).send({
-          message: err.message,
-          code: 500
-        });
-      }
-    });
+function getRouteFromDB(req, res) {
+  expectJSON(function () {
+    return db.get(removeExtension(req.url)).then(JSON.parse);
+  }, res);
 }
 
 /**
@@ -92,60 +213,60 @@ function getRouteTypically(req, res) {
  * @param req
  * @param res
  */
-function putRouteTypically(req, res) {
-  db.put(req.url, JSON.stringify(req.body)).then(function () {
-    res.json(req.body);
-  }).catch(function (err) {
-    log.error(err.stack);
-    res.status(500).send(err.message);
-  });
+function putRouteFromDB(req, res) {
+  expectJSON(function () {
+    return db.put(removeExtension(req.url), JSON.stringify(req.body));
+  }, res);
 }
 
 /**
  * Return a schema for a component
+ *
  * @param req
  * @param res
  */
 function getSchema(req, res) {
-  var componentSchema,
-    componentName = schema.getComponentNameFromPath(removeExtension(req.url));
-
-  if (componentName) {
-    try {
-      componentSchema = schema.getSchema(path.resolve('components', componentName));
-      res.json(componentSchema);
-    } catch (err) {
-      if (err.message.indexOf('ENOENT') !== -1) {
-        res.sendStatus(404);
-      } else {
-        res.status(500).send(err.message);
-      }
-    }
-  } else {
-    res.sendStatus(404);
-  }
+  expectJSON(function () {
+    return references.getSchema(removeExtension(req.url));
+  }, res);
 }
 
+/**
+ * returns HTML
+ *
+ * @param req
+ * @param res
+ */
 function renderComponent(req, res) {
-  //block bad variables
-  var options = _.pick(req.query, queryStringOptions);
-
-  composer.renderComponent(removeExtension(req.url), res, options).catch(function (error) {
-    log.error(error.stack);
-    res.status(500).send(error.message);
-  })
+  expectHTML(function () {
+    return composer.renderComponent(removeExtension(req.url), res, _.pick(req.query, queryStringOptions));
+  }, res);
 }
 
+/**
+ * Change the acceptance type based on the extension they gave us
+ *
+ * @param req
+ * @param res
+ */
 function routeByExtension(req, res) {
   log.info('routeByExtension', req.params);
 
   switch (req.params.ext.toLowerCase()) {
     case 'html':
+      req.headers.accept = 'text/html';
       renderComponent(req, res);
       break;
+
+    case 'yaml':
+      req.headers.accept = 'text/yaml';
+      notImplemented(req, res);
+      break;
+
     case 'json': // jshint ignore:line
     default:
-      getRouteTypically(req, res);
+      req.headers.accept = 'application/json';
+      getRouteFromComponent(req, res);
       break;
   }
 }
@@ -159,26 +280,26 @@ function addComponentRoutes(router) {
 
   router.get('/components', notImplemented);
   router.get('/components/:name.:ext', routeByExtension);
-  router.get('/components/:name', getRouteTypically);
-  router.put('/components/:name', putRouteTypically);
+  router.get('/components/:name', getRouteFromComponent);
+  router.put('/components/:name', putRouteFromComponent);
 
   router.get('/components/:name/instances', notImplemented);
   router.get('/components/:name/instances/:id.:ext', routeByExtension);
-  router.get('/components/:name/instances/:id', getRouteTypically);
-  router.put('/components/:name/instances/:id', putRouteTypically);
+  router.get('/components/:name/instances/:id', getRouteFromComponent);
+  router.put('/components/:name/instances/:id', putRouteFromComponent);
 
   router.get('/components/:name/schema', getSchema);
 
   router.get('/pages', notImplemented);
-  router.get('/pages/:name', getRouteTypically);
-  router.put('/pages/:name', putRouteTypically);
+  router.get('/pages/:name', getRouteFromDB);
+  router.put('/pages/:name', putRouteFromDB);
 
 }
 
 module.exports = function (app) {
   // iterate through the hosts
   _.map(siteHosts, function (host) {
-    var sitesOnThisHost = _.filter(sitesMap, { host: host }).sort(function (a, b) {
+    var sitesOnThisHost = _.filter(sitesMap, {host: host}).sort(function (a, b) {
         // sort by the depth of the path, so we can have domain.com/ and domain.com/foo/ as two separate sites
         return a.path.split('/').length - b.path.split('/').length;
       }),

@@ -1,5 +1,7 @@
 'use strict';
-var expect = require('chai').expect,
+var _ = require('lodash'),
+  filename = _.startCase(__filename.split('/').pop().split('.').shift()),
+  expect = require('chai').expect,
   sinon = require('sinon'),
   glob = require('glob'),
   config = require('config'),
@@ -7,9 +9,9 @@ var expect = require('chai').expect,
   files = require('./files'),
   db = require('./db'),
   bluebird = require('bluebird'),
-  _ = require('lodash'),
   log = require('./log'),
-  plex = require('multiplex-templates');
+  plex = require('multiplex-templates'),
+  references = require('./references');
 
 function createMockRes() {
   var res = {};
@@ -19,82 +21,65 @@ function createMockRes() {
   return res;
 }
 
-describe('Composer', function () {
-  describe('getTemplate()', function () {
-    var sandbox;
+describe(filename, function () {
+  var sandbox,
+    mockSite = 'mockSite';
 
-    beforeEach(function () {
-      sandbox = sinon.sandbox.create();
-      sandbox.stub(files, 'getComponentPath').returns('');
-      sandbox.stub(config, 'get').returns('template');
-    });
+  beforeEach(function () {
+    sandbox = sinon.sandbox.create();
+  });
 
-    afterEach(function () {
-      sandbox.restore();
-    });
+  afterEach(function () {
+    sandbox.restore();
+  });
 
-    it('throws error if no templates found', function () {
-      sandbox.stub(glob, 'sync').returns([]);
-      expect(function () {
-        return composer.getTemplate('');
-      }).to.throw(Error);
-    });
-
-    it('gets a nunjucks template', function () {
-      sandbox.stub(glob, 'sync').returns(['template.nunjucks']);
-      expect(composer.getTemplate('/components/whatever')).to.eql('template.nunjucks');
-    });
-
-    it('gets a jade template', function () {
-      sandbox.stub(glob, 'sync').returns(['template.jade']);
-      expect(composer.getTemplate('/components/whatever')).to.eql('template.jade');
-    });
-
-    it('gets a mustache template', function () {
-      sandbox.stub(glob, 'sync').returns(['template.mustache']);
-      expect(composer.getTemplate('/components/whatever')).to.eql('template.mustache');
-    });
-
-    it('getTemplate basic case', function () {
-      sandbox.stub(glob, 'sync').returns(['template.mustache']);
-      composer.getTemplate('/components/whatever');
-    });
-
-    it('renderComponent basic case', function (done) {
-      sandbox.stub(log, 'info', _.noop);
-      sandbox.stub(db, 'get').returns(bluebird.delay(JSON.stringify({}), 0));
-      var mockRes = createMockRes();
-      composer.renderComponent('/components/whatever', mockRes).then(function () {
-        done();
-      });
-    });
-
+  describe('renderComponent', function () {
     it('renderComponent data not found', function (done) {
-      sandbox.stub(log, 'info', _.noop);
-      sandbox.stub(db, 'get').returns(bluebird.delay(JSON.stringify({a: 'b', c: {d: 'e'}}), 0));
+      //not called for 404 Not Found
+      sandbox.mock(log).expects('info').never();
+      sandbox.mock(log).expects('warn').never();
+      sandbox.mock(log).expects('error').never();
+
+      //should not fetch template if there is no data, that would be a waste
+      sandbox.mock(references).expects('getTemplate').never();
+
+      //should attempt to fetch the data, for sure.
+      sandbox.mock(references).expects('getComponentData').once().returns(bluebird.reject(new Error('thing')));
+
       var mockRes = createMockRes();
 
-      sandbox.mock(mockRes).expects('send').once().withArgs('404 Not Found');
-
-      composer.renderComponent('/components/whatever', mockRes).then(function () {
+      composer.renderComponent('/components/whatever', mockRes).done(function (result) {
+        //should not be
+        done(result);
+      }, function () {
         sandbox.verify();
         done();
       });
     });
 
     it('renderComponent data found', function (done) {
-      sandbox.stub(log, 'info', _.noop);
-      sandbox.stub(db, 'get').returns(bluebird.delay(JSON.stringify({site: 'Hey', baseTemplate: 'Hey'}), 0));
-      sandbox.stub(glob, 'sync').returns(['template.jade']);
-      sandbox.stub(plex, 'render').returns('asdf');
+      //report what was served
+      sandbox.mock(log).expects('info').once();
+
+      //get the template that will be composed
+      sandbox.mock(references).expects('getTemplate').once();
+
+      //get the data that will be composed in the template
+      sandbox.mock(references).expects('getComponentData').once().returns(bluebird.resolve({site: mockSite}));
+
       var mockRes = createMockRes();
 
-      sandbox.mock(mockRes).expects('send').once().withArgs('asdf');
-
-      composer.renderComponent('/components/whatever', mockRes).then(function () {
+      composer.renderComponent('/components/whatever', mockRes).done(function () {
         sandbox.verify();
         done();
+      }, function (err) {
+        done(err);
       });
     });
   });
+
+  describe('renderPage', function () {
+
+  });
+
 });
