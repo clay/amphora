@@ -3,7 +3,9 @@
 var _ = require('lodash'),
   fs = require('fs'),
   path = require('path'),
-  cwd = process.cwd(),
+  knownModules = {},
+  log = require('./log'),
+  chalk = require('chalk'),
   getFolders, getSites, getComponents;
 
 /**
@@ -27,7 +29,7 @@ getFolders = _.memoize(function (dir) {
  * @return {[]}
  */
 getSites = function () {
-  return getFolders(cwd + '/sites');
+  return getFolders(path.resolve('sites'));
 };
 
 /**
@@ -35,9 +37,9 @@ getSites = function () {
  * @return {[]}
  */
 getComponents = function () {
-  var npmComponents = getFolders(cwd + '/node_modules').filter(function (name) { return _.contains(name, 'byline-'); });
+  var npmComponents = getFolders(path.resolve('node_modules')).filter(function (name) { return _.contains(name, 'byline-'); });
 
-  return getFolders(cwd + '/components').concat(npmComponents);
+  return getFolders(path.resolve('components')).concat(npmComponents);
 };
 
 /**
@@ -49,10 +51,10 @@ function getComponentPath(name) {
   // make sure it's a component we have (either in components or node_modules)
   if (!_.contains(getComponents(), name)) {
     throw new Error(name + ' is not a recognized component!');
-  } else if (fs.existsSync(cwd + '/components/' + name)) {
-    return cwd + '/components/' + name;
-  } else if (fs.existsSync(cwd + '/node_modules/' + name)) {
-    return cwd + '/node_modules/' + name;
+  } else if (fs.existsSync(path.resolve('components', name))) {
+    return path.resolve('components', name);
+  } else if (fs.existsSync(path.resolve('node_modules', name))) {
+    return path.resolve('node_modules', name);
   }
 }
 
@@ -62,16 +64,45 @@ function getComponentPath(name) {
  * @return {string}
  */
 function getComponentName(filePath) {
-  var parentFolder;
+  var nmFolder = 'node_modules' + path.sep,
+    cFolder = 'components' + path.sep,
+    parentFolder;
 
-  if (_.contains(filePath, 'node_modules/')) {
-    parentFolder = 'node_modules/';
-  } else if (_.contains(filePath, 'components/')) {
-    parentFolder = 'components/';
+  if (_.contains(filePath, nmFolder)) {
+    parentFolder = nmFolder;
+  } else if (_.contains(filePath, cFolder)) {
+    parentFolder = cFolder;
   }
 
   // get the next folder after the parent folder, e.g. node_modules/<get this>/foo/bar.css
-  return filePath.split(parentFolder)[1].split('/')[0];
+  return filePath.split(parentFolder)[1].split(path.sep)[0];
+}
+
+/**
+ * Load a component as a node module.
+ *
+ * NOTE: This includes local components as well as npm components.
+ *
+ * @param {string} name
+ * @returns {object|false}
+ */
+function getComponentModule(name) {
+  if (!knownModules[name] && knownModules[name] !== false) {
+    //load and return it
+    try {
+      var componentPath = getComponentPath(name);
+      log.info(chalk.italic.dim('Loading server module ' + componentPath));
+      knownModules[name] = require(componentPath);
+    } catch (ex) {
+      //not really an error, since most components will not have server functionality
+      log.info(chalk.italic.dim('Did not load/find a server module for ' + name + ': ' + ex.message));
+
+      //remember that this component does not have server functionality
+      knownModules[name] = false;
+    }
+  }
+
+  return knownModules[name];
 }
 
 exports.getFolders = getFolders;
@@ -79,3 +110,4 @@ exports.getSites = getSites;
 exports.getComponents = getComponents;
 exports.getComponentPath = getComponentPath;
 exports.getComponentName = getComponentName;
+exports.getComponentModule = getComponentModule;
