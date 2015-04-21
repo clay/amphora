@@ -1,3 +1,5 @@
+'use strict';
+
 //for now, use memory.
 var db = require('levelup')('whatever', { db: require('memdown') }),
   bluebird = require('bluebird');

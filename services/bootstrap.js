@@ -33,11 +33,6 @@ function saveObject(name, thing, promises) {
   promises.push(db.put(name, JSON.stringify(thing)));
 }
 
-function saveString(name, str, promises) {
-  winston.info('saving ' + name + '\n' + chalk.dim(require('util').inspect(str, true, 5)));
-  promises.push(db.put(name, str));
-}
-
 /**
  * Component specific loading.
  * @param {{}} list

@@ -3,6 +3,9 @@
 var _ = require('lodash'),
   fs = require('fs'),
   path = require('path'),
+  knownModules = {},
+  log = require('./log'),
+  chalk = require('chalk'),
   getFolders, getSites, getComponents;
 
 /**
@@ -75,8 +78,36 @@ function getComponentName(filePath) {
   return filePath.split(parentFolder)[1].split(path.sep)[0];
 }
 
+/**
+ * Load a component as a node module.
+ *
+ * NOTE: This includes local components as well as npm components.
+ *
+ * @param {string} name
+ * @returns {object|false}
+ */
+function getComponentModule(name) {
+  if (!knownModules[name] && knownModules[name] !== false) {
+    //load and return it
+    try {
+      var componentPath = getComponentPath(name);
+      log.info(chalk.italic.dim('Loading server module ' + componentPath));
+      knownModules[name] = require(componentPath);
+    } catch (ex) {
+      //not really an error, since most components will not have server functionality
+      log.info(chalk.italic.dim('Did not load/find a server module for ' + name + ': ' + ex.message));
+
+      //remember that this component does not have server functionality
+      knownModules[name] = false;
+    }
+  }
+
+  return knownModules[name];
+}
+
 exports.getFolders = getFolders;
 exports.getSites = getSites;
 exports.getComponents = getComponents;
 exports.getComponentPath = getComponentPath;
 exports.getComponentName = getComponentName;
+exports.getComponentModule = getComponentModule;

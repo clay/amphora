@@ -1,3 +1,5 @@
+'use strict';
+
 var schema = require('./schema'),
   db = require('./db'),
   expect = require('chai').expect,

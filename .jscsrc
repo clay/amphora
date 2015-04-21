@@ -40,7 +40,7 @@
     "disallowSpacesInsideArrayBrackets": true,
     "disallowSpacesInsideParentheses": true,
     "disallowQuotedKeysInObjects": true,
-    "disallowDanglingUnderscores": true,
+    "disallowDanglingUnderscores": null,
     "disallowSpaceAfterObjectKeys": true,
     "requireCommaBeforeLineBreak": true,
     "disallowSpaceAfterPrefixUnaryOperators": true,

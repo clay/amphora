@@ -23,7 +23,20 @@ function getComponentNameFromPath(path) {
 }
 
 /**
- * Duck-typing
+ * Duck-typing.
+ *
+ * If the object has `.then`, we assume its a promise
+ * @param {*} obj
+ * @returns {boolean}
+ */
+function isPromise(obj) {
+  return _.isObject(obj) && _.isFunction(obj.then);
+}
+
+/**
+ * Duck-typing.
+ *
+ * If the object has `._type` as a string, we assume its a component
  */
 function isComponent(obj) {
   return _.isString(obj._type);
@@ -70,6 +83,7 @@ function resolveDataReferences(data) {
   }).return(data);
 }
 
+module.exports.isPromise = isPromise;
 module.exports.isComponent = isComponent;
 module.exports.getComponentNameFromPath = getComponentNameFromPath;
 module.exports.getSchema = getSchema;
