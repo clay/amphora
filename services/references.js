@@ -21,7 +21,7 @@ var config = require('config'),
  * @param {string} ref
  * @returns {*}
  */
-function getComponentData(ref) {
+function getComponentData(ref, locals) {
   var promise,
     componentName = schema.getComponentNameFromPath(ref),
     componentModule = files.getComponentModule(componentName);
@@ -31,7 +31,7 @@ function getComponentData(ref) {
   assertions.exists(componentName, 'component name', ref);
 
   if (_.isFunction(componentModule)) {
-    promise = componentModule(ref);
+    promise = componentModule(ref, locals);
   } else {
     // default back to db.js (objects are stored as strings, not objects)
     promise = db.get(ref).then(JSON.parse);

@@ -3,9 +3,12 @@
 var _ = require('lodash'),
   fs = require('fs'),
   path = require('path'),
+<<<<<<< Updated upstream
   knownModules = {},
   log = require('./log'),
   chalk = require('chalk'),
+=======
+>>>>>>> Stashed changes
   getFolders, getSites, getComponents;
 
 /**
@@ -14,6 +17,7 @@ var _ = require('lodash'),
  * @return {[]}     array of folder names
  */
 getFolders = _.memoize(function (dir) {
+<<<<<<< Updated upstream
   if (fs.existsSync(dir)) {
     return fs.readdirSync(dir)
       .filter(function (file) {
@@ -22,20 +26,32 @@ getFolders = _.memoize(function (dir) {
   } else {
     return [];
   }
+=======
+  return fs.readdirSync(dir).filter(function (file) {
+    return fs.statSync(path.join(dir, file)).isDirectory();
+  });
+>>>>>>> Stashed changes
 });
 
 /**
  * get array of site names
  * @return {[]}
  */
+<<<<<<< Updated upstream
 getSites = function () {
   return getFolders(path.resolve('sites'));
 };
+=======
+getSites = _.memoize(function () {
+  return getFolders('sites');
+});
+>>>>>>> Stashed changes
 
 /**
  * get array of component names, from node_modules and components folder
  * @return {[]}
  */
+<<<<<<< Updated upstream
 getComponents = function () {
   var npmComponents = getFolders(path.resolve('node_modules')).filter(function (name) { return _.contains(name, 'byline-'); });
 
@@ -111,3 +127,14 @@ exports.getComponents = getComponents;
 exports.getComponentPath = getComponentPath;
 exports.getComponentName = getComponentName;
 exports.getComponentModule = getComponentModule;
+=======
+getComponents = _.memoize(function () {
+  var npmComponents = getFolders('node_modules').filter(function (name) { return _.contains(name, 'byline-'); });
+
+  return getFolders('components').concat(npmComponents);
+});
+
+exports.getFolders = getFolders;
+exports.getSites = getSites;
+exports.getComponents = getComponents;
+>>>>>>> Stashed changes
