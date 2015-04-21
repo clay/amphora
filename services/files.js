@@ -88,17 +88,27 @@ function getComponentName(filePath) {
  */
 function getComponentModule(name) {
   if (!knownModules[name] && knownModules[name] !== false) {
-    //load and return it
+    var componentPath = getComponentPath(name);
+
+    //load and return it if a module exists
     try {
-      var componentPath = getComponentPath(name);
       log.info(chalk.italic.dim('Loading server module ' + componentPath));
       knownModules[name] = require(componentPath);
     } catch (ex) {
       //not really an error, since most components will not have server functionality
-      log.info(chalk.italic.dim('Did not load/find a server module for ' + name + ': ' + ex.message));
+      log.info(chalk.italic.dim('Did not load/find module for ' + name + ': ' + ex.message));
 
       //remember that this component does not have server functionality
       knownModules[name] = false;
+    }
+
+    //look for server.js as well, because it follows our "best practises".
+    if (!knownModules[name] && componentPath) {
+      try {
+        knownModules[name] = require(componentPath + '/server');
+      } catch (ex) {
+        log.info(chalk.italic.dim('Did not load/find a server.js module either for ' + name + ': ' + ex.message));
+      }
     }
   }
 

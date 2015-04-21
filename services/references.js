@@ -19,16 +19,19 @@ var config = require('config'),
 /**
  *
  * @param {string} ref
+ * @param {object} [locals]
  * @returns {*}
  */
 function getComponentData(ref, locals) {
   var promise,
-    componentName = schema.getComponentNameFromPath(ref),
-    componentModule = files.getComponentModule(componentName);
+    componentName,
+    componentModule;
 
   //assertions
   assertions.exists(ref, 'reference');
+  componentName = schema.getComponentNameFromPath(ref);
   assertions.exists(componentName, 'component name', ref);
+  componentModule = files.getComponentModule(componentName);
 
   if (_.isFunction(componentModule)) {
     promise = componentModule(ref, locals);
