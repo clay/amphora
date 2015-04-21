@@ -1,5 +1,4 @@
 'use strict';
-<<<<<<< Updated upstream
 var mockFS = require('mock-fs'),
   expect = require('chai').expect,
   sinon = require('sinon'),
@@ -56,48 +55,10 @@ describe('files', function () {
     it('gets a list of sites', function () {
       delete files.getFolders.cache.__data__[process.cwd() + '/sites'];
       expect(files.getSites()).to.contain('site1', 'site2');
-=======
-var files = require('./files'),
-  expect = require('chai').expect,
-  sinon = require('sinon'),
-  fs = require('fs');
-
-describe('files', function () {
-  describe('getFolders()', function () {
-    var sandbox;
-
-    beforeEach(function () {
-      sandbox = sinon.sandbox.create();
-    });
-
-    afterEach(function () {
-      sandbox.restore();
-    });
-
-    it('gets a list of folders', function () {
-      sandbox.stub(fs, 'readdirSync').returns([])
-    });
-  });
-
-  describe('getSites()', function () {
-    var sandbox;
-
-    beforeEach(function () {
-      sandbox = sinon.sandbox.create();
-    });
-
-    afterEach(function () {
-      sandbox.restore();
-    });
-
-    it('gets a list of folders', function () {
-      sandbox.stub(fs, 'readFileSync')
->>>>>>> Stashed changes
     });
   });
 
   describe('getComponents()', function () {
-<<<<<<< Updated upstream
     it('gets a list of components', function () {
       expect(files.getComponents()).to.contain('c1', 'c2', 'byline-c3', 'byline-c4');
     });
@@ -114,20 +75,6 @@ describe('files', function () {
       expect(files.getComponentName('components/bar')).to.equal('bar');
       expect(files.getComponentName('foo/components/bar')).to.equal('bar');
       expect(files.getComponentName('foo/components/bar/baz.css')).to.equal('bar');
-=======
-    var sandbox;
-
-    beforeEach(function () {
-      sandbox = sinon.sandbox.create();
-    });
-
-    afterEach(function () {
-      sandbox.restore();
-    });
-
-    it('gets a list of folders', function () {
-      sandbox.stub(fs, 'readFileSync')
->>>>>>> Stashed changes
     });
   });
 });
