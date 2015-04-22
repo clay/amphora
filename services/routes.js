@@ -22,6 +22,7 @@ var _ = require('lodash'),
   path = require('path'),
   references = require('./references'),
   bluebird = require('bluebird'),
+  schema = require('./schema'),
 // allowable query string variables
   queryStringOptions = ['ignore-data'];
 
@@ -220,6 +221,26 @@ function putRouteFromDB(req, res) {
 }
 
 /**
+ * List the available instances of this component
+ * @param req
+ * @param res
+ */
+function listRouteFromComponent(req, res) {
+  var path = removeExtension(req.url),
+    list = db.list({prefix: path, values: false});
+
+  if (schema.isPromise(list)) {
+    list.then(res.json);
+  } else if (schema.isPipeableStream(list)) {
+    db.list({prefix: path, values: false}).on('error', function (error) {
+      log.error('listRouteComponentInstancesFromDB::error', path, error);
+    }).pipe(res);
+  } else {
+    throw new Error('listRouteFromComponent cannot handle type ' + (typeof list));
+  }
+}
+
+/**
  * Return a schema for a component
  *
  * @param req
@@ -283,7 +304,7 @@ function addComponentRoutes(router) {
   router.get('/components/:name', getRouteFromComponent);
   router.put('/components/:name', putRouteFromComponent);
 
-  router.get('/components/:name/instances', notImplemented);
+  router.get('/components/:name/instances', listRouteFromComponent);
   router.get('/components/:name/instances/:id.:ext', routeByExtension);
   router.get('/components/:name/instances/:id', getRouteFromComponent);
   router.put('/components/:name/instances/:id', putRouteFromComponent);

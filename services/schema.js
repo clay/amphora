@@ -39,7 +39,16 @@ function isPromise(obj) {
  * If the object has `._type` as a string, we assume its a component
  */
 function isComponent(obj) {
-  return _.isString(obj._type);
+  return _.isObject(obj) && _.isString(obj._type);
+}
+
+/**
+ * Duck-typing.
+ *
+ * If the object has `.pipe` as a function, we assume its a pipeable stream
+ */
+function isPipeableStream(obj) {
+  return _.isObject(obj) && _.isFunction(obj.pipe);
 }
 
 /**
@@ -85,6 +94,7 @@ function resolveDataReferences(data) {
 
 module.exports.isPromise = isPromise;
 module.exports.isComponent = isComponent;
+module.exports.isPipeableStream = isPipeableStream;
 module.exports.getComponentNameFromPath = getComponentNameFromPath;
 module.exports.getSchema = getSchema;
 module.exports.getSchemaComponents = getSchemaComponents;
