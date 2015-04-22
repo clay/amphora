@@ -9,6 +9,7 @@ var log = require('./log'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters')(),
   multiplex = require('multiplex-templates')({nunjucks: nunjucks}),
+  db = require('./db'),
   references = require('./references'),
   schema = require('./schema'),
   _ = require('lodash'),
@@ -63,7 +64,6 @@ function applyOptions(options, res) {
 function renderTemplate() {
   return function (data) {
     //assertions
-    assertions.exists(data.site, 'data.site');
     assertions.exists(data.template, 'data.template');
 
     return multiplex.render(references.getTemplate(data.template), data);
@@ -151,10 +151,9 @@ function mapLayoutToPageData(pageData, layoutData) {
  * @example renderPage('/pages/bG9jYWxob3N0LnZ1bHR1cmUuY29tL2Zhdmljb24uaWNv', res);
  */
 function renderPage(pageReference, res) {
-  log.info('rendering page ' + pageReference);
-
   //look up page alias' component instance
-  return references.getComponentData(pageReference)
+  return db.get(pageReference)
+    .then(JSON.parse)
     .then(function (result) {
 
       var layoutReference = result.layout,
@@ -163,14 +162,11 @@ function renderPage(pageReference, res) {
 
       if (!layoutReference || !layoutComponentName) {
         throw new Error('Page is missing layout: ' + pageReference + ' ' + result + ' ' + JSON.stringify(result));
-      } else {
-        log.info('using ', layoutReference, layoutComponentName);
       }
 
       return references.getComponentData(layoutReference)
         .then(mapLayoutToPageData.bind(this, pageData))
         .then(function (result) {
-          log.info('result ' + JSON.stringify(result));
           var options = { data: result };
           options.data.template = layoutComponentName;
           return renderByConfiguration(options, res);
@@ -182,7 +178,9 @@ module.exports = function (req, res) {
   var pageReference = '/pages/' + new Buffer(req.vhost.hostname + req.url).toString('base64');
 
   renderPage(pageReference, res)
-    .catch(function (err) {
+    .then(function (html) {
+      res.send(html);
+    }).catch(function (err) {
       log.warn(req.vhost.hostname + req.url + '\n' + chalk.dim(err.stack));
     });
 };
