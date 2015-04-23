@@ -178,6 +178,17 @@ function expectHTML(fn, res) {
  * @param req
  * @param res
  */
+function getRouteFromSandbox(req, res) {
+  res.locals.name = req.params.name;
+  expectHTML(function () {
+    return composer.renderComponent('/components/sandbox/instances/0', res);
+  }, res);
+}
+
+/**
+ * @param req
+ * @param res
+ */
 function getRouteFromComponent(req, res) {
   expectJSON(function () {
     return references.getComponentData(removeExtension(req.url));
@@ -277,6 +288,8 @@ function routeByExtension(req, res) {
  */
 function addComponentRoutes(router) {
   router.use(bodyParser.json());
+
+  router.get('/sandbox/:name', getRouteFromSandbox);
 
   router.get('/components', notImplemented);
   router.get('/components/:name.:ext', routeByExtension);
