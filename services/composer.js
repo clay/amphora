@@ -175,7 +175,8 @@ function renderPage(pageReference, res) {
 }
 
 module.exports = function (req, res) {
-  var pageReference = '/pages/' + new Buffer(req.vhost.hostname + req.url).toString('base64');
+  var urlWithoutQuerystring = req.url.split('?').shift(),
+    pageReference = '/pages/' + new Buffer(req.vhost.hostname + urlWithoutQuerystring).toString('base64');
 
   renderPage(pageReference, res)
     .then(function (html) {

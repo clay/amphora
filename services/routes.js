@@ -36,6 +36,15 @@ function removeExtension(path) {
 }
 
 /**
+ * remove querystring from route / path.
+ * @param  {string} path
+ * @return {string}
+ */
+function removeQueryString(path) {
+  return path.split('?').shift();
+}
+
+/**
  * add site.slug to locals for each site
  * @param {string} slug
  */
@@ -43,6 +52,17 @@ function addSiteLocals(slug) {
   return function (req, res, next) {
     res.locals.url = req.protocol + '://' + req.get('host') + req.originalUrl;
     res.locals.site = slug;
+    next();
+  };
+}
+
+/**
+ * add edit mode for each site
+ */
+function addEditMode() {
+  return function (req, res, next) {
+    // add isEdit to the locals. it'll be ignored by the db lookup
+    res.locals.isEditMode = !!(req.query.edit);
     next();
   };
 }
@@ -192,7 +212,7 @@ function getRouteFromSandbox(req, res) {
  */
 function getRouteFromComponent(req, res) {
   expectJSON(function () {
-    return references.getComponentData(removeExtension(req.url));
+    return references.getComponentData(removeExtension(removeQueryString(req.url)));
   }, res);
 }
 
@@ -202,7 +222,7 @@ function getRouteFromComponent(req, res) {
  */
 function putRouteFromComponent(req, res) {
   expectJSON(function () {
-    return references.putComponentData(removeExtension(req.url), req.body);
+    return references.putComponentData(removeExtension(removeQueryString(req.url)), req.body);
   }, res);
 }
 
@@ -213,7 +233,7 @@ function putRouteFromComponent(req, res) {
  */
 function getRouteFromDB(req, res) {
   expectJSON(function () {
-    return db.get(removeExtension(req.url)).then(JSON.parse);
+    return db.get(removeExtension(removeQueryString(req.url))).then(JSON.parse);
   }, res);
 }
 
@@ -227,7 +247,7 @@ function getRouteFromDB(req, res) {
  */
 function putRouteFromDB(req, res) {
   expectJSON(function () {
-    return db.put(removeExtension(req.url), JSON.stringify(req.body));
+    return db.put(removeExtension(removeQueryString(req.url)), JSON.stringify(req.body));
   }, res);
 }
 
@@ -259,7 +279,7 @@ function listRouteFromComponent(req, res) {
  */
 function getSchema(req, res) {
   expectJSON(function () {
-    return references.getSchema(removeExtension(req.url));
+    return references.getSchema(removeExtension(removeQueryString(req.url)));
   }, res);
 }
 
@@ -271,7 +291,7 @@ function getSchema(req, res) {
  */
 function renderComponent(req, res) {
   expectHTML(function () {
-    return composer.renderComponent(removeExtension(req.url), res, _.pick(req.query, queryStringOptions));
+    return composer.renderComponent(removeExtension(removeQueryString(req.url)), res, _.pick(req.query, queryStringOptions));
   }, res);
 }
 
@@ -327,7 +347,6 @@ function addComponentRoutes(router) {
   router.get('/pages', notImplemented);
   router.get('/pages/:name', getRouteFromDB);
   router.put('/pages/:name', putRouteFromDB);
-
 }
 
 module.exports = function (app) {
@@ -350,6 +369,8 @@ module.exports = function (app) {
 
       // add res.locals.site (slug) to every request
       hostMiddleware.use(site.path, addSiteLocals(site.slug));
+      // parse querystring for ?edit=true
+      hostMiddleware.use(site.path, addEditMode());
       //components, pages and schema have priority
       addComponentRoutes(hostMiddleware);
       // add the routes for that site's path
