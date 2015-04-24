@@ -22,6 +22,7 @@ function exists(thing, thingName, ref) {
       throw new Error('Missing ' + thingName);
     }
   }
+  return thing;
 }
 
 /**
@@ -38,6 +39,7 @@ function isPromise(obj, ref) {
       throw new Error('Expected promise, not ' + (typeof obj));
     }
   }
+  return obj;
 }
 
 function isObject(obj, ref) {
@@ -48,6 +50,7 @@ function isObject(obj, ref) {
       throw new Error('Expected object, not ' + (typeof obj));
     }
   }
+  return obj;
 }
 
 

@@ -95,3 +95,14 @@ module.exports.list = function (options) {
 
   return db.createReadStream(options).pipe(jsonTransform(transformOptions));
 };
+
+/**
+ * @param {Array} ops
+ * @param {object} [options]
+ * @returns {Promise}
+ */
+module.exports.batch = function (ops, options) {
+  var deferred = defer();
+  db.batch(ops, options || {}, deferred.apply);
+  return deferred.promise;
+};

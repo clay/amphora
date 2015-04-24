@@ -174,7 +174,7 @@ function renderPage(pageReference, res) {
     });
 }
 
-module.exports = function (req, res) {
+module.exports = function (req, res, next) {
   var urlWithoutQuerystring = req.url.split('?').shift(),
     pageReference = '/pages/' + new Buffer(req.vhost.hostname + urlWithoutQuerystring).toString('base64');
 
@@ -182,7 +182,7 @@ module.exports = function (req, res) {
     .then(function (html) {
       res.send(html);
     }).catch(function (err) {
-      log.warn(req.vhost.hostname + req.url + '\n' + chalk.dim(err.stack));
+      next(err);
     });
 };
 
