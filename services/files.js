@@ -11,8 +11,6 @@
 var _ = require('lodash'),
   fs = require('fs'),
   path = require('path'),
-  log = require('./log'),
-  chalk = require('chalk'),
   getFolders, getSites, getComponents;
 
 /**
@@ -100,20 +98,16 @@ function getComponentName(filePath) {
  * @returns {object|false}
  */
 function tryRequire(name, paths) {
-  log.info(chalk.dim('paths ' + paths));
   var result = _.find(paths, function (path) {
     try {
-      log.info(chalk.dim('finding ' + name));
       result = require(path);
     } catch (ex) {
-      log.info(chalk.dim(name + ' does not exist.'));
       result = false;
     }
     return result;
   });
 
   if (result) {
-    log.info(chalk.dim('result ' + result));
     result = require(result);
   }
 
