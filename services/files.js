@@ -1,15 +1,23 @@
+/**
+ * File-system use goes here.
+ *
+ * We should try to reduce these, so logging when it happens is useful.
+ *
+ * It's also useful to mock it away in other components.
+ */
+
 'use strict';
 
 var _ = require('lodash'),
   fs = require('fs'),
   path = require('path'),
-  knownModules = {},
-  log = require('./log'),
-  chalk = require('chalk'),
   getFolders, getSites, getComponents;
 
 /**
- * get folder names
+ * Get folder names.
+ *
+ * Should only occur once per directory.
+ *
  * @param  {string} dir enclosing folder
  * @return {[]}     array of folder names
  */
@@ -25,22 +33,24 @@ getFolders = _.memoize(function (dir) {
 });
 
 /**
- * get array of site names
+ * Get array of site names.  Should only occur once.
  * @return {[]}
  */
-getSites = function () {
+getSites = _.memoize(function () {
   return getFolders(path.resolve('sites'));
-};
+});
 
 /**
- * get array of component names, from node_modules and components folder
+ * Get array of component names, from node_modules and components folder.
+ *
+ * Should only occur once!
  * @return {[]}
  */
-getComponents = function () {
+getComponents = _.memoize(function () {
   var npmComponents = getFolders(path.resolve('node_modules')).filter(function (name) { return _.contains(name, 'byline-'); });
 
   return getFolders(path.resolve('components')).concat(npmComponents);
-};
+});
 
 /**
  * get path to component folder
@@ -79,7 +89,35 @@ function getComponentName(filePath) {
 }
 
 /**
+ * Try to get a module, or return false.
+ *
+ * Should only occur once per name!
+ *
+ * @param {string} name
+ * @param {[string]} paths  Possible paths to find their module.
+ * @returns {object|false}
+ */
+function tryRequire(name, paths) {
+  var result = _.find(paths, function (path) {
+    try {
+      result = require(path);
+    } catch (ex) {
+      result = false;
+    }
+    return result;
+  });
+
+  if (result) {
+    result = require(result);
+  }
+
+  return result;
+}
+
+/**
  * Load a component as a node module.
+ *
+ * Should only occur once per name!
  *
  * NOTE: This includes local components as well as npm components.
  *
@@ -87,37 +125,13 @@ function getComponentName(filePath) {
  * @returns {object|false}
  */
 function getComponentModule(name) {
-  if (!knownModules[name] && knownModules[name] !== false) {
-    var componentPath = getComponentPath(name);
-
-    //load and return it if a module exists
-    try {
-      log.info(chalk.italic.dim('Loading server module ' + componentPath));
-      knownModules[name] = require(componentPath);
-    } catch (ex) {
-      //not really an error, since most components will not have server functionality
-      log.info(chalk.italic.dim('Did not load/find module for ' + name + ': ' + ex.message));
-
-      //remember that this component does not have server functionality
-      knownModules[name] = false;
-    }
-
-    //look for server.js as well, because it follows our "best practises".
-    if (!knownModules[name] && componentPath) {
-      try {
-        knownModules[name] = require(componentPath + '/server');
-      } catch (ex) {
-        log.info(chalk.italic.dim('Did not load/find a server.js module either for ' + name + ': ' + ex.message));
-      }
-    }
-  }
-
-  return knownModules[name];
+  var componentPath = getComponentPath(name);
+  return componentPath && tryRequire(name, [componentPath, componentPath + '/server']);
 }
 
 exports.getFolders = getFolders;
 exports.getSites = getSites;
 exports.getComponents = getComponents;
-exports.getComponentPath = getComponentPath;
+exports.getComponentPath = _.memoize(getComponentPath); //memoize by _first_ parameter only (default)
 exports.getComponentName = getComponentName;
-exports.getComponentModule = getComponentModule;
+exports.getComponentModule = _.memoize(getComponentModule); //memoize by _first_ parameter only (default)

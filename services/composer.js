@@ -9,13 +9,12 @@ var log = require('./log'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters')(),
   multiplex = require('multiplex-templates')({nunjucks: nunjucks}),
-  db = require('./db'),
   references = require('./references'),
   schema = require('./schema'),
   _ = require('lodash'),
   chalk = require('chalk'),
   ignoreDataProperty = 'ignore-data',
-  assertions = require('./assertions');
+  is = require('./assert-is');
 
 /**
  * Add state to result, which adds functionality and information about this request to the templates.
@@ -64,7 +63,7 @@ function applyOptions(options, res) {
 function renderTemplate() {
   return function (data) {
     //assertions
-    assertions.exists(data.template, 'data.template');
+    is(data.template, 'data.template');
 
     return multiplex.render(references.getTemplate(data.template), data);
   };
@@ -77,12 +76,11 @@ function renderTemplate() {
  * @returns {Promise}
  */
 function renderByConfiguration(options, res) {
-
-  //assertions
-  assertions.exists(res.locals, 'res.locals');
-  assertions.exists(res.locals.site, 'res.locals.site');
-  assertions.isObject(options.data, 'options.data');
-  assertions.exists(options.data.template, 'options.data.template');
+  //assertions (Note: since this function isn't an entry point, maybe we can remove these assertions?)
+  is(res.locals, 'res.locals');
+  is(res.locals.site, 'res.locals.site');
+  is.object(options.data, 'options.data');
+  is.string(options.data.template, 'options.data.template');
 
   return schema.resolveDataReferences(options.data)
     .then(applyOptions(options, res))
@@ -94,23 +92,22 @@ function renderByConfiguration(options, res) {
  *
  * @param {string} componentReference
  * @param res
- * @param {{}} [options]
+ * @param {{}} [options]  Optional parameters for rendering
  * @returns {Promise}
  */
 function renderComponent(componentReference, res, options) {
   options = options || {};
-  var componentName = schema.getComponentNameFromPath(componentReference);
-
+  
   //assertions
-  //assertions
-  assertions.exists(res.locals, 'res.locals');
-  assertions.exists(res.locals.site, 'res.locals.site');
-  assertions.exists(componentName, 'component name');
+  is(res.locals, 'res.locals');
+  is(res.locals.site, 'res.locals.site');
+  is(componentReference, 'component reference');
+  var componentName = is(references.getComponentName(componentReference), 'component name');
 
   return references.getComponentData(componentReference, res.locals)
     .then(function (data) {
       //assertions
-      assertions.isObject(data);
+      is.object(data);
 
       //apply rule: data.template > componentName
       //  If there is a template mentioned in the data, assume they know what they're doing
@@ -120,6 +117,12 @@ function renderComponent(componentReference, res, options) {
     });
 }
 
+/**
+ * Maps strings in arrays of layoutData into the properties of pageData
+ * @param {object} pageData
+ * @param {object} layoutData
+ * @returns {*}
+ */
 function mapLayoutToPageData(pageData, layoutData) {
   var lists = _.listDeepObjects(layoutData, _.isArray);
 
@@ -152,17 +155,15 @@ function mapLayoutToPageData(pageData, layoutData) {
  */
 function renderPage(pageReference, res) {
   //look up page alias' component instance
-  return db.get(pageReference)
-    .then(JSON.parse)
+  return references.getPageData(pageReference)
     .then(function (result) {
 
       var layoutReference = result.layout,
-        layoutComponentName = schema.getComponentNameFromPath(layoutReference),
+        layoutComponentName = references.getComponentName(layoutReference),
         pageData = _.omit(result, 'layout');
 
-      if (!layoutReference || !layoutComponentName) {
-        throw new Error('Page is missing layout: ' + pageReference + ' ' + result + ' ' + JSON.stringify(result));
-      }
+      is(layoutReference, 'layout reference in page data');
+      is(layoutComponentName, 'layout component name from page data');
 
       return references.getComponentData(layoutReference)
         .then(mapLayoutToPageData.bind(this, pageData))
@@ -174,7 +175,16 @@ function renderPage(pageReference, res) {
     });
 }
 
-module.exports = function (req, res) {
+/**
+ * Run composer by translating url to a "page" by base64ing it.  Errors are handled by Express.
+ *
+ * NOTE: Does not return a promise ON PURPOSE.  This function is express-style.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+module.exports = function (req, res, next) {
   var urlWithoutQuerystring = req.url.split('?').shift(),
     pageReference = '/pages/' + new Buffer(req.vhost.hostname + urlWithoutQuerystring).toString('base64');
 
@@ -182,7 +192,7 @@ module.exports = function (req, res) {
     .then(function (html) {
       res.send(html);
     }).catch(function (err) {
-      log.warn(req.vhost.hostname + req.url + '\n' + chalk.dim(err.stack));
+      next(err);
     });
 };
 

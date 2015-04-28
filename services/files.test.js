@@ -1,11 +1,13 @@
 'use strict';
-var mockFS = require('mock-fs'),
+var _ = require('lodash'),
+  filename = _.startCase(__filename.split('/').pop().split('.').shift()),
+  mockFS = require('mock-fs'),
   expect = require('chai').expect,
   sinon = require('sinon'),
   fs = require('fs'),
   files = require('./files');
 
-describe('files', function () {
+describe(filename, function () {
   var mock, sandbox;
 
   before(function () {
@@ -31,6 +33,12 @@ describe('files', function () {
     sandbox.stub(fs, 'existsSync', mock.existsSync);
     sandbox.stub(fs, 'readdirSync', mock.readdirSync);
     sandbox.stub(fs, 'statSync', mock.statSync);
+    //clear the caches
+    files.getFolders.cache = new _.memoize.Cache();
+    files.getSites.cache = new _.memoize.Cache();
+    files.getComponents.cache = new _.memoize.Cache();
+    files.getComponentPath.cache = new _.memoize.Cache();
+    files.getComponentModule.cache = new _.memoize.Cache();
   });
 
   afterEach(function () {
@@ -41,7 +49,7 @@ describe('files', function () {
     mockFS.restore();
   });
 
-  describe('getFolders()', function () {
+  describe('getFolders', function () {
     it('gets a list of folders', function () {
       expect(files.getFolders('.')).to.contain('components', 'sites', 'node_modules');
     });
@@ -51,20 +59,19 @@ describe('files', function () {
     });
   });
 
-  describe('getSites()', function () {
+  describe('getSites', function () {
     it('gets a list of sites', function () {
-      delete files.getFolders.cache.__data__[process.cwd() + '/sites'];
       expect(files.getSites()).to.contain('site1', 'site2');
     });
   });
 
-  describe('getComponents()', function () {
+  describe('getComponents', function () {
     it('gets a list of components', function () {
       expect(files.getComponents()).to.contain('c1', 'c2', 'byline-c3', 'byline-c4');
     });
   });
 
-  describe('getComponentName()', function () {
+  describe('getComponentName', function () {
     it('gets a node_modules component name', function () {
       expect(files.getComponentName('node_modules/bar')).to.equal('bar');
       expect(files.getComponentName('foo/node_modules/bar')).to.equal('bar');

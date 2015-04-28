@@ -22,7 +22,6 @@ var _ = require('lodash'),
   path = require('path'),
   references = require('./references'),
   bluebird = require('bluebird'),
-  schema = require('./schema'),
 // allowable query string variables
   queryStringOptions = ['ignore-data'];
 
@@ -42,6 +41,26 @@ function removeExtension(path) {
  */
 function removeQueryString(path) {
   return path.split('?').shift();
+}
+
+/**
+ * Duck-typing.
+ *
+ * If the object has `.then`, we assume its a promise
+ * @param {*} obj
+ * @returns {boolean}
+ */
+function isPromise(obj) {
+  return _.isObject(obj) && _.isFunction(obj.then);
+}
+
+/**
+ * Duck-typing.
+ *
+ * If the object has `.pipe` as a function, we assume its a pipeable stream
+ */
+function isPipeableStream(obj) {
+  return _.isObject(obj) && _.isFunction(obj.pipe);
 }
 
 /**
@@ -260,9 +279,9 @@ function listRouteFromComponent(req, res) {
   var path = removeExtension(req.url),
     list = db.list({prefix: path, values: false});
 
-  if (schema.isPromise(list)) {
+  if (isPromise(list)) {
     list.then(res.json);
-  } else if (schema.isPipeableStream(list)) {
+  } else if (isPipeableStream(list)) {
     db.list({prefix: path, values: false}).on('error', function (error) {
       log.error('listRouteComponentInstancesFromDB::error', path, error);
     }).pipe(res);

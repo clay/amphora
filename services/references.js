@@ -3,7 +3,9 @@
 /**
  * All of these function get or set from a reference path.
  *
- * @class
+ * That is, each call is literally `someMethod(referencePath);`
+ *
+ * @module
  */
 
 var config = require('config'),
@@ -14,8 +16,22 @@ var config = require('config'),
   path = require('path'),
   glob = require('glob'),
   bluebird = require('bluebird'),
-  assertions = require('./assertions'),
+  is = require('./assert-is'),
   log = require('./log');
+
+/**
+ * Takes a ref, and returns the component name within it.
+ * @param {string} ref
+ * @returns {string}
+ * @example /components/base  returns base
+ * @example /components/text/instances/0  returns text
+ * @example /components/image.html  returns image
+ */
+function getComponentName(ref) {
+  var result = /components\/(.+?)[\/\.]/.exec(ref) || /components\/(.+)/.exec(ref);
+
+  return result && result[1];
+}
 
 /**
  *
@@ -29,9 +45,9 @@ function getComponentData(ref, locals) {
     componentModule;
 
   //assertions
-  assertions.exists(ref, 'reference');
-  componentName = schema.getComponentNameFromPath(ref);
-  assertions.exists(componentName, 'component name', ref);
+  is(ref, 'reference');
+  componentName = getComponentName(ref);
+  is(componentName, 'component name', ref);
   componentModule = files.getComponentModule(componentName);
 
   if (_.isFunction(componentModule)) {
@@ -41,7 +57,7 @@ function getComponentData(ref, locals) {
     promise = db.get(ref).then(JSON.parse);
   }
 
-  assertions.isPromise(promise, ref);
+  is.promise(promise, ref);
 
   return promise;
 }
@@ -54,12 +70,12 @@ function getComponentData(ref, locals) {
  */
 function putComponentData(ref, data) {
   var promise,
-    componentName = schema.getComponentNameFromPath(ref),
+    componentName = getComponentName(ref),
     componentModule = files.getComponentModule(componentName);
 
   //assertions
-  assertions.exists(ref, 'reference');
-  assertions.exists(componentName, 'component name', ref);
+  is(ref, 'reference');
+  is(componentName, 'component name', ref);
 
   if (componentModule && _.isFunction(componentModule.put)) {
     promise = componentModule.put(ref);
@@ -77,9 +93,9 @@ function putComponentData(ref, data) {
  * @returns {ReadStream}
  */
 function listComponentInstances(ref) {
-  assertions.exists(ref, 'reference');
-  var componentName = schema.getComponentNameFromPath(ref);
-  assertions.exists(componentName, 'component name', ref);
+  is(ref, 'reference');
+  var componentName = getComponentName(ref);
+  is(componentName, 'component name', ref);
 
   return db.list({prefix: path, values: false, isArray: false})
     .on('error', function (error) {
@@ -95,12 +111,12 @@ function listComponentInstances(ref) {
  */
 function listComponentData(ref, locals) {
   var result,
-    componentName = schema.getComponentNameFromPath(ref),
+    componentName = getComponentName(ref),
     componentModule = files.getComponentModule(componentName);
 
   //assertions
-  assertions.exists(ref, 'reference');
-  assertions.exists(componentName, 'component name', ref);
+  is(ref, 'reference');
+  is(componentName, 'component name', ref);
 
   if (componentModule && _.isFunction(componentModule.list)) {
     result = componentModule.list(ref, locals);
@@ -113,15 +129,26 @@ function listComponentData(ref, locals) {
 }
 
 /**
+ * Consistent way to get page data by reference
+ * @param {string} ref
+ */
+function getPageData(ref) {
+  is(ref, 'reference');
+
+  return db.get(ref)
+    .then(JSON.parse);
+}
+
+/**
  *
  * @param {string} ref
  */
 function getSchema(ref) {
   return bluebird.try(function () {
-    var componentName = schema.getComponentNameFromPath(ref);
+    var componentName = getComponentName(ref);
 
-    assertions.exists(ref, 'reference');
-    assertions.exists(componentName, 'component name', ref);
+    is(ref, 'reference');
+    is(componentName, 'component name', ref);
 
     return schema.getSchema(files.getComponentPath(componentName));
   });
@@ -133,12 +160,12 @@ function getSchema(ref) {
  * @returns {*}
  */
 function getTemplate(ref) {
-  assertions.exists(ref, 'reference');
+  is(ref, 'reference');
 
   // if there are slashes in this name, they've given us a reference like /components/name/instances/id
   if (ref.indexOf('/') !== -1) {
-    ref = schema.getComponentNameFromPath(ref);
-    assertions.exists(ref, 'component name', ref);
+    ref = getComponentName(ref);
+    is(ref, 'component name', ref);
   }
 
   var filePath = files.getComponentPath(ref),
@@ -159,8 +186,8 @@ function getTemplate(ref) {
   return possibleTemplates[0];
 }
 
-
-
+module.exports.getPageData = getPageData;
+module.exports.getComponentName = getComponentName;
 module.exports.getComponentData = getComponentData;
 module.exports.putComponentData = putComponentData;
 module.exports.listComponentData = listComponentData;
