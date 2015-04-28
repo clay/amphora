@@ -8,7 +8,7 @@
 
 var _ = require('lodash');
 
-function expectedType(obj, typeName, ref) {
+function throwExpectedTypeError(obj, typeName, ref) {
   var str = 'Expected ' + typeName + ', not ' + (typeof obj);
 
   if (ref) {
@@ -43,21 +43,21 @@ function exists(thing, thingName, ref) {
  */
 function isPromise(obj, ref) {
   if (!_.isObject(obj) || !_.isFunction(obj.then)) {
-    expectedType(obj, 'promise', ref);
+    throwExpectedTypeError(obj, 'promise', ref);
   }
   return obj;
 }
 
 function isObject(obj, ref) {
   if (!_.isObject(obj)) {
-    expectedType(obj, 'object', ref);
+    throwExpectedTypeError(obj, 'object', ref);
   }
   return obj;
 }
 
 function isString(obj, ref) {
   if (!_.isString(obj)) {
-    expectedType(obj, 'string', ref);
+    throwExpectedTypeError(obj, 'string', ref);
   }
   return obj;
 }

@@ -1,12 +1,14 @@
 'use strict';
 
-var schema = require('./schema'),
+var _ = require('lodash'),
+  filename = _.startCase(__filename.split('/').pop().split('.').shift()),
+  schema = require('./schema'),
   db = require('./db'),
   expect = require('chai').expect,
   sinon = require('sinon'),
   bluebird = require('bluebird');
 
-describe('schema', function () {
+describe(filename, function () {
   var sandbox;
 
   beforeEach(function () {
@@ -33,90 +35,55 @@ describe('schema', function () {
     });
   });
 
-  describe('getComponentNameFromPath', function () {
-    it('finds /components/name', function () {
-      var result = schema.getComponentNameFromPath('/components/name');
+  describe('resolveDataReferences', function () {
+    it('looks up references', function (done) {
+      var mock,
+        data = {
+          a: {_ref:'b'},
+          c: {d: {_ref:'e'}}
+        };
 
-      expect(result).to.equal('name');
-    });
-    it('finds /components/name/', function () {
-      var result = schema.getComponentNameFromPath('/components/name/');
+      mock = sandbox.mock(db);
+      mock.expects('get').withArgs('b').once().returns(bluebird.resolve(JSON.stringify({g: 'h'})));
+      mock.expects('get').withArgs('e').once().returns(bluebird.resolve(JSON.stringify({i: 'j'})));
 
-      expect(result).to.equal('name');
-    });
-    it('finds /components/name/instances/id', function () {
-      var result = schema.getComponentNameFromPath('/components/name/instances/id');
-
-      expect(result).to.equal('name');
-    });
-    it('finds /components/name.ext', function () {
-      var result = schema.getComponentNameFromPath('/components/name.ext');
-
-      expect(result).to.equal('name');
-    });
-  });
-
-  it('getSchemaComponents gets all components', function () {
-    var result = schema.getSchemaComponents('test/fixtures/text');
-
-    expect(result).to.deep.equal([
-      {
-        _type:'text',
-        _required: true
-      },
-      {
-        _type:'component-list'
-      }
-    ]);
-  });
-
-  it('resolveDataReferences looks up references', function (done) {
-    var mock,
-      data = {
-        a: {_ref:'b'},
-        c: {d: {_ref:'e'}}
-      };
-
-    mock = sandbox.mock(db);
-    mock.expects('get').withArgs('b').once().returns(bluebird.resolve(JSON.stringify({g: 'h'})));
-    mock.expects('get').withArgs('e').once().returns(bluebird.resolve(JSON.stringify({i: 'j'})));
-
-    schema.resolveDataReferences(data).done(function (result) {
-      sandbox.verify();
-      expect(result).to.deep.equal({
-        a: { _ref: 'b', g: 'h' },
-        c: { d: { _ref: 'e', i: 'j' } }
+      schema.resolveDataReferences(data).done(function (result) {
+        sandbox.verify();
+        expect(result).to.deep.equal({
+          a: { _ref: 'b', g: 'h' },
+          c: { d: { _ref: 'e', i: 'j' } }
+        });
+        done();
       });
-      done()
     });
-  });
 
-  it('resolveDataReferences looks up references recursively', function (done) {
-    var mock,
-      data = {
-        a: {_ref:'b'},
-        c: {d: {_ref:'e'}}
-      };
+    it('looks up references recursively', function (done) {
+      var mock,
+        data = {
+          a: {_ref:'b'},
+          c: {d: {_ref:'e'}}
+        };
 
-    mock = sandbox.mock(db);
-    mock.expects('get').withArgs('b').once().returns(bluebird.resolve(JSON.stringify({g: 'h'})));
-    mock.expects('get').withArgs('e').once().returns(bluebird.resolve(JSON.stringify({i: 'j', 'k': {_ref:'m'}})));
-    mock.expects('get').withArgs('m').once().returns(bluebird.resolve(JSON.stringify({n: 'o'})));
+      mock = sandbox.mock(db);
+      mock.expects('get').withArgs('b').once().returns(bluebird.resolve(JSON.stringify({g: 'h'})));
+      mock.expects('get').withArgs('e').once().returns(bluebird.resolve(JSON.stringify({i: 'j', 'k': {_ref:'m'}})));
+      mock.expects('get').withArgs('m').once().returns(bluebird.resolve(JSON.stringify({n: 'o'})));
 
-    schema.resolveDataReferences(data).done(function (result) {
-      sandbox.verify();
-      expect(result).to.deep.equal({
-        a: { _ref: 'b', g: 'h' },
-        c: { d: {
-          _ref: 'e',
-          i: 'j' ,
-          k: {
-            _ref: 'm',
-            n: 'o' //we just recursively looked this up from another lookup
-          }
-        } }
+      schema.resolveDataReferences(data).done(function (result) {
+        sandbox.verify();
+        expect(result).to.deep.equal({
+          a: { _ref: 'b', g: 'h' },
+          c: { d: {
+            _ref: 'e',
+            i: 'j',
+            k: {
+              _ref: 'm',
+              n: 'o' //we just recursively looked this up from another lookup
+            }
+          } }
+        });
+        done();
       });
-      done()
     });
   });
 });

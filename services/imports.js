@@ -4,7 +4,6 @@ var _ = require('lodash'),
   is = require('./assert-is'),
   db = require('./db'),
   references = require('./references'),
-  schema = require('./schema'),
   files = require('./files'),
   bluebird = require('bluebird'),
   log = require('./log'),
@@ -71,7 +70,7 @@ function callImport(fn, ref, locals, err) {
 }
 
 function getImporter(ref, data) {
-  var componentName = schema.getComponentNameFromPath(ref),
+  var componentName = references.getComponentName(ref),
     componentModule = files.getComponentModule(componentName),
     fn = componentModule && componentModule.import;
 

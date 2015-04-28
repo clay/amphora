@@ -9,7 +9,6 @@ var log = require('./log'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters')(),
   multiplex = require('multiplex-templates')({nunjucks: nunjucks}),
-  db = require('./db'),
   references = require('./references'),
   schema = require('./schema'),
   _ = require('lodash'),
@@ -77,7 +76,7 @@ function renderTemplate() {
  * @returns {Promise}
  */
 function renderByConfiguration(options, res) {
-  //assertions
+  //assertions (Note: since this function isn't an entry point, maybe we can remove these assertions?)
   is(res.locals, 'res.locals');
   is(res.locals.site, 'res.locals.site');
   is.object(options.data, 'options.data');
@@ -93,17 +92,17 @@ function renderByConfiguration(options, res) {
  *
  * @param {string} componentReference
  * @param res
- * @param {{}} [options]
+ * @param {{}} [options]  Optional parameters for rendering
  * @returns {Promise}
  */
 function renderComponent(componentReference, res, options) {
   options = options || {};
-  var componentName = schema.getComponentNameFromPath(componentReference);
   
   //assertions
   is(res.locals, 'res.locals');
   is(res.locals.site, 'res.locals.site');
-  is(componentName, 'component name');
+  is(componentReference, 'component reference');
+  var componentName = is(references.getComponentName(componentReference), 'component name');
 
   return references.getComponentData(componentReference, res.locals)
     .then(function (data) {
@@ -118,6 +117,12 @@ function renderComponent(componentReference, res, options) {
     });
 }
 
+/**
+ * Maps strings in arrays of layoutData into the properties of pageData
+ * @param {object} pageData
+ * @param {object} layoutData
+ * @returns {*}
+ */
 function mapLayoutToPageData(pageData, layoutData) {
   var lists = _.listDeepObjects(layoutData, _.isArray);
 
@@ -150,17 +155,15 @@ function mapLayoutToPageData(pageData, layoutData) {
  */
 function renderPage(pageReference, res) {
   //look up page alias' component instance
-  return db.get(pageReference)
-    .then(JSON.parse)
+  return references.getPageData(pageReference)
     .then(function (result) {
 
       var layoutReference = result.layout,
-        layoutComponentName = schema.getComponentNameFromPath(layoutReference),
+        layoutComponentName = references.getComponentName(layoutReference),
         pageData = _.omit(result, 'layout');
 
-      if (!layoutReference || !layoutComponentName) {
-        throw new Error('Page is missing layout: ' + pageReference + ' ' + result + ' ' + JSON.stringify(result));
-      }
+      is(layoutReference, 'layout reference in page data');
+      is(layoutComponentName, 'layout component name from page data');
 
       return references.getComponentData(layoutReference)
         .then(mapLayoutToPageData.bind(this, pageData))
@@ -172,6 +175,15 @@ function renderPage(pageReference, res) {
     });
 }
 
+/**
+ * Run composer by translating url to a "page" by base64ing it.  Errors are handled by Express.
+ *
+ * NOTE: Does not return a promise ON PURPOSE.  This function is express-style.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
 module.exports = function (req, res, next) {
   var urlWithoutQuerystring = req.url.split('?').shift(),
     pageReference = '/pages/' + new Buffer(req.vhost.hostname + urlWithoutQuerystring).toString('base64');

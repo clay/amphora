@@ -22,7 +22,6 @@ var _ = require('lodash'),
   path = require('path'),
   references = require('./references'),
   bluebird = require('bluebird'),
-  schema = require('./schema'),
 // allowable query string variables
   queryStringOptions = ['ignore-data'];
 

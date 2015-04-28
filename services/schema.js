@@ -9,29 +9,6 @@ var fs = require('fs'),
 _.mixin(require('lodash-ny-util'));
 
 /**
- * Takes a url path, and returns the component name within it.
- * @param {string} path
- * @returns {string}
- * @example /components/base  returns base
- * @example /components/text/instances/0  returns text
- * @example /components/image.html  returns image
- */
-function getComponentNameFromPath(path) {
-  var result = /components\/(.+?)[\/\.]/.exec(path) || /components\/(.+)/.exec(path);
-
-  return result && result[1];
-}
-
-/**
- * Duck-typing.
- *
- * If the object has `._type` as a string, we assume its a component
- */
-function isComponent(obj) {
-  return _.isObject(obj) && _.isString(obj._type);
-}
-
-/**
  * Get a single schema from a specific directory (maybe including those in node_modules??)
  * @param {string} dir
  * @returns {{}}
@@ -41,22 +18,9 @@ function getSchema(dir) {
 }
 
 /**
- * Get a component schema, and all the schema's within.
- * @param {string} dir
- * @returns {{}}
- */
-function getSchemaComponents(dir) {
-  var schema = getSchema(dir);
-
-  if (schema) {
-    return _.listDeepObjects(schema, isComponent);
-  } else {
-    return null;
-  }
-}
-
-/**
  * Find all _ref, and recursively expand them.
+ *
+ * TODO: schema validation here
  */
 function resolveDataReferences(data) {
   var referenceProperty = '_ref',
@@ -72,8 +36,5 @@ function resolveDataReferences(data) {
   }).return(data);
 }
 
-module.exports.isComponent = isComponent;
-module.exports.getComponentNameFromPath = getComponentNameFromPath;
 module.exports.getSchema = getSchema;
-module.exports.getSchemaComponents = getSchemaComponents;
 module.exports.resolveDataReferences = resolveDataReferences;

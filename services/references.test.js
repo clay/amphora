@@ -22,6 +22,29 @@ describe(filename, function () {
     sandbox.restore();
   });
 
+  describe('getComponentName', function () {
+    it('finds /components/name', function () {
+      var result = references.getComponentName('/components/name');
+
+      expect(result).to.equal('name');
+    });
+    it('finds /components/name/', function () {
+      var result = references.getComponentName('/components/name/');
+
+      expect(result).to.equal('name');
+    });
+    it('finds /components/name/instances/id', function () {
+      var result = references.getComponentName('/components/name/instances/id');
+
+      expect(result).to.equal('name');
+    });
+    it('finds /components/name.ext', function () {
+      var result = references.getComponentName('/components/name.ext');
+
+      expect(result).to.equal('name');
+    });
+  });
+
   describe('getComponentData', function () {
     it('gets a list of folders', function () {
       expect(files.getFolders('.')).to.contain('components', 'sites', 'node_modules');

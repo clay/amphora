@@ -4,8 +4,6 @@ var _ = require('lodash'),
   fs = require('fs'),
   path = require('path'),
   knownModules = {},
-  log = require('./log'),
-  chalk = require('chalk'),
   getFolders, getSites, getComponents;
 
 /**
