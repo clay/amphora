@@ -104,7 +104,7 @@ function tryRequire(name, paths) {
   var result = _.find(paths, function (path) {
     try {
       log.info(chalk.dim('finding ' + name));
-      var result = require(path);
+      result = require(path);
     } catch (ex) {
       log.info(chalk.dim(name + ' does not exist.'));
       result = false;
