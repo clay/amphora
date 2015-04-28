@@ -79,6 +79,27 @@ function getComponentName(filePath) {
 }
 
 /**
+ * Try to get a module, or return false; remember result in knownModules
+ *
+ * @param {string} name
+ * @param {string} path
+ * @returns {object|false}
+ */
+function tryRequire(name, path) {
+  if (knownModules[name] !== false && !knownModules[name]) {
+    try {
+      knownModules[name] = require(path);
+    } catch (ex) {
+      //not really an error, since most components will not have server functionality
+
+      //remember that this component does not have server functionality
+      knownModules[name] = false;
+    }
+  }
+  return knownModules[name];
+}
+
+/**
  * Load a component as a node module.
  *
  * NOTE: This includes local components as well as npm components.
@@ -87,37 +108,13 @@ function getComponentName(filePath) {
  * @returns {object|false}
  */
 function getComponentModule(name) {
-  if (!knownModules[name] && knownModules[name] !== false) {
-    var componentPath = getComponentPath(name);
-
-    //load and return it if a module exists
-    try {
-      log.info(chalk.italic.dim('Loading server module ' + componentPath));
-      knownModules[name] = require(componentPath);
-    } catch (ex) {
-      //not really an error, since most components will not have server functionality
-      log.info(chalk.italic.dim('Did not load/find module for ' + name + ': ' + ex.message));
-
-      //remember that this component does not have server functionality
-      knownModules[name] = false;
-    }
-
-    //look for server.js as well, because it follows our "best practises".
-    if (!knownModules[name] && componentPath) {
-      try {
-        knownModules[name] = require(componentPath + '/server');
-      } catch (ex) {
-        log.info(chalk.italic.dim('Did not load/find a server.js module either for ' + name + ': ' + ex.message));
-      }
-    }
-  }
-
-  return knownModules[name];
+  var componentPath = getComponentPath(name);
+  return componentPath && (tryRequire(name, componentPath) || tryRequire(name, componentPath + '/server'));
 }
 
 exports.getFolders = getFolders;
 exports.getSites = getSites;
 exports.getComponents = getComponents;
-exports.getComponentPath = getComponentPath;
+exports.getComponentPath = _.memoize(getComponentPath); //memoize by _first_ parameter only (default)
 exports.getComponentName = getComponentName;
-exports.getComponentModule = getComponentModule;
+exports.getComponentModule = _.memoize(getComponentModule); //memoize by _first_ parameter only (default)

@@ -8,6 +8,16 @@
 
 var _ = require('lodash');
 
+function expectedType(obj, typeName, ref) {
+  var str = 'Expected ' + typeName + ', not ' + (typeof obj);
+
+  if (ref) {
+    str += ' for ' + ref;
+  }
+
+  throw new Error(str);
+}
+
 /**
  *
  * @param thing
@@ -33,27 +43,26 @@ function exists(thing, thingName, ref) {
  */
 function isPromise(obj, ref) {
   if (!_.isObject(obj) || !_.isFunction(obj.then)) {
-    if (ref) {
-      throw new Error('Expected promise, not ' + (typeof obj) + ' for ' + ref);
-    } else {
-      throw new Error('Expected promise, not ' + (typeof obj));
-    }
+    expectedType(obj, 'promise', ref);
   }
   return obj;
 }
 
 function isObject(obj, ref) {
   if (!_.isObject(obj)) {
-    if (ref) {
-      throw new Error('Expected object, not ' + (typeof obj) + ' for ' + ref);
-    } else {
-      throw new Error('Expected object, not ' + (typeof obj));
-    }
+    expectedType(obj, 'object', ref);
   }
   return obj;
 }
 
+function isString(obj, ref) {
+  if (!_.isString(obj)) {
+    expectedType(obj, 'string', ref);
+  }
+  return obj;
+}
 
-module.exports.exists = exists;
-module.exports.isPromise = isPromise;
-module.exports.isObject = isObject;
+module.exports = exists;
+module.exports.promise = isPromise;
+module.exports.object = isObject;
+module.exports.string = isString;

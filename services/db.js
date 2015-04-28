@@ -1,3 +1,9 @@
+/**
+ * Mostly just converts callbacks to Promises
+ *
+ * @module
+ */
+
 'use strict';
 
 //for now, use memory.
@@ -11,15 +17,15 @@ var _ = require('lodash'),
  * @returns {{}}
  */
 function defer() {
-  var defer = bluebird.defer();
-  defer.apply = function (err, result) {
+  var def = bluebird.defer();
+  def.apply = function (err, result) {
     if (err) {
-      defer.reject(err);
+      def.reject(err);
     } else {
-      defer.resolve(result);
+      def.resolve(result);
     }
   };
-  return defer;
+  return def;
 }
 
 /**
@@ -77,6 +83,7 @@ module.exports.list = function (options) {
     fillCache: false
   });
 
+  //The prefix option is a shortcut for a greaterThan and lessThan range.
   if (options.prefix) {
     // \x00 is the first possible alphanumeric character, and /xFF is the last
     options.gte = options.prefix + '\x00';

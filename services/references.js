@@ -14,7 +14,7 @@ var config = require('config'),
   path = require('path'),
   glob = require('glob'),
   bluebird = require('bluebird'),
-  assertions = require('./assertions'),
+  is = require('./assertions'),
   log = require('./log');
 
 /**
@@ -29,9 +29,9 @@ function getComponentData(ref, locals) {
     componentModule;
 
   //assertions
-  assertions.exists(ref, 'reference');
+  is(ref, 'reference');
   componentName = schema.getComponentNameFromPath(ref);
-  assertions.exists(componentName, 'component name', ref);
+  is(componentName, 'component name', ref);
   componentModule = files.getComponentModule(componentName);
 
   if (_.isFunction(componentModule)) {
@@ -41,7 +41,7 @@ function getComponentData(ref, locals) {
     promise = db.get(ref).then(JSON.parse);
   }
 
-  assertions.isPromise(promise, ref);
+  is.promise(promise, ref);
 
   return promise;
 }
@@ -58,8 +58,8 @@ function putComponentData(ref, data) {
     componentModule = files.getComponentModule(componentName);
 
   //assertions
-  assertions.exists(ref, 'reference');
-  assertions.exists(componentName, 'component name', ref);
+  is(ref, 'reference');
+  is(componentName, 'component name', ref);
 
   if (componentModule && _.isFunction(componentModule.put)) {
     promise = componentModule.put(ref);
@@ -77,9 +77,9 @@ function putComponentData(ref, data) {
  * @returns {ReadStream}
  */
 function listComponentInstances(ref) {
-  assertions.exists(ref, 'reference');
+  is(ref, 'reference');
   var componentName = schema.getComponentNameFromPath(ref);
-  assertions.exists(componentName, 'component name', ref);
+  is(componentName, 'component name', ref);
 
   return db.list({prefix: path, values: false, isArray: false})
     .on('error', function (error) {
@@ -99,8 +99,8 @@ function listComponentData(ref, locals) {
     componentModule = files.getComponentModule(componentName);
 
   //assertions
-  assertions.exists(ref, 'reference');
-  assertions.exists(componentName, 'component name', ref);
+  is(ref, 'reference');
+  is(componentName, 'component name', ref);
 
   if (componentModule && _.isFunction(componentModule.list)) {
     result = componentModule.list(ref, locals);
@@ -120,8 +120,8 @@ function getSchema(ref) {
   return bluebird.try(function () {
     var componentName = schema.getComponentNameFromPath(ref);
 
-    assertions.exists(ref, 'reference');
-    assertions.exists(componentName, 'component name', ref);
+    is(ref, 'reference');
+    is(componentName, 'component name', ref);
 
     return schema.getSchema(files.getComponentPath(componentName));
   });
@@ -133,12 +133,12 @@ function getSchema(ref) {
  * @returns {*}
  */
 function getTemplate(ref) {
-  assertions.exists(ref, 'reference');
+  is(ref, 'reference');
 
   // if there are slashes in this name, they've given us a reference like /components/name/instances/id
   if (ref.indexOf('/') !== -1) {
     ref = schema.getComponentNameFromPath(ref);
-    assertions.exists(ref, 'component name', ref);
+    is(ref, 'component name', ref);
   }
 
   var filePath = files.getComponentPath(ref),

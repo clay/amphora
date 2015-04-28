@@ -1,7 +1,7 @@
 'use strict';
 
 var _ = require('lodash'),
-  assertions = require('./assertions'),
+  is = require('./assert-is'),
   db = require('./db'),
   references = require('./references'),
   schema = require('./schema'),
@@ -34,7 +34,7 @@ function normalizeResults(ref) {
 
     //put parent after children (parent could verify children exist, but children never has reference to parent)
     return bluebird.all(list).map(function (item) {
-      assertions.isObject(item, item);
+      is.object(item, item);
 
       //if just a value, make op
       if (!item.key && !item.value) {
@@ -67,7 +67,7 @@ function normalizeResults(ref) {
 
 function callImport(fn, ref, locals, err) {
   log.info(chalk.yellow(' --> Attempting import of ' + ref));
-  return assertions.isPromise(fn(ref, locals, err), ref).then(normalizeResults(ref));
+  return is.promise(fn(ref, locals, err), ref).then(normalizeResults(ref));
 }
 
 function getImporter(ref, data) {
@@ -89,8 +89,8 @@ function getImporter(ref, data) {
  * @returns Promise|Object
  */
 function addComponent(ref, data) {
-  assertions.exists(ref, 'reference');
-  assertions.exists(data, 'data');
+  is(ref, 'reference');
+  is(data, 'data');
 
   var result,
     hasInstance = !!ref.match(/\/instances\//);
@@ -120,9 +120,9 @@ function addComponent(ref, data) {
  * @param {object} [locals]
  */
 function addPage(url, layoutRef, pageSpecific, locals) {
-  assertions.exists(url, 'uri');
-  assertions.exists(layoutRef, 'layout reference', url);
-  assertions.isObject(pageSpecific, 'page specific data', url);
+  is(url, 'uri');
+  is(layoutRef, 'layout reference', url);
+  is.object(pageSpecific, 'page specific data', url);
 
   locals = _.defaults(locals || {}, {});
 
@@ -144,8 +144,8 @@ function addPage(url, layoutRef, pageSpecific, locals) {
 
 
       //assert all positive
-      assertions.isObject(layoutData, 'layout data');
-      _.all(componentData, assertions.isObject);
+      is.object(layoutData, 'layout data');
+      _.all(componentData, is.object);
 
       //components
       ops = ops.concat(_.flattenDeep(_.values(componentData)));

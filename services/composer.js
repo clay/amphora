@@ -15,7 +15,7 @@ var log = require('./log'),
   _ = require('lodash'),
   chalk = require('chalk'),
   ignoreDataProperty = 'ignore-data',
-  assertions = require('./assertions');
+  is = require('./assert-is');
 
 /**
  * Add state to result, which adds functionality and information about this request to the templates.
@@ -64,7 +64,7 @@ function applyOptions(options, res) {
 function renderTemplate() {
   return function (data) {
     //assertions
-    assertions.exists(data.template, 'data.template');
+    is(data.template, 'data.template');
 
     return multiplex.render(references.getTemplate(data.template), data);
   };
@@ -77,12 +77,11 @@ function renderTemplate() {
  * @returns {Promise}
  */
 function renderByConfiguration(options, res) {
-
   //assertions
-  assertions.exists(res.locals, 'res.locals');
-  assertions.exists(res.locals.site, 'res.locals.site');
-  assertions.isObject(options.data, 'options.data');
-  assertions.exists(options.data.template, 'options.data.template');
+  is(res.locals, 'res.locals');
+  is(res.locals.site, 'res.locals.site');
+  is.object(options.data, 'options.data');
+  is.string(options.data.template, 'options.data.template');
 
   return schema.resolveDataReferences(options.data)
     .then(applyOptions(options, res))
@@ -100,17 +99,16 @@ function renderByConfiguration(options, res) {
 function renderComponent(componentReference, res, options) {
   options = options || {};
   var componentName = schema.getComponentNameFromPath(componentReference);
-
+  
   //assertions
-  //assertions
-  assertions.exists(res.locals, 'res.locals');
-  assertions.exists(res.locals.site, 'res.locals.site');
-  assertions.exists(componentName, 'component name');
+  is(res.locals, 'res.locals');
+  is(res.locals.site, 'res.locals.site');
+  is(componentName, 'component name');
 
   return references.getComponentData(componentReference, res.locals)
     .then(function (data) {
       //assertions
-      assertions.isObject(data);
+      is.object(data);
 
       //apply rule: data.template > componentName
       //  If there is a template mentioned in the data, assume they know what they're doing
