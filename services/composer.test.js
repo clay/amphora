@@ -17,7 +17,6 @@ function createMockReq() {
   return req;
 }
 
-
 function createMockRes() {
   var res = {};
   res.status = _.constant(res);

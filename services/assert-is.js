@@ -8,6 +8,28 @@
 
 var _ = require('lodash');
 
+/**
+ * Remove all references to ourselves, lodash, and bluebird
+ * @param error
+ * @returns {*}
+ */
+function removeSelfReferences(error) {
+  error.stack = _.filter(error.stack.split('\n'), function (line) {
+    return line.indexOf('assert-is') === -1 && line.indexOf('lodash') === -1 && line.indexOf('bluebird') === -1;
+  }).join('\n');
+  return error;
+}
+
+function throwMissingError(thingName, ref) {
+  var str = 'Missing ' + thingName;
+
+  if (ref) {
+    str += ' for ' + ref;
+  }
+
+  throw removeSelfReferences(new Error(str));
+}
+
 function throwExpectedTypeError(obj, typeName, ref) {
   var str = 'Expected ' + typeName + ', not ' + (typeof obj);
 
@@ -15,7 +37,7 @@ function throwExpectedTypeError(obj, typeName, ref) {
     str += ' for ' + ref;
   }
 
-  throw new Error(str);
+  throw removeSelfReferences(new Error(str));
 }
 
 /**
@@ -26,11 +48,7 @@ function throwExpectedTypeError(obj, typeName, ref) {
  */
 function exists(thing, thingName, ref) {
   if (!thing) {
-    if (ref) {
-      throw new Error('Missing ' + thingName + ' for ' + ref);
-    } else {
-      throw new Error('Missing ' + thingName);
-    }
+    throwMissingError(thingName, ref);
   }
   return thing;
 }

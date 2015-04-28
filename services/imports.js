@@ -64,34 +64,53 @@ function normalizeResults(ref) {
   };
 }
 
-function callImport(fn, ref, locals, err) {
+function callImport(fn, ref, data, locals, err) {
   log.info(chalk.yellow(' --> Attempting import of ' + ref));
-  return is.promise(fn(ref, locals, err), ref).then(normalizeResults(ref));
+  return is.promise(fn(ref, data, locals, err), ref).then(normalizeResults(ref));
 }
 
-function getImporter(ref, data) {
-  var componentName = references.getComponentName(ref),
+/**
+ * Get a function that will import their data
+ * @param ref
+ * @param data
+ * @param [locals]  Extra information that components might need.
+ * @returns {*}
+ */
+function getImporter(ref, data, locals) {
+  var result,
+    componentName = references.getComponentName(ref),
     componentModule = files.getComponentModule(componentName),
     fn = componentModule && componentModule.import;
 
+
+
   if (fn) {
-    return callImport.bind(null, fn, ref, data);
+    //run import function with everything we were given
+    result =  callImport.bind(null, fn, ref, data, locals);
+  } else if (data) {
+    //if they do not provide an import function, but provide data, assume that's what they want to import
+    result = _.constant({ type: 'put', key: ref, value: data });
   } else {
-    return _.constant({ type: 'put', key: ref, value: data });
+    //pretend, because it will simplify their assumptions in import scripts
+    result = _.noop;
   }
+
+  console.log('getImporter', ref, data, locals, componentName, componentModule, result);
+
+  return result;
 }
 
 
 /**
  * @param ref
- * @param data
+ * @param [data]  Data provided for this _specific_ component.
+ * @param [locals]  Extra data that all imported components might need.
  * @returns Promise|Object
  */
-function addComponent(ref, data) {
+function addComponent(ref, data, locals) {
   is(ref, 'reference');
-  is(data, 'data');
 
-  var result,
+  var result, importer,
     hasInstance = !!ref.match(/\/instances\//);
 
   //if no instance, add one
@@ -99,15 +118,19 @@ function addComponent(ref, data) {
     ref += '/instances/' + getUniqueId();
   }
 
+  importer = getImporter(ref, data, locals);
+
   if (hasInstance) {
     //if referring to an instance component, if it doesn't already exist, import it.
-    result = references.getComponentData(ref, data)
+    result = references.getComponentData(ref, locals)
       .then(_.constant([])) //exists; no import needed
-      .catch(getImporter(ref, data)); //missing; import from component
+      .catch(importer); //missing; import from component
   } else {
     //no chance this already exists, so no need to check for existence
-    result = getImporter(ref, data)();
+    result = importer();
   }
+
+  console.log('addComponent', result);
 
   return result;
 }
@@ -130,13 +153,18 @@ function addPage(url, layoutRef, pageSpecific, locals) {
   return bluebird.join(
     references.getComponentData(layoutRef),
     bluebird.props(_.mapValues(pageSpecific, function (componentRef) {
-      return addComponent(componentRef, locals);
+      //at the root level of a layout there is no data yet, just locals; They'll have to fetch it themselves if they need to.
+      return addComponent(componentRef, null, locals);
     }))
   ).spread(function (layoutData, componentData) {
       var ops = [],
-        pageData = _.defaults({layout: layoutRef}, _.mapValues(pageSpecific, function (value, key) {
+        pageData = _.defaults({layout: layoutRef}, _.mapValues(pageSpecific, function (value, key, obj) {
           //the last thing in the array (if it exists) is the key of this thing.
-          return _.last(componentData[key]).key;
+          var lastOp = is(_.last(componentData[key]), 'return value from import of "' + key + '" and ' + obj[key]);
+
+          is(lastOp, 'return value from import of ' + obj[key]);
+
+          return lastOp.key;
         })),
         uri64 = new Buffer(url).toString('base64');
 
