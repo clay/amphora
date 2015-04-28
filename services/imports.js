@@ -95,8 +95,6 @@ function getImporter(ref, data, locals) {
     result = _.noop;
   }
 
-  console.log('getImporter', ref, data, locals, componentName, componentModule, result);
-
   return result;
 }
 
@@ -130,8 +128,6 @@ function addComponent(ref, data, locals) {
     result = importer();
   }
 
-  console.log('addComponent', result);
-
   return result;
 }
 
@@ -147,8 +143,6 @@ function addPage(url, layoutRef, pageSpecific, locals) {
   is.object(pageSpecific, 'page specific data', url);
 
   locals = _.defaults(locals || {}, {});
-
-  console.log('addPage', arguments);
 
   return bluebird.join(
     references.getComponentData(layoutRef),
