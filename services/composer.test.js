@@ -105,7 +105,7 @@ describe(filename, function () {
       //5. log success
       sandbox.mock(log).expects('info').once();
 
-      composer.renderPage('whatever', res).done(function () {
+      composer.renderPage('/pages/whatever', res).done(function () {
         sandbox.verify();
         done();
       }, function (error) {
@@ -114,12 +114,38 @@ describe(filename, function () {
     });
   });
 
+  describe('renderUri', function () {
+    it('basic case', function (done) {
+      var res = createMockRes(),
+        resultRef = 'whatever or something';
+
+      // when we find the new reference
+      sandbox.mock(references).expects('getUriData').returns(bluebird.resolve(resultRef));
+
+      //with these uri handlers
+      composer.setUriRouteHandlers([
+        {
+          when: /^whatever/,
+          handler: function (ref, res) {
+            expect(ref).to.equal(resultRef);
+            expect(res).to.equal(res);
+
+            //it should handle it
+            done();
+          }
+        }
+      ]);
+
+      composer.renderUri('/uris/asdf', res);
+    });
+  });
+
   it('passes Errors to Express', function (done) {
     var req = createMockReq(),
       res = createMockRes(),
-      pathOnBase64 = '/pages/' + new Buffer(req.url).toString('base64');
+      pathOnBase64 = '/uris/' + new Buffer(req.url).toString('base64');
 
-    sandbox.mock(references).expects('getPageData')
+    sandbox.mock(references).expects('getUriData')
       .once().withArgs(pathOnBase64)
       .returns(bluebird.reject(new Error('whatever')));
 
@@ -134,10 +160,10 @@ describe(filename, function () {
   it('gets page without query string', function (done) {
     var req = createMockReq(),
       res = createMockRes(),
-      pathOnBase64 = '/pages/' + new Buffer('/some/url/here').toString('base64');
+      pathOnBase64 = '/uris/' + new Buffer('/some/url/here').toString('base64');
 
     req.url = '/some/url/here?some=query';
-    sandbox.mock(references).expects('getPageData')
+    sandbox.mock(references).expects('getUriData')
       .once().withArgs(pathOnBase64)
       .returns(bluebird.reject(new Error('not under test')));
 

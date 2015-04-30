@@ -5,7 +5,8 @@
  */
 
 'use strict';
-var log = require('./log'),
+var uriRoutes,
+  log = require('./log'),
   siteService = require('./sites'),
   nunjucks = require('nunjucks-filters')(),
   multiplex = require('multiplex-templates')({nunjucks: nunjucks}),
@@ -176,6 +177,34 @@ function renderPage(pageReference, res) {
 }
 
 /**
+ * Redirect to referenced type.
+ *
+ * Depending on what the uri references, load something different.
+ *
+ * @param {string} uriReference
+ * @param res
+ * @returns {Promise}
+ */
+function renderUri(uriReference, res) {
+  return references.getUriData(uriReference)
+    .then(function (result) {
+      var route = _.first(uriRoutes, function (item) {
+        return result.match(item.when);
+      });
+
+      if (route) {
+        route.handler(result, res);
+      } else {
+        throw new Error('Invalid URI: ' + uriReference + ': ' + result);
+      }
+    });
+}
+
+function setUriRouteHandlers(routes) {
+  uriRoutes = routes;
+}
+
+/**
  * Run composer by translating url to a "page" by base64ing it.  Errors are handled by Express.
  *
  * NOTE: Does not return a promise ON PURPOSE.  This function is express-style.
@@ -184,17 +213,34 @@ function renderPage(pageReference, res) {
  * @param res
  * @param next
  */
-module.exports = function (req, res, next) {
+function composer(req, res, next) {
   var urlWithoutQuerystring = req.url.split('?').shift(),
-    pageReference = '/pages/' + new Buffer(req.vhost.hostname + urlWithoutQuerystring).toString('base64');
+    pageReference = '/uris/' + new Buffer(req.vhost.hostname + urlWithoutQuerystring).toString('base64');
 
-  renderPage(pageReference, res)
+  renderUri(pageReference, res)
     .then(function (html) {
       res.send(html);
     }).catch(function (err) {
       next(err);
     });
-};
+}
 
+
+/**
+ * URIs can point to many different things, and this list will probably grow.
+ * @type {[{when: RegExp, handler: Function}]}
+ */
+uriRoutes = [
+  { when: /^\/pages\//, handler: renderPage },
+  { when: /^\/components\//, handler: renderComponent },
+  { when: /^\/uris\//, handler: renderUri }
+];
+
+
+module.exports = composer;
+module.exports.renderUri = renderUri;
 module.exports.renderPage = renderPage;
 module.exports.renderComponent = renderComponent;
+
+//for testing (or maybe from a config later?)
+module.exports.setUriRouteHandlers = setUriRouteHandlers;
