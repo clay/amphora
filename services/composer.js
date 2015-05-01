@@ -138,7 +138,7 @@ function mapLayoutToPageData(pageData, layoutData) {
           };
         } else {
           //if there is no match, that's a problem with configuration/editing
-          log.warn('Missing reference in layout: ', item, pageData, layoutData)
+          log.warn('Missing reference in layout: ', item, pageData, layoutData);
         }
       }
     });
