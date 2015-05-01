@@ -11,7 +11,6 @@ var uriRoutes,
   nunjucks = require('nunjucks-filters')(),
   multiplex = require('multiplex-templates')({nunjucks: nunjucks}),
   references = require('./references'),
-  schema = require('./schema'),
   _ = require('lodash'),
   chalk = require('chalk'),
   ignoreDataProperty = 'ignore-data',
@@ -83,7 +82,7 @@ function renderByConfiguration(options, res) {
   is.object(options.data, 'options.data');
   is.string(options.data.template, 'options.data.template');
 
-  return schema.resolveDataReferences(options.data)
+  return references.resolveDataReferences(options.data)
     .then(applyOptions(options, res))
     .then(renderTemplate());
 }
@@ -193,7 +192,7 @@ function renderUri(uriReference, res) {
       });
 
       if (route) {
-        route.handler(result, res);
+        return route.handler(result, res);
       } else {
         throw new Error('Invalid URI: ' + uriReference + ': ' + result);
       }
