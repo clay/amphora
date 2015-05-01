@@ -33,6 +33,11 @@ function saveObject(name, thing, promises) {
   promises.push(db.put(name, JSON.stringify(thing)));
 }
 
+function saveString(name, str, promises) {
+  winston.info('saving ' + name + '\n' + chalk.dim(require('util').inspect(str, true, 5)));
+  promises.push(db.put(name, str));
+}
+
 /**
  * Component specific loading.
  * @param {{}} list
@@ -74,8 +79,27 @@ function savePages(list, promises) {
     _.each(list, function (item, itemName) {
 
       //load item defaults
-      name = '/pages/' + new Buffer(itemName).toString('base64');
+      name = '/pages/' + itemName;
       saveObject(name, item, promises);
+    });
+  }
+}
+
+/**
+ * Page specific loading.  This will probably grow differently than component loading, so different function to
+ *   contain it.
+ * @param {{}} list
+ * @param {[]} promises
+ */
+function saveUris(list, promises) {
+  var name;
+
+  if (list) {
+    _.each(list, function (item, itemName) {
+
+      //load item defaults
+      name = '/uris/' + new Buffer(itemName).toString('base64');
+      saveString(name, item, promises);
     });
   }
 }
@@ -88,6 +112,7 @@ module.exports = function (path) {
   var bootstrap = getConfig(path),
     promises = [];
 
+  saveUris(bootstrap.uris, promises);
   savePages(bootstrap.pages, promises);
   saveComponents(bootstrap.components, promises);
 

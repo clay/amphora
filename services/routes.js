@@ -44,6 +44,15 @@ function removeQueryString(path) {
 }
 
 /**
+ *
+ * @param path
+ * @returns {string}
+ */
+function normalizePath(path) {
+  return removeExtension(removeQueryString(path));
+}
+
+/**
  * Duck-typing.
  *
  * If the object has `.then`, we assume its a promise
@@ -231,7 +240,7 @@ function getRouteFromSandbox(req, res) {
  */
 function getRouteFromComponent(req, res) {
   expectJSON(function () {
-    return references.getComponentData(removeExtension(removeQueryString(req.url)));
+    return references.getComponentData(normalizePath(req.url));
   }, res);
 }
 
@@ -241,7 +250,7 @@ function getRouteFromComponent(req, res) {
  */
 function putRouteFromComponent(req, res) {
   expectJSON(function () {
-    return references.putComponentData(removeExtension(removeQueryString(req.url)), req.body);
+    return references.putComponentData(normalizePath(req.url), req.body);
   }, res);
 }
 
@@ -252,7 +261,7 @@ function putRouteFromComponent(req, res) {
  */
 function getRouteFromDB(req, res) {
   expectJSON(function () {
-    return db.get(removeExtension(removeQueryString(req.url))).then(JSON.parse);
+    return db.get(normalizePath(req.url)).then(JSON.parse);
   }, res);
 }
 
@@ -266,27 +275,27 @@ function getRouteFromDB(req, res) {
  */
 function putRouteFromDB(req, res) {
   expectJSON(function () {
-    return db.put(removeExtension(removeQueryString(req.url)), JSON.stringify(req.body));
+    return db.put(normalizePath(req.url), JSON.stringify(req.body));
   }, res);
 }
 
 /**
- * List the available instances of this component
+ * list all things started with this prefix
  * @param req
  * @param res
  */
-function listRouteFromComponent(req, res) {
-  var path = removeExtension(req.url),
+function listAllWithPrefix(req, res) {
+  var path = normalizePath(req.url),
     list = db.list({prefix: path, values: false});
 
   if (isPromise(list)) {
-    list.then(res.json);
+    expectJSON(_.constant(list));
   } else if (isPipeableStream(list)) {
-    db.list({prefix: path, values: false}).on('error', function (error) {
-      log.error('listRouteComponentInstancesFromDB::error', path, error);
+    list.on('error', function (error) {
+      log.error('listAllWithPrefix::error', path, error);
     }).pipe(res);
   } else {
-    throw new Error('listRouteFromComponent cannot handle type ' + (typeof list));
+    throw new Error('listAllWithPrefix cannot handle type ' + (typeof list));
   }
 }
 
@@ -356,16 +365,20 @@ function addComponentRoutes(router) {
   router.get('/components/:name', getRouteFromComponent);
   router.put('/components/:name', putRouteFromComponent);
 
-  router.get('/components/:name/instances', listRouteFromComponent);
+  router.get('/components/:name/instances', listAllWithPrefix);
   router.get('/components/:name/instances/:id.:ext', routeByExtension);
   router.get('/components/:name/instances/:id', getRouteFromComponent);
   router.put('/components/:name/instances/:id', putRouteFromComponent);
 
   router.get('/components/:name/schema', getSchema);
 
-  router.get('/pages', notImplemented);
+  router.get('/pages', listAllWithPrefix);
   router.get('/pages/:name', getRouteFromDB);
   router.put('/pages/:name', putRouteFromDB);
+
+  router.get('/uris', listAllWithPrefix);
+  router.get('/uris/:name', getRouteFromDB);
+  router.put('/uris/:name', putRouteFromDB);
 }
 
 module.exports = function (app) {

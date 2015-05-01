@@ -57,9 +57,7 @@ function getComponentData(ref, locals) {
     promise = db.get(ref).then(JSON.parse);
   }
 
-  is.promise(promise, ref);
-
-  return promise;
+  return is.promise(promise, ref);
 }
 
 /**
@@ -69,13 +67,13 @@ function getComponentData(ref, locals) {
  * @returns {*}
  */
 function putComponentData(ref, data) {
-  var promise,
-    componentName = getComponentName(ref),
-    componentModule = files.getComponentModule(componentName);
+  var promise, componentModule, componentName;
 
   //assertions
   is(ref, 'reference');
+  componentName = getComponentName(ref);
   is(componentName, 'component name', ref);
+  componentModule = files.getComponentModule(componentName);
 
   if (componentModule && _.isFunction(componentModule.put)) {
     promise = componentModule.put(ref);
@@ -88,16 +86,16 @@ function putComponentData(ref, data) {
 }
 
 /**
- * List instances within a component
+ * List instances within a component.
  * @param {string} ref
+ * @throws if not a component reference
  * @returns {ReadStream}
  */
 function listComponentInstances(ref) {
   is(ref, 'reference');
-  var componentName = getComponentName(ref);
-  is(componentName, 'component name', ref);
+  is(getComponentName(ref), 'component name', ref);
 
-  return db.list({prefix: path, values: false, isArray: false})
+  return db.list({prefix: ref, values: false, isArray: false})
     .on('error', function (error) {
       log.warn('listComponentInstances::error', path, error);
     });
@@ -129,15 +127,59 @@ function listComponentData(ref, locals) {
 }
 
 /**
- * Consistent way to get page data by reference
+ * Consistent way to get page data by reference.  Validation of page can go here.
  * @param {string} ref
+ * @returns {Promise.object}
  */
 function getPageData(ref) {
-  is(ref, 'reference');
+  is('page reference', ref);
+  is.string.match(ref, /^\/pages\/.*/); //case matters, only beginning of string
 
   return db.get(ref)
     .then(JSON.parse);
 }
+
+/**
+ * Consistent way to put page data.  Validation of page can go here.
+ * @param ref
+ * @param data
+ * @returns {Promise.object}
+ */
+function putPageData(ref, data) {
+  is(ref, 'page reference');
+  is.string.match(ref, /^\/pages\/.*/); //case matters, only beginning of string
+  is.object(data, ref);
+
+  return db.put(ref, JSON.stringify(data))
+    .return(data);
+}
+
+/**
+ * Consistent way to get uri data.  Validation of URI can go here.
+ * @param {string} ref
+ * @returns {Promise.string}
+ */
+function getUriData(ref) {
+  is(ref, 'uri reference');
+  is.string.match(ref, /^\/uris\/.*/); //case matters, only beginning of string
+
+  return db.get(ref);
+}
+
+/**
+ * Consistent way to put uri data.  Validation of URI can go here.
+ * @param {string} ref
+ * @param {string} data
+ * @returns {Promise.string}
+ */
+function putUriData(ref, data) {
+  is(ref, 'uri reference');
+  is.string.match(ref, /^\/uris\/.*/); //case matters, only beginning of string
+  is.string(data, ref);
+
+  return db.put(ref, data).return(data);
+}
+
 
 /**
  *
@@ -186,7 +228,10 @@ function getTemplate(ref) {
   return possibleTemplates[0];
 }
 
+module.exports.getUriData = getUriData;
+module.exports.putUriData = putUriData;
 module.exports.getPageData = getPageData;
+module.exports.putPageData = putPageData;
 module.exports.getComponentName = getComponentName;
 module.exports.getComponentData = getComponentData;
 module.exports.putComponentData = putComponentData;

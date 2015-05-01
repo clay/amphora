@@ -40,6 +40,16 @@ function throwExpectedTypeError(obj, typeName, ref) {
   throw removeSelfReferences(new Error(str));
 }
 
+function throwExpectedRegexMatchError(obj, regex, ref) {
+  var str = 'Expected ' + obj + ' to match ' + regex.toString();
+
+  if (ref) {
+    str += ' for ' + ref;
+  }
+
+  throw removeSelfReferences(new Error(str));
+}
+
 /**
  *
  * @param thing
@@ -66,6 +76,11 @@ function isPromise(obj, ref) {
   return obj;
 }
 
+/**
+ * @param obj
+ * @param [ref]
+ * @returns {*}
+ */
 function isObject(obj, ref) {
   if (!_.isObject(obj)) {
     throwExpectedTypeError(obj, 'object', ref);
@@ -73,9 +88,28 @@ function isObject(obj, ref) {
   return obj;
 }
 
+/**
+ * @param obj
+ * @param [ref]
+ * @returns {*}
+ */
 function isString(obj, ref) {
   if (!_.isString(obj)) {
     throwExpectedTypeError(obj, 'string', ref);
+  }
+  return obj;
+}
+
+/**
+ * @param obj
+ * @param {RegExp} regex
+ * @param [ref]
+ * @returns {*}
+ */
+function isStringMatch(obj, regex, ref) {
+  isString(obj, ref);
+  if (!obj.match(regex)) {
+    throwExpectedRegexMatchError(obj, regex, ref);
   }
   return obj;
 }
@@ -84,3 +118,4 @@ module.exports = exists;
 module.exports.promise = isPromise;
 module.exports.object = isObject;
 module.exports.string = isString;
+module.exports.string.match = isStringMatch;
