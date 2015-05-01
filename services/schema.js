@@ -17,24 +17,4 @@ function getSchema(dir) {
   return yaml.safeLoad(fs.readFileSync(path.resolve(dir, 'schema.yaml'), 'utf8'));
 }
 
-/**
- * Find all _ref, and recursively expand them.
- *
- * TODO: schema validation here
- */
-function resolveDataReferences(data) {
-  var referenceProperty = '_ref',
-    placeholders = _.listDeepObjects(data, referenceProperty);
-
-  return bluebird.all(placeholders).each(function (placeholder) {
-    return db.get(placeholder[referenceProperty]).then(JSON.parse).then(function (obj) {
-      //the thing we got back might have its own references
-      return resolveDataReferences(obj).finally(function () {
-        _.assign(placeholder, _.omit(obj, referenceProperty));
-      });
-    });
-  }).return(data);
-}
-
 module.exports.getSchema = getSchema;
-module.exports.resolveDataReferences = resolveDataReferences;

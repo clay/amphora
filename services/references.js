@@ -228,6 +228,25 @@ function getTemplate(ref) {
   return possibleTemplates[0];
 }
 
+/**
+ * Find all _ref, and recursively expand them.
+ *
+ * TODO: schema validation here
+ */
+function resolveDataReferences(data) {
+  var referenceProperty = '_ref',
+    placeholders = _.listDeepObjects(data, referenceProperty);
+
+  return bluebird.all(placeholders).each(function (placeholder) {
+    return getComponentData(placeholder[referenceProperty]).then(function (obj) {
+      //the thing we got back might have its own references
+      return resolveDataReferences(obj).finally(function () {
+        _.assign(placeholder, _.omit(obj, referenceProperty));
+      });
+    });
+  }).return(data);
+}
+
 module.exports.getUriData = getUriData;
 module.exports.putUriData = putUriData;
 module.exports.getPageData = getPageData;
@@ -239,3 +258,4 @@ module.exports.listComponentData = listComponentData;
 module.exports.listComponentInstances = listComponentInstances;
 module.exports.getSchema = getSchema;
 module.exports.getTemplate = getTemplate;
+module.exports.resolveDataReferences = resolveDataReferences;
