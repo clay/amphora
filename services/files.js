@@ -13,6 +13,17 @@ var _ = require('lodash'),
   path = require('path'),
   getFolders, getSites, getComponents;
 
+function getFiles(dir) {
+  if (fs.existsSync(dir)) {
+    return fs.readdirSync(dir)
+      .filter(function (file) {
+        return !fs.statSync(path.join(dir, file)).isDirectory();
+      });
+  } else {
+    return [];
+  }
+}
+
 /**
  * Get folder names.
  *
@@ -129,9 +140,11 @@ function getComponentModule(name) {
   return componentPath && tryRequire(name, [componentPath, componentPath + '/server']);
 }
 
+exports.getFiles = _.memoize(getFiles);
 exports.getFolders = getFolders;
 exports.getSites = getSites;
 exports.getComponents = getComponents;
 exports.getComponentPath = _.memoize(getComponentPath); //memoize by _first_ parameter only (default)
 exports.getComponentName = getComponentName;
 exports.getComponentModule = _.memoize(getComponentModule); //memoize by _first_ parameter only (default)
+exports.getFiles = _.memoize(getFiles);
