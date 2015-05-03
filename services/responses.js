@@ -1,5 +1,5 @@
 /**
- * Controller for Pages
+ * Collection of well-tested responses
  *
  * @module
  */
@@ -12,12 +12,6 @@ var _ = require('lodash'),
   log = require('./log'),
   Flake = require('flake-idgen'),
   flake = new Flake();
-
-/**
- * Collection of well-tested responses
- *
- * @module
- */
 
 function getUniqueId() {
   return flake.next().toString('base64');

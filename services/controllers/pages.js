@@ -7,12 +7,81 @@
 'use strict';
 
 var _ = require('lodash'),
+  is = require('../assert-is'),
   db = require('../db'),
   bluebird = require('bluebird'),
   references = require('../references'),
   responses = require('../responses'),
-  log = require('../log');
+  log = require('../log'),
+  chalk = require('chalk');
 
+/**
+ * Get a list of the areas in a layout that have to be filled with pageData.
+ * @param layoutData
+ */
+function findLayoutAreas(layoutData) {
+  return _.reduce(_.listDeepObjects(layoutData, _.isArray), function (obj, areaList) {
+    _.each(areaList, function (item) {
+      if (_.isString(item)) {
+        obj[item] = '';
+      }
+    });
+    return obj;
+  }, {});
+}
+
+/**
+ * @throws if there are missing or extra pageData, with appropriate message
+ * @param {object} pageData
+ * @param {object} layoutData
+ */
+function validatePageData(pageData, layoutData) {
+  var areas = findLayoutAreas(layoutData),
+    diff = _.difference(Object.keys(areas), Object.keys(pageData));
+
+  if (diff.length > 0) {
+    throw new Error((_.has(areas, diff[0]) ? 'Missing' : 'Extra') + ' layout area: ' + diff[0]);
+  }
+}
+
+/**
+ * @param {[{}]} ops
+ */
+function logBatchOperations(ops) {
+  log.info(chalk.blue('Batch operation:\n') + _.map(ops, function (op, index) {
+      return chalk.blue('op ' + index + ': ') + require('util').inspect(op);
+    }).join('\n'));
+}
+
+function addOp(ref, data, ops) {
+  ops.push({
+    type: 'put',
+    key: ref,
+    value: JSON.stringify(data)
+  });
+}
+
+/**
+ * Create new copies of components from defaults
+ * @param pageData
+ * @returns {Promise}
+ */
+function cloneDefaultComponents(pageData) {
+  var ops = [];
+  return bluebird.props(_.reduce(pageData, function (obj, value, key) {
+    var componentName = references.getComponentName(value);
+
+    obj[key] = references.getComponentData('/components/' + componentName).then(function (componentData) {
+      var componentInstance = '/components/' + componentName + '/instances/' + responses.getUniqueId();
+      addOp(componentInstance, componentData, ops);
+      return componentInstance;
+    });
+
+    return obj;
+  }, {})).then(function (data) {
+    return [data, ops];
+  });
+}
 
 /**
  * First draft
@@ -20,52 +89,36 @@ var _ = require('lodash'),
  * @param res
  */
 function createPage(req, res) {
-
-  var ops = [],
-    body = req.body,
+  var body = req.body,
     layoutReference = body && body.layout,
     pageData = body && _.omit(body, 'layout'),
     pageReference = '/pages/' + responses.getUniqueId();
 
-  pageData = _.reduce(pageData, function (obj, value, key) {
-    //create new copy of component from defaults
-    var componentName = references.getComponentName(value);
+  is(layoutReference, 'layout reference');
 
-    obj[key] = references.getComponentData('/components/' + componentName).then(function (componentData) {
-      var componentInstance = '/components/' + componentName + '/instances/' + responses.getUniqueId();
-      ops.push({
-        type: 'put',
-        key: componentInstance,
-        value: componentData
-      });
-      return componentInstance;
-    });
+  responses.expectJSON(function () {
+    return references.getComponentData(layoutReference).then(function (layoutData) {
+      validatePageData(pageData, layoutData);
 
-    return obj;
-  }, {
-    layout: layoutReference
-  });
+      return cloneDefaultComponents(pageData);
+    }).spread(function (pageData, ops) {
+      pageData.layout = layoutReference;
 
-  bluebird.props(pageData)
-    .then(function (value) {
+      addOp(pageReference, pageData, ops);
 
-      ops.push({
-        type: 'put',
-        key: pageReference,
-        value: value
-      });
+      logBatchOperations(ops);
 
       return db.batch(ops)
         .then(function () {
+          //creation success!
+          res.status(201);
+
           //if successful, return new page object, but include the (optional) self reference to the new page.
-          value._ref = pageReference;
-          return value;
+          pageData._ref = pageReference;
+          return pageData;
         });
-    }).then(function (result) {
-      res.send(result);
-    }).catch(function (err) {
-      log.error('Failed to create new page' + err.stack);
     });
+  }, res);
 }
 
 function routes(router) {
