@@ -13,13 +13,18 @@ var _ = require('lodash'),
   path = require('path'),
   getFolders, getSites, getComponents;
 
+/**
+ *
+ * @param {string} dir
+ * @returns {Array}
+ */
 function getFiles(dir) {
-  if (fs.existsSync(dir)) {
+  try {
     return fs.readdirSync(dir)
       .filter(function (file) {
         return !fs.statSync(path.join(dir, file)).isDirectory();
       });
-  } else {
+  } catch (ex) {
     return [];
   }
 }
@@ -33,12 +38,12 @@ function getFiles(dir) {
  * @return {[]}     array of folder names
  */
 getFolders = _.memoize(function (dir) {
-  if (fs.existsSync(dir)) {
+  try {
     return fs.readdirSync(dir)
       .filter(function (file) {
         return fs.statSync(path.join(dir, file)).isDirectory();
       });
-  } else {
+  } catch (ex) {
     return [];
   }
 });
@@ -147,4 +152,3 @@ exports.getComponents = getComponents;
 exports.getComponentPath = _.memoize(getComponentPath); //memoize by _first_ parameter only (default)
 exports.getComponentName = getComponentName;
 exports.getComponentModule = _.memoize(getComponentModule); //memoize by _first_ parameter only (default)
-exports.getFiles = _.memoize(getFiles);

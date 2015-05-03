@@ -6,9 +6,12 @@
 
 'use strict';
 
-var bluebird = require('bluebird'),
+var _ = require('lodash'),
+  db = require('../db'),
+  bluebird = require('bluebird'),
   references = require('../references'),
-  responses = require('../responses');
+  responses = require('../responses'),
+  log = require('../log');
 
 
 /**
@@ -17,24 +20,19 @@ var bluebird = require('bluebird'),
  * @param res
  */
 function createPage(req, res) {
-  function getUniqueId() {
-    return flake.next().toString('base64');
-  }
 
   var ops = [],
-    Flake = require('flake-idgen'),
-    flake = new Flake(),
     body = req.body,
     layoutReference = body && body.layout,
     pageData = body && _.omit(body, 'layout'),
-    pageReference = '/pages/' + getUniqueId();
+    pageReference = '/pages/' + responses.getUniqueId();
 
   pageData = _.reduce(pageData, function (obj, value, key) {
     //create new copy of component from defaults
     var componentName = references.getComponentName(value);
 
     obj[key] = references.getComponentData('/components/' + componentName).then(function (componentData) {
-      var componentInstance = '/components/' + componentName + '/instances/' + getUniqueId();
+      var componentInstance = '/components/' + componentName + '/instances/' + responses.getUniqueId();
       ops.push({
         type: 'put',
         key: componentInstance,

@@ -97,6 +97,8 @@ function renderByConfiguration(options, res) {
  */
 function renderComponent(componentReference, res, options) {
   options = options || {};
+
+  console.log('renderComponent', arguments);
   
   //assertions
   is(res.locals, 'res.locals');

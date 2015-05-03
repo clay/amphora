@@ -6,8 +6,7 @@
 
 'use strict';
 
-var references = require('../references'),
-  responses = require('../responses'),
+var responses = require('../responses'),
   composer = require('../composer');
 
 /**

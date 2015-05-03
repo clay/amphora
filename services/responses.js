@@ -1,8 +1,27 @@
 /**
+ * Controller for Pages
+ *
+ * @module
+ */
+
+'use strict';
+
+var _ = require('lodash'),
+  db = require('./db'),
+  bluebird = require('bluebird'),
+  log = require('./log'),
+  Flake = require('flake-idgen'),
+  flake = new Flake();
+
+/**
  * Collection of well-tested responses
  *
  * @module
  */
+
+function getUniqueId() {
+  return flake.next().toString('base64');
+}
 
 /**
  * Duck-typing.
@@ -57,7 +76,6 @@ function normalizePath(path) {
  * @param res
  */
 function notImplemented(req, res) {
-  log.warn('Not Implemented', 501, req.url, req.params);
   res.sendStatus(501);
 }
 
@@ -67,9 +85,7 @@ function notImplemented(req, res) {
  * @param res
  */
 function notFound(err, res) {
-  if (err instanceof Error) {
-    log.info('Not found: ' + err.stack);
-  } else if (err) {
+  if (!(err instanceof Error) && err) {
     res = err;
   }
 
@@ -171,7 +187,7 @@ function expectHTML(fn, res) {
  * @param res
  */
 function listAllWithPrefix(req, res) {
-  var path = normalizePath(req.url),
+  var path = normalizePath(req.baseUrl + req.url),
     list = db.list({prefix: path, values: false});
 
   if (isPromise(list)) {
@@ -192,7 +208,7 @@ function listAllWithPrefix(req, res) {
  */
 function getRouteFromDB(req, res) {
   expectJSON(function () {
-    return db.get(normalizePath(req.url)).then(JSON.parse);
+    return db.get(normalizePath(req.baseUrl + req.url)).then(JSON.parse);
   }, res);
 }
 
@@ -206,7 +222,7 @@ function getRouteFromDB(req, res) {
  */
 function putRouteFromDB(req, res) {
   expectJSON(function () {
-    return db.put(normalizePath(req.url), JSON.stringify(req.body));
+    return db.put(normalizePath(req.baseUrl + req.url), JSON.stringify(req.body));
   }, res);
 }
 
@@ -214,6 +230,7 @@ function putRouteFromDB(req, res) {
 module.exports.removeQueryString = removeQueryString;
 module.exports.removeExtension = removeExtension;
 module.exports.normalizePath = normalizePath;
+module.exports.getUniqueId = getUniqueId;
 
 //error responses
 module.exports.notFound = notFound; //404

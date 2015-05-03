@@ -15,10 +15,11 @@ var _ = require('lodash'),
   sitesMap = siteService.sites(),
   siteHosts = siteService.hosts(),
   sitesFolder = siteService.sitesFolder,
-  log = require('./log'),
   composer = require('./composer'),
   path = require('path'),
-  responses = require('./responses');
+  responses = require('./responses'),
+  files = require('./files'),
+  log = require('./log');
 
 /**
  * add site.slug to locals for each site
@@ -63,7 +64,7 @@ function setLayout(route, layout) {
  */
 function addComponentRoutes(router) {
   //load all controller routers
-  _.each(files.getFiles('./controllers'), function (filename) {
+  _.each(files.getFiles(__dirname + '/controllers'), function (filename) {
     var pathContainer,
       name = responses.removeExtension(filename),
       controller = require('./controllers/' + name);

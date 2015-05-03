@@ -6,9 +6,12 @@
 
 'use strict';
 
-var references = require('../references'),
+var _ = require('lodash'),
+  references = require('../references'),
   responses = require('../responses'),
-// allowable query string variables
+  composer = require('../composer'),
+  log = require('../log'),
+  // allowable query string variables
   queryStringOptions = ['ignore-data'];
 
 /**
@@ -19,7 +22,7 @@ var references = require('../references'),
  */
 function renderComponent(req, res) {
   responses.expectHTML(function () {
-    return composer.renderComponent(responses.normalizePath(req.url), res, _.pick(req.query, queryStringOptions));
+    return composer.renderComponent(responses.normalizePath(req.baseUrl + req.url), res, _.pick(req.query, queryStringOptions));
   }, res);
 }
 
@@ -29,7 +32,7 @@ function renderComponent(req, res) {
  */
 function getRouteFromComponent(req, res) {
   responses.expectJSON(function () {
-    return references.getComponentData(responses.normalizePath(req.url));
+    return references.getComponentData(responses.normalizePath(req.baseUrl + req.url));
   }, res);
 }
 
@@ -39,7 +42,7 @@ function getRouteFromComponent(req, res) {
  */
 function putRouteFromComponent(req, res) {
   responses.expectJSON(function () {
-    return references.putComponentData(responses.normalizePath(req.url), req.body);
+    return references.putComponentData(responses.normalizePath(req.baseUrl + req.url), req.body);
   }, res);
 }
 
@@ -51,7 +54,7 @@ function putRouteFromComponent(req, res) {
  */
 function getSchema(req, res) {
   responses.expectJSON(function () {
-    return references.getSchema(responses.normalizePath(req.url));
+    return references.getSchema(responses.normalizePath(req.baseUrl + req.url));
   }, res);
 }
 
