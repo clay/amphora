@@ -104,6 +104,19 @@ function saveUris(list, promises) {
   }
 }
 
+function saveLists(list, promises) {
+  var name;
+
+  if (list) {
+    _.each(list, function (item, itemName) {
+
+      //load item defaults
+      name = '/lists/' + itemName;
+      saveObject(name, item, promises);
+    });
+  }
+}
+
 /**
  * Load items into db from yaml file
  * @param {string} path
@@ -115,6 +128,7 @@ module.exports = function (path) {
   saveUris(bootstrap.uris, promises);
   savePages(bootstrap.pages, promises);
   saveComponents(bootstrap.components, promises);
+  saveLists(bootstrap.lists, promises);
 
   return bluebird.all(promises).filter(_.identity);
 };

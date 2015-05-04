@@ -76,7 +76,7 @@ function putComponentData(ref, data) {
   componentModule = files.getComponentModule(componentName);
 
   if (componentModule && _.isFunction(componentModule.put)) {
-    promise = componentModule.put(ref);
+    promise = componentModule.put(ref, data);
   } else {
     // default back to db.js, (db takes strings, not objects)
     promise = db.put(ref, JSON.stringify(data));
