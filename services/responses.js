@@ -133,6 +133,33 @@ function serverError(err, res) {
   });
 }
 
+/**
+ * All server errors should look like this.
+ *
+ * In general, 500s represent a _developer mistake_.  We should try to replace them with more descriptive errors.
+ * @param {Error} err
+ * @param res
+ */
+function clientError(err, res) {
+  res.status(400).format({
+    json: function () {
+      //send the message as well
+      res.send({
+        message: err.message,
+        code: 400
+      });
+    },
+    html: function () {
+      //send some html (should probably be some default, or a render of a 500 page).
+      res.send('400 Client Error: ' + err.message);
+    },
+    'default': function () {
+      //send whatever is default for this type of data with this status code.
+      res.sendStatus(400);
+    }
+  });
+}
+
 function handleError(res) {
   return function (err) {
     if ((err.name === 'NotFoundError') ||
@@ -216,7 +243,7 @@ function getRouteFromDB(req, res) {
  */
 function putRouteFromDB(req, res) {
   expectJSON(function () {
-    return db.put(normalizePath(req.baseUrl + req.url), JSON.stringify(req.body));
+    return db.put(normalizePath(req.baseUrl + req.url), JSON.stringify(req.body)).return(req.body);
   }, res);
 }
 
@@ -227,7 +254,8 @@ module.exports.normalizePath = normalizePath;
 module.exports.getUniqueId = getUniqueId;
 
 //error responses
-module.exports.notFound = notFound; //404
+module.exports.clientError = clientError; //400 client error
+module.exports.notFound = notFound; //404 not found
 module.exports.notImplemented = notImplemented; //nice 500
 module.exports.serverError = serverError; //bad 500
 
