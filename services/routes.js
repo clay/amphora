@@ -1,7 +1,7 @@
 /**
  * Handling all routing.
  *
- * This is the only file that should be saying things like res.send, or res.json.
+ * This and responses.js are the only files that should be saying things like res.send, or res.json.
  *
  * @module
  */
@@ -62,7 +62,7 @@ function setLayout(route, layout) {
  * Add component routes to this router.
  * @param router
  */
-function addComponentRoutes(router) {
+function addControllerRoutes(router) {
   //load all controller routers
   _.each(files.getFiles(__dirname + '/controllers'), function (filename) {
     var pathContainer,
@@ -100,7 +100,7 @@ module.exports = function (app) {
       //assume json for anything in request bodies
       hostMiddleware.use(require('body-parser').json());
       //components, pages and schema have priority
-      addComponentRoutes(hostMiddleware);
+      addControllerRoutes(hostMiddleware);
       // add the routes for that site's path
       hostMiddleware.use(site.path, require(siteController)(siteRouter, composer));
     });

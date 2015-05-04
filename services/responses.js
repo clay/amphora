@@ -43,7 +43,7 @@ function isPipeableStream(obj) {
  * @returns {string}
  */
 function removeExtension(path) {
-  return path.split('.').shift();
+  return path.split('.')[0];
 }
 
 /**
@@ -52,7 +52,7 @@ function removeExtension(path) {
  * @return {string}
  */
 function removeQueryString(path) {
-  return path.split('?').shift();
+  return path.split('?')[0];
 }
 
 /**
