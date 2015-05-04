@@ -12,6 +12,7 @@ var _ = require('lodash'),
   bluebird = require('bluebird'),
   references = require('../references'),
   responses = require('../responses'),
+  composer = require('../composer'),
   log = require('../log'),
   chalk = require('chalk');
 
@@ -84,6 +85,41 @@ function cloneDefaultComponents(pageData) {
 }
 
 /**
+ * returns HTML
+ *
+ * @param req
+ * @param res
+ */
+function renderPage(req, res) {
+  responses.expectHTML(function () {
+    return composer.renderPage(responses.normalizePath(req.baseUrl + req.url), res);
+  }, res);
+}
+
+/**
+ * Change the acceptance type based on the extension they gave us
+ *
+ * @param req
+ * @param res
+ */
+function routeByExtension(req, res) {
+  log.info('routeByExtension', req.params);
+
+  switch (req.params.ext.toLowerCase()) {
+    case 'html':
+      req.headers.accept = 'text/html';
+      renderPage(req, res);
+      break;
+
+    case 'json': // jshint ignore:line
+    default:
+      req.headers.accept = 'application/json';
+      responses.getRouteFromDB(req, res);
+      break;
+  }
+}
+
+/**
  * First draft
  * @param req
  * @param res
@@ -123,6 +159,7 @@ function createPage(req, res) {
 
 function routes(router) {
   router.get('/', responses.listAllWithPrefix);
+  router.get('/:name.:ext', routeByExtension);
   router.get('/:name', responses.getRouteFromDB);
   router.put('/:name', responses.putRouteFromDB);
   router.post('/', createPage);
