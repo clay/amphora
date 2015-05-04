@@ -14,6 +14,22 @@ var _ = require('lodash'),
   getFolders, getSites, getComponents;
 
 /**
+ *
+ * @param {string} dir
+ * @returns {Array}
+ */
+function getFiles(dir) {
+  try {
+    return fs.readdirSync(dir)
+      .filter(function (file) {
+        return !fs.statSync(path.join(dir, file)).isDirectory();
+      });
+  } catch (ex) {
+    return [];
+  }
+}
+
+/**
  * Get folder names.
  *
  * Should only occur once per directory.
@@ -22,12 +38,12 @@ var _ = require('lodash'),
  * @return {[]}     array of folder names
  */
 getFolders = _.memoize(function (dir) {
-  if (fs.existsSync(dir)) {
+  try {
     return fs.readdirSync(dir)
       .filter(function (file) {
         return fs.statSync(path.join(dir, file)).isDirectory();
       });
-  } else {
+  } catch (ex) {
     return [];
   }
 });
@@ -129,6 +145,7 @@ function getComponentModule(name) {
   return componentPath && tryRequire(name, [componentPath, componentPath + '/server']);
 }
 
+exports.getFiles = _.memoize(getFiles);
 exports.getFolders = getFolders;
 exports.getSites = getSites;
 exports.getComponents = getComponents;
