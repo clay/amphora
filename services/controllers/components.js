@@ -94,7 +94,7 @@ function routes(router) {
   router.get('/', responses.notImplemented);
   router.get('/:name.:ext', routeByExtension);
   router.get('/:name', getRouteFromComponent);
-  router.put('/components/:name', putRouteFromComponent);
+  router.put('/:name', putRouteFromComponent);
 
   router.get('/:name/instances', listInstances);
   router.get('/:name/instances/:id.:ext', routeByExtension);
