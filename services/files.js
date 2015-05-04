@@ -22,7 +22,7 @@ function getFiles(dir) {
   try {
     return fs.readdirSync(dir)
       .filter(function (file) {
-        return !fs.statSync(path.join(dir, file)).isDirectory();
+        return !fs.statSync(path.join(dir, file)).isDirectory() && file.indexOf('.test.') === -1;
       });
   } catch (ex) {
     return [];
