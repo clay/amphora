@@ -7,7 +7,6 @@ var app,
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
   request = require('supertest-as-promised'),
   sinon = require('sinon'),
-  expect = require('chai').expect,
   routes = require('../../../services/routes'),
   files = require('../../../services/files'),
   db = require('../../../services/db'),
@@ -36,6 +35,10 @@ function acceptsJson(path, status, data) {
   });
 }
 
+/**
+ * @param path
+ * @param status
+ */
 function acceptsHtml(path, status) {
   it('accepts html', function () {
     return request(app)
@@ -97,7 +100,7 @@ describe(endpointName, function () {
       });
 
       /**
-       * If it exists, deleting that resource should be 200 if successful.
+       * If it exists, that resource should be 200 if successful.
        *
        * Should return the data that was deleted.
        */
@@ -123,24 +126,35 @@ describe(endpointName, function () {
     describe('/components/:name/instances', function () {
       var uriPath = this.title.replace(':name', 'valid');
       acceptsJson(uriPath, 405);
-      acceptsHtml(uriPath, 405);
+      acceptsHtml(uriPath, 406);
     });
 
     describe('/components/:name/instances/:id', function () {
       var uriPath = this.title;
 
+      /**
+       * An invalid component should give 404, because there is no resource (component) by that name.
+       */
       describe('invalid component', function () {
         var invalidComponentPath = uriPath.replace(':name', 'invalid').replace(':id', 'valid');
         acceptsJson(invalidComponentPath, 404);
         acceptsHtml(invalidComponentPath, 404);
       });
 
+      /**
+       * If it exists, that resource should be 200 if successful.
+       *
+       * Should return the data that was deleted.
+       */
       describe('when exists', function () {
         var validComponentPath = uriPath.replace(':name', 'valid').replace(':id', 'valid');
         acceptsJson(validComponentPath, 200, data);
         acceptsHtml(validComponentPath, 406);
       });
 
+      /**
+       * When the component exists, but there is simply no data.
+       */
       describe('when missing', function () {
         var missingComponentPath = uriPath.replace(':name', 'valid').replace(':id', 'missing');
         acceptsJson(missingComponentPath, 404);

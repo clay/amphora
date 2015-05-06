@@ -70,7 +70,25 @@ function normalizePath(path) {
  * @param res
  */
 function notImplemented(req, res) {
-  res.sendStatus(501);
+  var code = 501,
+    message = 'Not Implemented';
+  res.status(code).format({
+    json: function () {
+      //send the message as well
+      res.send({
+        message: message,
+        code: code
+      });
+    },
+    html: function () {
+      //send some html (should probably be some default, or a render of a 500 page).
+      res.send(code + ' ' + message);
+    },
+    'default': function () {
+      //send whatever is default for this type of data with this status code.
+      res.sendStatus(code);
+    }
+  });
 }
 
 /**
@@ -278,6 +296,7 @@ function listAllWithPrefix(req, res) {
   if (isPromise(list)) {
     expectJSON(_.constant(list));
   } else if (isPipeableStream(list)) {
+    res.set('Content-Type', 'application/json');
     list.on('error', function (error) {
       log.error('listAllWithPrefix::error', path, error);
     }).pipe(res);

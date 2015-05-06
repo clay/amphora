@@ -128,6 +128,7 @@ function routes(router) {
   router.delete('/:name', deleteRouteFromComponent);
   router.all('/:name', responses.methodNotAllowed(['get', 'put']));
 
+  router.all('/:name/instances', acceptJSONOnly);
   router.get('/:name/instances', listInstances);
   router.all('/:name/instances', responses.methodNotAllowed(['get']));
   router.get('/:name/instances/:id.:ext', routeByExtension);
