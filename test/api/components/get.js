@@ -15,11 +15,14 @@ var app,
 
 /**
  * @param path
+ * @param replacements
  * @param status
  * @param [data]
  */
-function acceptsJson(path, status, data) {
-  it('accepts json', function () {
+function acceptsJson(path, replacements, status, data) {
+  path = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
+
+  it(JSON.stringify(replacements) + ' accepts json', function () {
     var promise = request(app)
       .get(path)
       .set('Host', hostname)
@@ -37,10 +40,13 @@ function acceptsJson(path, status, data) {
 
 /**
  * @param path
+ * @param replacements
  * @param status
  */
-function acceptsHtml(path, status) {
-  it('accepts html', function () {
+function acceptsHtml(path, replacements, status) {
+  path = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
+
+  it(JSON.stringify(replacements) + ' accepts html', function () {
     return request(app)
       .get(path)
       .set('Host', hostname)
@@ -81,86 +87,46 @@ describe(endpointName, function () {
       routes.addHost(app, hostname);
     });
 
-    /**
-     * Not implemented yet.
-     */
     describe('/components', function () {
-      var uriPath = this.title;
-      acceptsJson(uriPath, 501);
-      acceptsHtml(uriPath, 501);
+      var path = this.title;
+      acceptsJson(path, {}, 501);
+      acceptsHtml(path, {}, 501);
     });
 
     describe('/components/:name', function () {
-      var uriPath = this.title;
+      var path = this.title;
 
-      /**
-       * An invalid component should give 404, because there is no resource (component) by that name.
-       */
-      describe('invalid component', function () {
-        var invalidComponentPath = uriPath.replace(':name', 'invalid');
-        acceptsJson(invalidComponentPath, 404);
-        acceptsHtml(invalidComponentPath, 404);
-      });
+      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'valid'}, 200, data);
+      acceptsJson(path, {name: 'missing'}, 404);
 
-      /**
-       * If it exists, that resource should be 200 if successful.
-       */
-      describe('when exists', function () {
-        var validComponentPath = uriPath.replace(':name', 'valid');
-        acceptsJson(validComponentPath, 200, data);
-        acceptsHtml(validComponentPath, 406);
-      });
-
-      /**
-       * When the component exists, but there is simply no data.
-       */
-      describe('when missing', function () {
-        var missingComponentPath = uriPath.replace(':name', 'missing');
-        acceptsJson(missingComponentPath, 404);
-        acceptsHtml(missingComponentPath, 406);
-      });
+      acceptsHtml(path, {name: 'invalid'}, 404);
+      acceptsHtml(path, {name: 'valid'}, 406);
+      acceptsHtml(path, {name: 'missing'}, 406);
     });
 
-    /**
-     * Returns a list of instances.
-     *
-     * Json-only
-     */
     describe('/components/:name/instances', function () {
-      var uriPath = this.title.replace(':name', 'valid');
-      acceptsJson(uriPath, 200);
-      acceptsHtml(uriPath, 406);
+      var path = this.title;
+
+      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'valid'}, 200);
+      acceptsJson(path, {name: 'missing'}, 405);
+
+      acceptsHtml(path, {name: 'invalid'}, 404);
+      acceptsHtml(path, {name: 'valid'}, 406);
+      acceptsHtml(path, {name: 'missing'}, 406);
     });
 
     describe('/components/:name/instances/:id', function () {
-      var uriPath = this.title;
+      var path = this.title;
 
-      /**
-       * An invalid component should give 404, because there is no resource (component) by that name.
-       */
-      describe('invalid component', function () {
-        var invalidComponentPath = uriPath.replace(':name', 'invalid').replace(':id', 'valid');
-        acceptsJson(invalidComponentPath, 404);
-        acceptsHtml(invalidComponentPath, 404);
-      });
+      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404);
+      acceptsJson(path, {name: 'valid', id: 'valid'}, 200, data);
+      acceptsJson(path, {name: 'valid', id: 'missing'}, 404);
 
-      /**
-       * If it exists, that resource should be 200 if successful.
-       */
-      describe('when exists', function () {
-        var validComponentPath = uriPath.replace(':name', 'valid').replace(':id', 'valid');
-        acceptsJson(validComponentPath, 200, data);
-        acceptsHtml(validComponentPath, 406);
-      });
-
-      /**
-       * When the component exists, but there is simply no data.
-       */
-      describe('when missing', function () {
-        var missingComponentPath = uriPath.replace(':name', 'valid').replace(':id', 'missing');
-        acceptsJson(missingComponentPath, 404);
-        acceptsHtml(missingComponentPath, 406);
-      });
+      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
+      acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
+      acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
     });
   });
 });
