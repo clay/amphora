@@ -37,7 +37,7 @@ function getComponentName(ref) {
  *
  * @param {string} ref
  * @param {object} [locals]
- * @returns {*}
+ * @returns {Promise}
  */
 function getComponentData(ref, locals) {
   var promise,
@@ -64,7 +64,7 @@ function getComponentData(ref, locals) {
  *
  * @param {string} ref
  * @param {object} data
- * @returns {*}
+ * @returns {Promise}
  */
 function putComponentData(ref, data) {
   var promise, componentModule, componentName;
@@ -74,6 +74,7 @@ function putComponentData(ref, data) {
   componentName = getComponentName(ref);
   is(componentName, 'component name', ref);
   componentModule = files.getComponentModule(componentName);
+  is.object(data, ref);
 
   if (componentModule && _.isFunction(componentModule.put)) {
     promise = componentModule.put(ref, data);
@@ -83,6 +84,35 @@ function putComponentData(ref, data) {
   }
 
   return promise;
+}
+
+/**
+ *
+ * @param {string} ref
+ * @returns {Promise}
+ */
+function deleteComponentData(ref) {
+  var componentModule, componentName;
+
+  //assertions
+  is(ref, 'reference');
+  componentName = getComponentName(ref);
+  is(componentName, 'component name', ref);
+  componentModule = files.getComponentModule(componentName);
+
+  //get old values, so we can return them when the thing is deleted.
+  return getComponentData(ref).then(function (oldData) {
+    var promise;
+
+    if (componentModule && _.isFunction(componentModule.del)) {
+      promise = componentModule.del(ref);
+    } else {
+      // default back to db.js
+      promise = db.del(ref);
+    }
+
+    return promise.return(oldData);
+  });
 }
 
 /**
@@ -254,6 +284,7 @@ module.exports.putPageData = putPageData;
 module.exports.getComponentName = getComponentName;
 module.exports.getComponentData = getComponentData;
 module.exports.putComponentData = putComponentData;
+module.exports.deleteComponentData = deleteComponentData;
 module.exports.listComponentData = listComponentData;
 module.exports.listComponentInstances = listComponentInstances;
 module.exports.getSchema = getSchema;

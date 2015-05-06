@@ -11,6 +11,7 @@ var _ = require('lodash'),
   responses = require('../responses'),
   composer = require('../composer'),
   log = require('../log'),
+  files = require('../files'),
   // allowable query string variables
   queryStringOptions = ['ignore-data'];
 
@@ -43,6 +44,16 @@ function getRouteFromComponent(req, res) {
 function putRouteFromComponent(req, res) {
   responses.expectJSON(function () {
     return references.putComponentData(responses.normalizePath(req.baseUrl + req.url), req.body);
+  }, res);
+}
+
+/**
+ * @param req
+ * @param res
+ */
+function deleteRouteFromComponent(req, res) {
+  responses.expectJSON(function () {
+    return references.deleteComponentData(responses.normalizePath(req.baseUrl + req.url));
   }, res);
 }
 
@@ -90,18 +101,44 @@ function listInstances(req, res) {
   return responses.listAllWithPrefix(req, res);
 }
 
+function componentMustExist(req, res, next) {
+  if (!!files.getComponentPath(req.params.name)) {
+    next();
+  } else {
+    responses.notFound(res);
+  }
+}
+
+function acceptJSONOnly(req, res, next) {
+  if (req.accepts('json')) {
+    next();
+  } else {
+    responses.notAcceptable(['application/json'])(req, res);
+  }
+}
+
 function routes(router) {
   router.get('/', responses.notImplemented);
+  router.all('/', responses.methodNotAllowed(['get']));
+  router.all('/:name*', componentMustExist);
   router.get('/:name.:ext', routeByExtension);
+  router.all('/:name', acceptJSONOnly);
   router.get('/:name', getRouteFromComponent);
   router.put('/:name', putRouteFromComponent);
+  router.delete('/:name', deleteRouteFromComponent);
+  router.all('/:name', responses.methodNotAllowed(['get', 'put']));
 
   router.get('/:name/instances', listInstances);
+  router.all('/:name/instances', responses.methodNotAllowed(['get']));
   router.get('/:name/instances/:id.:ext', routeByExtension);
+  router.all('/:name/instances/:id', acceptJSONOnly);
   router.get('/:name/instances/:id', getRouteFromComponent);
   router.put('/:name/instances/:id', putRouteFromComponent);
+  router.delete('/:name/instances/:id', deleteRouteFromComponent);
+  router.all('/:name/instances/:id', responses.methodNotAllowed(['get', 'put']));
 
   router.get('/:name/schema', getSchema);
+  router.all('/:name/schema', responses.methodNotAllowed(['get']));
 }
 
 module.exports = routes;

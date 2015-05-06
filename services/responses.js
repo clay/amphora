@@ -74,6 +74,68 @@ function notImplemented(req, res) {
 }
 
 /**
+ * This method not allowed
+ * @param {[string]} allowed
+ */
+function methodNotAllowed(allowed) {
+  return function (req, res) {
+    var code = 405,
+      method = req.method,
+      message = 'Method ' + method + ' not allowed';
+    res.set('Allow', allowed.join(', ').toUpperCase());
+    res.status(code).format({
+      json: function () {
+        //send the message as well
+        res.send({
+          message: message,
+          code: code,
+          allow: allowed
+        });
+      },
+      html: function () {
+        //send some html (should probably be some default, or a render of a 500 page).
+        res.send(code + ' ' + message);
+      },
+      'default': function () {
+        //send whatever is default for this type of data with this status code.
+        res.sendStatus(code);
+      }
+    });
+  };
+}
+
+/**
+ * This route not allowed
+ * @param {[string]} acceptable
+ */
+function notAcceptable(acceptable) {
+  return function (req, res) {
+    var code = 406,
+      accept = req.get('Accept'),
+      message = accept + ' not acceptable';
+    res.set('Accept', acceptable.join(', ').toUpperCase());
+    res.status(code).format({
+      json: function () {
+        //send the message as well
+        res.send({
+          message: message,
+          code: code,
+          accept: acceptable
+        });
+      },
+      html: function () {
+        //send some html (should probably be some default, or a render of a 500 page).
+        res.send(code + ' ' + message);
+      },
+      'default': function () {
+        //send whatever is default for this type of data with this status code.
+        res.sendStatus(code);
+      }
+    });
+  };
+}
+
+/**
  * All "Not Found" errors are routed like this.
  * @param {Error} [err]
  * @param res
@@ -166,6 +228,8 @@ function handleError(res) {
       (err.message.indexOf('ENOENT') !== -1) ||
       (err.message.indexOf('not found') !== -1)) {
       notFound(err, res);
+    } else if ((err.name === 'BadRequestError')) {
+      clientError(err, res);
     } else {
       serverError(err, res);
     }
@@ -256,6 +320,8 @@ module.exports.getUniqueId = getUniqueId;
 //error responses
 module.exports.clientError = clientError; //400 client error
 module.exports.notFound = notFound; //404 not found
+module.exports.methodNotAllowed = methodNotAllowed; //nice 405
+module.exports.notAcceptable = notAcceptable; //nice 406
 module.exports.notImplemented = notImplemented; //nice 500
 module.exports.serverError = serverError; //bad 500
 

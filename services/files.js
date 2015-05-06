@@ -76,7 +76,13 @@ getComponents = _.memoize(function () {
 function getComponentPath(name) {
   // make sure it's a component we have (either in components or node_modules)
   if (!_.contains(getComponents(), name)) {
-    throw new Error(name + ' is not a recognized component!');
+    /**
+     * Cannot memoize an exception.
+     *
+     * Also, this isn't a programmer error, unless we're expecting them to check for existence some other way first, so
+     * we should not throw an exception.
+     */
+    return null;
   } else if (fs.existsSync(path.resolve('components', name))) {
     return path.resolve('components', name);
   } else if (fs.existsSync(path.resolve('node_modules', name))) {

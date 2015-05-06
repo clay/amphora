@@ -67,7 +67,7 @@ describe(filename, function () {
 
       sandbox.mock(files).expects('getComponentModule').returns({put: _.constant(bluebird.resolve(data))});
 
-      references.putComponentData('/components/hey').done(function (result) {
+      references.putComponentData('/components/hey', data).done(function (result) {
         expect(result).to.equal(data);
         sandbox.verify();
         done();
