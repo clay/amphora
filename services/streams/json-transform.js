@@ -72,8 +72,14 @@ JSONTransform.prototype._transform = function (chunk, enc, cb) {
 };
 JSONTransform.prototype._flush = function (cb) {
   if (this.isArray) {
+    if (this.isFirst) {
+      this.push('[');
+    }
     this.push(']');
   } else {
+    if (this.isFirst) {
+      this.push('{');
+    }
     this.push('}');
   }
   cb();
