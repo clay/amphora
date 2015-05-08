@@ -7,6 +7,7 @@ var _ = require('lodash'),
   routes = require('../../services/routes'),
   db = require('../../services/db'),
   bluebird = require('bluebird'),
+  expect = require('chai').expect,
   app,
   host;
 
@@ -60,7 +61,7 @@ function stubComponentPath(sandbox) {
   return sandbox;
 }
 
-function beforeEach(sandbox, hostname) {
+function beforeEach(sandbox, hostname, data) {
   app = express();
   host = hostname;
   stubComponentPath(sandbox);

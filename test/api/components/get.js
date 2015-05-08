@@ -1,90 +1,26 @@
 'use strict';
 
-var app,
-  _ = require('lodash'),
-  express = require('express'),
+var _ = require('lodash'),
+  apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
-  request = require('supertest-as-promised'),
-  sinon = require('sinon'),
-  routes = require('../../../services/routes'),
-  files = require('../../../services/files'),
-  db = require('../../../services/db'),
-  bluebird = require('bluebird'),
-  hostname = 'localhost.vulture.com';
-
-/**
- * @param path
- * @param replacements
- * @param status
- * @param [data]
- */
-function acceptsJson(path, replacements, status, data) {
-  path = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
-
-  it(JSON.stringify(replacements) + ' accepts json', function () {
-    var promise = request(app)
-      .get(path)
-      .set('Host', hostname)
-      .set('Accept', 'application/json')
-      .expect('Content-Type', /json/)
-      .expect(status);
-
-    if (data) {
-      promise.expect(data);
-    }
-
-    return promise;
-  });
-}
-
-/**
- * @param path
- * @param replacements
- * @param status
- */
-function acceptsHtml(path, replacements, status) {
-  path = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
-
-  it(JSON.stringify(replacements) + ' accepts html', function () {
-    return request(app)
-      .get(path)
-      .set('Host', hostname)
-      .set('Accept', 'text/html')
-      .expect('Content-Type', /html/)
-      .expect(status);
-  });
-}
+  sinon = require('sinon');
 
 describe(endpointName, function () {
-  var sandbox,
-    data = { name: 'Manny', species: 'cat' };
-
-  before(function () {
-    return bluebird.all([
-      db.put('/components/valid', JSON.stringify(data)),
-      db.put('/components/valid/instances/valid', JSON.stringify(data))
-    ]);
-  });
-
-  beforeEach(function () {
-    sandbox = sinon.sandbox.create();
-  });
-
-  afterEach(function () {
-    sandbox.restore();
-  });
-
   describe(filename, function () {
-    var getComponentPath;
-    beforeEach(function () {
-      getComponentPath = sandbox.stub(files, 'getComponentPath');
-      getComponentPath.withArgs('valid').returns('validThing');
-      getComponentPath.withArgs('missing').returns('missingThing');
-      getComponentPath.withArgs('invalid').returns(null);
+    var sandbox,
+      hostname = 'localhost.example.com',
+      acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
+      acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
+      data = { name: 'Manny', species: 'cat' };
 
-      app = express();
-      routes.addHost(app, hostname);
+    beforeEach(function () {
+      sandbox = sinon.sandbox.create();
+      return apiAccepts.beforeEach(sandbox,  hostname, data);
+    });
+
+    afterEach(function () {
+      sandbox.restore();
     });
 
     describe('/components', function () {

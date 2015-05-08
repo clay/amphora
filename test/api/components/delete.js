@@ -9,14 +9,14 @@ var _ = require('lodash'),
 describe(endpointName, function () {
   describe(filename, function () {
     var sandbox,
-      hostname = 'localhost.vulture.com',
-      acceptsJson = apiAccepts.acceptsJson('del'),
-      acceptsHtml = apiAccepts.acceptsHtml('del'),
+      hostname = 'localhost.example.com',
+      acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
+      acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEach(sandbox,  hostname);
+      return apiAccepts.beforeEach(sandbox,  hostname, data);
     });
 
     afterEach(function () {
