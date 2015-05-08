@@ -113,3 +113,30 @@ module.exports.batch = function (ops, options) {
   db.batch(ops, options || {}, deferred.apply);
   return deferred.promise;
 };
+
+/**
+ * Clear all records from the DB.  (useful for unit testing)
+ */
+module.exports.clear = function () {
+  var errors = [],
+    ops = [],
+    deferred = defer();
+  db.createReadStream({
+    keys:true,
+    fillCache: false,
+    limit: -1
+  }).on('data', function (data) {
+    ops.push({ type: 'del', key: data.key});
+  }).on('error', function (error) {
+    errors.push(error);
+  }).on('end', function () {
+    if (errors.length) {
+      deferred.apply(_.first(errors));
+    } else {
+      db.batch(ops, deferred.apply);
+    }
+  });
+
+
+  return deferred.promise;
+};
