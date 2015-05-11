@@ -43,7 +43,7 @@ describe(filename, function () {
    * @param code
    */
   function expectStatus(res, code) {
-    sandbox.mock(res).expects('status').withArgs(code).returns(res);
+    sandbox.mock(res).expects('status').withArgs(code).returns(res).atLeast(1);
   }
 
   /**

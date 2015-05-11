@@ -70,7 +70,89 @@ function normalizePath(path) {
  * @param res
  */
 function notImplemented(req, res) {
-  res.sendStatus(501);
+  var code = 501,
+    message = 'Not Implemented';
+  res.status(code).format({
+    json: function () {
+      //send the message as well
+      res.send({
+        message: message,
+        code: code
+      });
+    },
+    html: function () {
+      //send some html (should probably be some default, or a render of a 500 page).
+      res.send(code + ' ' + message);
+    },
+    'default': function () {
+      //send whatever is default for this type of data with this status code.
+      res.sendStatus(code);
+    }
+  });
+}
+
+/**
+ * This method not allowed
+ * @param {{allow: [string]}} options
+ */
+function methodNotAllowed(options) {
+  var allowed = options && options.allow || [];
+  return function (req, res) {
+    var code = 405,
+      method = req.method,
+      message = 'Method ' + method + ' not allowed';
+    res.set('Allow', allowed.join(', ').toUpperCase());
+    res.status(code).format({
+      json: function () {
+        //send the message as well
+        res.send({
+          message: message,
+          code: code,
+          allow: allowed
+        });
+      },
+      html: function () {
+        //send some html (should probably be some default, or a render of a 500 page).
+        res.send(code + ' ' + message);
+      },
+      'default': function () {
+        //send whatever is default for this type of data with this status code.
+        res.sendStatus(code);
+      }
+    });
+  };
+}
+
+/**
+ * This route not allowed
+ * @param {[string]} options
+ */
+function notAcceptable(options) {
+  var acceptable = options && options.accept || [];
+  return function (req, res) {
+    var code = 406,
+      accept = req.get('Accept'),
+      message = accept + ' not acceptable';
+    res.set('Accept', acceptable.join(', ').toUpperCase());
+    res.status(code).format({
+      json: function () {
+        //send the message as well
+        res.send({
+          message: message,
+          code: code,
+          accept: acceptable
+        });
+      },
+      html: function () {
+        //send some html (should probably be some default, or a render of a 500 page).
+        res.send(code + ' ' + message);
+      },
+      'default': function () {
+        //send whatever is default for this type of data with this status code.
+        res.sendStatus(code);
+      }
+    });
+  };
 }
 
 /**
@@ -166,6 +248,8 @@ function handleError(res) {
       (err.message.indexOf('ENOENT') !== -1) ||
       (err.message.indexOf('not found') !== -1)) {
       notFound(err, res);
+    } else if ((err.name === 'BadRequestError')) {
+      clientError(err, res);
     } else {
       serverError(err, res);
     }
@@ -214,6 +298,7 @@ function listAllWithPrefix(req, res) {
   if (isPromise(list)) {
     expectJSON(_.constant(list));
   } else if (isPipeableStream(list)) {
+    res.set('Content-Type', 'application/json');
     list.on('error', function (error) {
       log.error('listAllWithPrefix::error', path, error);
     }).pipe(res);
@@ -256,6 +341,8 @@ module.exports.getUniqueId = getUniqueId;
 //error responses
 module.exports.clientError = clientError; //400 client error
 module.exports.notFound = notFound; //404 not found
+module.exports.methodNotAllowed = methodNotAllowed; //nice 405
+module.exports.notAcceptable = notAcceptable; //nice 406
 module.exports.notImplemented = notImplemented; //nice 500
 module.exports.serverError = serverError; //bad 500
 

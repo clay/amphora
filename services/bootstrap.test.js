@@ -9,10 +9,16 @@ describe('bootstrap', function () {
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
+    return db.clear();
   });
 
   afterEach(function () {
     sandbox.restore();
+  });
+
+  after(function () {
+    //clean up
+    return db.clear();
   });
 
   it('read basic components from bootstrap', function (done) {
