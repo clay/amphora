@@ -7,40 +7,78 @@ var _ = require('lodash'),
   routes = require('../../services/routes'),
   db = require('../../services/db'),
   bluebird = require('bluebird'),
-  expect = require('chai').expect,
   app,
   host;
 
+function createTest(options) {
+  var realPath = _.reduce(options.replacements, function (str, value, key) { return str.replace(':' + key, value); }, options.path);
+
+  it(options.description, function () {
+    var promise = request(app)[options.method](realPath)
+      .set('Host', host)
+      .set('Accept', options.accept);
+
+    if (options.body) {
+      if (_.isObject(options.body)) {
+        options.body = JSON.stringify(options.body);
+      }
+
+      promise = promise.send(options.body);
+    }
+
+    promise = promise.expect('Content-Type', options.contentType)
+      .expect(options.status);
+
+    if (options.data) {
+      console.log(options.description, 'data', options.data);
+      promise = promise.expect(options.data);
+    }
+
+    return promise;
+  });
+}
+
 function acceptsHtml(method) {
   return function (path, replacements, status) {
-    var realPath = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
+    createTest({
+      description: JSON.stringify(replacements) + ' accepts html',
+      path: path,
+      method: method,
+      replacements: replacements,
+      status: status,
+      accept: 'text/html',
+      contentType: /html/
+    });
+  };
+}
 
-    it(JSON.stringify(replacements) + ' accepts html', function () {
-      return request(app)[method](realPath)
-        .set('Host', host)
-        .set('Accept', 'text/html')
-        .expect('Content-Type', /html/)
-        .expect(status);
+function acceptsJsonBody(method) {
+  return function (path, replacements, body, status, data) {
+    createTest({
+      description: JSON.stringify(replacements) + ' accepts json with body ' + JSON.stringify(body),
+      path: path,
+      method: method,
+      replacements: replacements,
+      body: body,
+      data: data,
+      status: status,
+      accept: 'application/json',
+      contentType: /json/
     });
   };
 }
 
 function acceptsJson(method) {
   return function (path, replacements, status, data) {
-    var realRath = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
-
-    it(JSON.stringify(replacements) + ' accepts json', function () {
-      var promise = request(app)[method](realRath)
-        .set('Host', host)
-        .set('Accept', 'application/json')
-        .expect('Content-Type', /json/)
-        .expect(status);
-
-      if (data) {
-        promise.expect(data);
-      }
-
-      return promise;
+    createTest({
+      description: JSON.stringify(replacements) + ' accepts json',
+      path: path,
+      method: method,
+      replacements: replacements,
+      data: data,
+      status: status,
+      accept: 'application/json',
+      contentType: /json/
     });
   };
 }
@@ -67,10 +105,12 @@ function beforeEach(sandbox, hostname, data) {
   stubComponentPath(sandbox);
   routes.addHost(app, hostname);
 
-  return bluebird.all([
-    db.put('/components/valid', JSON.stringify(data)),
-    db.put('/components/valid/instances/valid', JSON.stringify(data))
-  ]);
+  return db.clear().then(function () {
+    return bluebird.all([
+      db.put('/components/valid', JSON.stringify(data)),
+      db.put('/components/valid/instances/valid', JSON.stringify(data))
+    ]);
+  });
 }
 
 
@@ -78,5 +118,6 @@ module.exports.setApp = setApp;
 module.exports.setHost = setHost;
 module.exports.acceptsHtml = acceptsHtml;
 module.exports.acceptsJson = acceptsJson;
+module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.stubComponentPath = stubComponentPath;
 module.exports.beforeEach = beforeEach;

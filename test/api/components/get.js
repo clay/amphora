@@ -45,8 +45,8 @@ describe(endpointName, function () {
       var path = this.title;
 
       acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 200);
-      acceptsJson(path, {name: 'missing'}, 405);
+      acceptsJson(path, {name: 'valid'}, 200, '["/components/valid/instances/valid"]');
+      acceptsJson(path, {name: 'missing'}, 200, '[]');
 
       acceptsHtml(path, {name: 'invalid'}, 404);
       acceptsHtml(path, {name: 'valid'}, 406);
