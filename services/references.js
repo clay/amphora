@@ -80,7 +80,8 @@ function putComponentData(ref, data) {
     promise = componentModule.put(ref, data);
   } else {
     // default back to db.js, (db takes strings, not objects)
-    promise = db.put(ref, JSON.stringify(data));
+    // returns data that was successfully PUT
+    promise = db.put(ref, JSON.stringify(data)).return(data);
   }
 
   return promise;

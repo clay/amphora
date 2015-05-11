@@ -26,20 +26,22 @@ describe(endpointName, function () {
 
     describe('/components', function () {
       var path = this.title;
-      acceptsJson(path, {}, 405);
+
+      acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsHtml(path, {}, 405);
     });
 
     describe('/components/:name', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 200);
-      acceptsJson(path, {name: 'missing'}, 200);
+      acceptsJson(path, {name: 'invalid'}, 404, { code: 404, message: 'Not Found' });
+      acceptsJson(path, {name: 'valid'}, 200, {});
+      acceptsJson(path, {name: 'missing'}, 200, {});
 
-      acceptsJsonBody(path, {name: 'invalid'}, {}, 404);
-      acceptsJsonBody(path, {name: 'valid'}, {thing: 'thing'}, 200, {asdf: 'fdsaf'});
-      acceptsJsonBody(path, {name: 'missing'}, {thing: 'thing'}, 200);
+      acceptsJsonBody(path, {name: 'invalid'}, {}, 404, { code: 404, message: 'Not Found' });
+      acceptsJsonBody(path, {name: 'valid'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'missing'}, data, 200, data);
 
       acceptsHtml(path, {name: 'invalid'}, 404);
       acceptsHtml(path, {name: 'valid'}, 406);
@@ -49,9 +51,13 @@ describe(endpointName, function () {
     describe('/components/:name/instances', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 405);
-      acceptsJson(path, {name: 'missing'}, 405);
+      acceptsJson(path, {name: 'invalid'}, 404, { code: 404, message: 'Not Found' });
+      acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+
+      acceptsJsonBody(path, {name: 'invalid'}, {}, 404, { code: 404, message: 'Not Found' });
+      acceptsJsonBody(path, {name: 'valid'}, data, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {name: 'missing'}, data, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
 
       acceptsHtml(path, {name: 'invalid'}, 404);
       acceptsHtml(path, {name: 'valid'}, 406);
@@ -61,9 +67,13 @@ describe(endpointName, function () {
     describe('/components/:name/instances/:id', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsJson(path, {name: 'valid', id: 'valid'}, 200);
-      acceptsJson(path, {name: 'valid', id: 'missing'}, 200);
+      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404, { code: 404, message: 'Not Found' });
+      acceptsJson(path, {name: 'valid', id: 'valid'}, 200, {});
+      acceptsJson(path, {name: 'valid', id: 'missing'}, 200, {});
+
+      acceptsJsonBody(path, {name: 'invalid'}, {}, 404, { code: 404, message: 'Not Found' });
+      acceptsJsonBody(path, {name: 'valid'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'missing'}, data, 200, data);
 
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);

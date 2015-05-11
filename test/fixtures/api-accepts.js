@@ -14,23 +14,22 @@ function createTest(options) {
   var realPath = _.reduce(options.replacements, function (str, value, key) { return str.replace(':' + key, value); }, options.path);
 
   it(options.description, function () {
-    var promise = request(app)[options.method](realPath)
-      .set('Host', host)
-      .set('Accept', options.accept);
+    var promise = request(app)[options.method](realPath);
+
 
     if (options.body) {
-      if (_.isObject(options.body)) {
-        options.body = JSON.stringify(options.body);
-      }
-
       promise = promise.send(options.body);
     }
+
+    promise = promise
+      .type(options.accept)
+      .set('Accept', options.accept)
+      .set('Host', host);
 
     promise = promise.expect('Content-Type', options.contentType)
       .expect(options.status);
 
     if (options.data) {
-      console.log(options.description, 'data', options.data);
       promise = promise.expect(options.data);
     }
 

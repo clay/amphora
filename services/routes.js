@@ -106,8 +106,8 @@ function addSite(router, options) {
   addControllerRoutes(router);
 
   // optional module to load routes and configuration defined from outside of byline
-  if (options.resolveSiteController) {
-    router.use(path, options.resolveSiteController(siteRouter, options));
+  if (options.siteResolver) {
+    router.use(path, options.siteResolver(siteRouter, options));
   }
 }
 
@@ -124,17 +124,20 @@ function sortByDepthOfPath(a, b) {
 /**
  * @param hostname
  * @returns {{slug: string, name: string, host: string, path: string}}
+ * @example
+ *
+ *  www.example.com becomes:
+ *
+ *  {
+ *    slug: example
+ *    name: Example
+ *    host: www.example.com
+ *    path: '/'
+ *  }
  */
 function getDefaultSiteSettings(hostname) {
   var name = _.takeRight(hostname.split('.'), 2)[0]; //second last or last
 
-  // www.example.com becomes:
-  // {
-  //   slug: example
-  //   name: Example
-  //   host: www.example.com
-  //   path: '/'
-  // }
   return {
     slug: name.toLowerCase(),
     name: _.startCase(name),
@@ -194,7 +197,7 @@ function loadFromConfig(router) {
 
     addHost(router, localHostname, {
       sites: sites,
-      resolveSiteController: resolveSiteController
+      siteResolver: resolveSiteController
     });
   });
   return router;
@@ -203,3 +206,5 @@ function loadFromConfig(router) {
 module.exports = loadFromConfig;
 module.exports.addSite = addSite;
 module.exports.addHost = addHost;
+module.exports.getDefaultSiteSettings = getDefaultSiteSettings;
+module.exports.sortByDepthOfPath = sortByDepthOfPath;

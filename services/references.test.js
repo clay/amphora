@@ -1,7 +1,7 @@
 'use strict';
 var _ = require('lodash'),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
-  references = require('./references'),
+  references = require('./' + filename),
   expect = require('chai').expect,
   sinon = require('sinon'),
   files = require('./files'),
