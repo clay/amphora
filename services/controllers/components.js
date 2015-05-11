@@ -119,27 +119,27 @@ function acceptJSONOnly(req, res, next) {
 
 function routes(router) {
   router.get('/', responses.notImplemented);
-  router.all('/', responses.methodNotAllowed(['get']));
+  router.all('/', responses.methodNotAllowed({allow: ['get']}));
   router.all('/:name*', componentMustExist);
   router.get('/:name.:ext', routeByExtension);
   router.all('/:name', acceptJSONOnly);
   router.get('/:name', getRouteFromComponent);
   router.put('/:name', putRouteFromComponent);
   router.delete('/:name', deleteRouteFromComponent);
-  router.all('/:name', responses.methodNotAllowed(['get', 'put']));
+  router.all('/:name', responses.methodNotAllowed({allow: ['get', 'put', 'delete']}));
 
   router.all('/:name/instances', acceptJSONOnly);
   router.get('/:name/instances', listInstances);
-  router.all('/:name/instances', responses.methodNotAllowed(['get']));
+  router.all('/:name/instances', responses.methodNotAllowed({allow: ['get']}));
   router.get('/:name/instances/:id.:ext', routeByExtension);
   router.all('/:name/instances/:id', acceptJSONOnly);
   router.get('/:name/instances/:id', getRouteFromComponent);
   router.put('/:name/instances/:id', putRouteFromComponent);
   router.delete('/:name/instances/:id', deleteRouteFromComponent);
-  router.all('/:name/instances/:id', responses.methodNotAllowed(['get', 'put']));
+  router.all('/:name/instances/:id', responses.methodNotAllowed({allow: ['get', 'put', 'delete']}));
 
   router.get('/:name/schema', getSchema);
-  router.all('/:name/schema', responses.methodNotAllowed(['get']));
+  router.all('/:name/schema', responses.methodNotAllowed({allow: ['get']}));
 }
 
 module.exports = routes;

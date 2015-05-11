@@ -33,8 +33,8 @@ describe(endpointName, function () {
       var path = this.title;
 
       acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 405);
-      acceptsJson(path, {name: 'missing'}, 405);
+      acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
+      acceptsJson(path, {name: 'missing'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
 
       acceptsHtml(path, {name: 'invalid'}, 404);
       acceptsHtml(path, {name: 'valid'}, 406);
@@ -45,8 +45,8 @@ describe(endpointName, function () {
       var path = this.title;
 
       acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 405);
-      acceptsJson(path, {name: 'missing'}, 405);
+      acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method POST not allowed' });
+      acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method POST not allowed' });
 
       acceptsHtml(path, {name: 'invalid'}, 404);
       acceptsHtml(path, {name: 'valid'}, 406);
@@ -57,8 +57,8 @@ describe(endpointName, function () {
       var path = this.title;
 
       acceptsJson(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsJson(path, {name: 'valid', id: 'valid'}, 405);
-      acceptsJson(path, {name: 'valid', id: 'missing'}, 405);
+      acceptsJson(path, {name: 'valid', id: 'valid'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
+      acceptsJson(path, {name: 'valid', id: 'missing'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
 
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);

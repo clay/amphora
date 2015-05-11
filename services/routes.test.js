@@ -42,8 +42,8 @@ describe(filename, function () {
   describe('getDefaultSiteSettings', function () {
     var fn = lib[this.title];
 
-    it('www.example.com/whatever/what', function () {
-      var hostname = 'www.example.com/whatever/what';
+    it('www.example.com', function () {
+      var hostname = 'www.example.com';
       expect(fn(hostname)).to.deep.equal({
         host: hostname,
         name: 'Example',
@@ -71,6 +71,9 @@ describe(filename, function () {
         innerRouter = createMockRouter();
 
       sandbox.stub(express, 'Router', _.constant(innerRouter));
+
+      //checking for the files to use as controllers shows that we entered the right function.
+      //until we add more functionality here, this is good enough.
       sandbox.mock(files).expects('getFiles').returns([]);
 
       fn(router);

@@ -93,9 +93,10 @@ function notImplemented(req, res) {
 
 /**
  * This method not allowed
- * @param {[string]} allowed
+ * @param {{allow: [string]}} options
  */
-function methodNotAllowed(allowed) {
+function methodNotAllowed(options) {
+  var allowed = options && options.allow || [];
   return function (req, res) {
     var code = 405,
       method = req.method,
