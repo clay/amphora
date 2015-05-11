@@ -102,7 +102,11 @@ function listInstances(req, res) {
 }
 
 function componentMustExist(req, res, next) {
-  if (!!files.getComponentPath(req.params.name)) {
+  var name = req.params.name;
+  name = name.split('@')[0];
+  name = name.split('.')[0];
+
+  if (!!files.getComponentPath(name)) {
     next();
   } else {
     responses.notFound(res);
@@ -122,16 +126,30 @@ function routes(router) {
   router.all('/', responses.methodNotAllowed({allow: ['get']}));
   router.all('/:name*', componentMustExist);
   router.get('/:name.:ext', routeByExtension);
+
+  router.all('/:name@:version', acceptJSONOnly);
+  router.get('/:name@:version', getRouteFromComponent);
+  router.put('/:name@:version', putRouteFromComponent);
+  router.all('/:name@:version', responses.methodNotAllowed({allow: ['get', 'put']}));
+
   router.all('/:name', acceptJSONOnly);
   router.get('/:name', getRouteFromComponent);
   router.put('/:name', putRouteFromComponent);
   router.delete('/:name', deleteRouteFromComponent);
   router.all('/:name', responses.methodNotAllowed({allow: ['get', 'put', 'delete']}));
 
+
+
   router.all('/:name/instances', acceptJSONOnly);
   router.get('/:name/instances', listInstances);
   router.all('/:name/instances', responses.methodNotAllowed({allow: ['get']}));
   router.get('/:name/instances/:id.:ext', routeByExtension);
+
+  router.all('/:name/instances/:id@:version', acceptJSONOnly);
+  router.get('/:name/instances/:id@:version', getRouteFromComponent);
+  router.put('/:name/instances/:id@:version', putRouteFromComponent);
+  router.all('/:name/instances/:id@:version', responses.methodNotAllowed({allow: ['get', 'put']}));
+
   router.all('/:name/instances/:id', acceptJSONOnly);
   router.get('/:name/instances/:id', getRouteFromComponent);
   router.put('/:name/instances/:id', putRouteFromComponent);
