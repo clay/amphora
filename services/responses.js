@@ -125,9 +125,10 @@ function methodNotAllowed(options) {
 
 /**
  * This route not allowed
- * @param {[string]} acceptable
+ * @param {[string]} options
  */
-function notAcceptable(acceptable) {
+function notAcceptable(options) {
+  var acceptable = options && options.accept || [];
   return function (req, res) {
     var code = 406,
       accept = req.get('Accept'),

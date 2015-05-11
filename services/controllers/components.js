@@ -113,7 +113,7 @@ function acceptJSONOnly(req, res, next) {
   if (req.accepts('json')) {
     next();
   } else {
-    responses.notAcceptable(['application/json'])(req, res);
+    responses.notAcceptable({accept: ['application/json']})(req, res);
   }
 }
 
