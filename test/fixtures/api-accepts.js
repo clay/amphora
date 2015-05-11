@@ -10,6 +10,10 @@ var _ = require('lodash'),
   app,
   host;
 
+/**
+ * Create a generic API test.  (shortcut)
+ * @param options
+ */
 function createTest(options) {
   var realPath = _.reduce(options.replacements, function (str, value, key) { return str.replace(':' + key, value); }, options.path);
 
@@ -37,6 +41,11 @@ function createTest(options) {
   });
 }
 
+/**
+ * Create a generic test that accepts HTML
+ * @param method
+ * @returns {Function}
+ */
 function acceptsHtml(method) {
   return function (path, replacements, status) {
     createTest({
@@ -51,6 +60,11 @@ function acceptsHtml(method) {
   };
 }
 
+/**
+ * Create a generic test that accepts JSON with a BODY
+ * @param method
+ * @returns {Function}
+ */
 function acceptsJsonBody(method) {
   return function (path, replacements, body, status, data) {
     createTest({
@@ -67,6 +81,11 @@ function acceptsJsonBody(method) {
   };
 }
 
+/**
+ * Create a generic test that accepts HTML
+ * @param method
+ * @returns {Function}
+ */
 function acceptsJson(method) {
   return function (path, replacements, status, data) {
     createTest({
@@ -98,6 +117,16 @@ function stubComponentPath(sandbox) {
   return sandbox;
 }
 
+/**
+ * Before each test, make the DB and Host consistent, and get a _new_ version of express.
+ *
+ * Yes, brand new, for every single test.
+ *
+ * @param sandbox
+ * @param hostname
+ * @param data
+ * @returns {Promise}
+ */
 function beforeEach(sandbox, hostname, data) {
   app = express();
   host = hostname;
