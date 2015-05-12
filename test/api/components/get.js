@@ -41,6 +41,18 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406);
     });
 
+    describe('/components/:name@:version', function () {
+      var path = this.title;
+
+      acceptsJson(path, {name: 'invalid', version: 'missing'}, 404);
+      acceptsJson(path, {name: 'valid', version: 'missing'}, 404);
+      acceptsJson(path, {name: 'missing', version: 'missing'}, 404);
+
+      acceptsHtml(path, {name: 'invalid', version: 'missing'}, 404);
+      acceptsHtml(path, {name: 'valid', version: 'missing'}, 406);
+      acceptsHtml(path, {name: 'missing', version: 'missing'}, 406);
+    });
+
     describe('/components/:name/instances', function () {
       var path = this.title;
 
@@ -63,6 +75,18 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
+    });
+
+    describe('/components/:name/instances/:id@:version', function () {
+      var path = this.title;
+
+      acceptsJson(path, {name: 'invalid', version: 'missing', id: 'valid'}, 404);
+      acceptsJson(path, {name: 'valid', version: 'missing', id: 'valid'}, 404);
+      acceptsJson(path, {name: 'valid', version: 'missing', id: 'missing'}, 404);
+
+      acceptsHtml(path, {name: 'invalid', version: 'missing', id: 'valid'}, 404);
+      acceptsHtml(path, {name: 'valid', version: 'missing', id: 'valid'}, 406);
+      acceptsHtml(path, {name: 'valid', version: 'missing', id: 'missing'}, 406);
     });
   });
 });
