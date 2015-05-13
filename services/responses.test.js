@@ -17,6 +17,7 @@ describe(filename, function () {
 
   /**
    * Shortcut
+   *
    * @param res
    * @param code
    */
@@ -32,6 +33,21 @@ describe(filename, function () {
     logExpectations.expects('info').never();
     logExpectations.expects('warn').never();
     logExpectations.expects('error').never();
+  }
+
+  /**
+   * Shortcut
+   *
+   * @param res
+   * @param expected
+   * @param done
+   */
+  function expectResult(res, expected, done) {
+    sandbox.stub(res, 'send', function (result) {
+      sandbox.verify();
+      expect(result).to.deep.equal(expected);
+      done();
+    });
   }
 
   beforeEach(function () {
@@ -66,11 +82,37 @@ describe(filename, function () {
 
       expectNoLogging();
       expectStatus(res, 501);
-      sandbox.stub(res, 'send', function () {
-        done();
-      });
-
+      expectResult(res, 'sendStatus: whatever', done);
       fn({}, res);
+    });
+  });
+
+  describe('methodNotAllowed', function () {
+    var fn = lib[this.title];
+
+    it('blocks when not allowed', function (done) {
+      var allowed = ['something'],
+        req = createMockReq(),
+        res = createMockRes({formatter: 'json'});
+      req.method = 'somethingElse';
+
+      expectNoLogging();
+      expectStatus(res, 405);
+      expectResult(res, {
+        allow: allowed,
+        code: 405,
+        message: 'Method somethingElse not allowed'
+      }, done);
+      fn({allow: allowed})(req, res);
+    });
+
+    it('does not block when allowed', function (done) {
+      var req = createMockReq(),
+        res = createMockRes({formatter: 'json'});
+      req.method = 'something';
+
+      expectNoLogging();
+      fn({allow: ['something']})(req, res, done);
     });
   });
 
@@ -82,31 +124,21 @@ describe(filename, function () {
         res = createMockRes({formatter: 'json'});
 
       expectNoLogging();
-      sandbox.stub(res, 'json', function (result) {
-        sandbox.verify();
-        expect(result).to.equal(data);
-        done();
-      });
-
+      expectResult(res, data, done);
       fn(function () {
         return data;
       }, res);
     });
 
-    it('404 on Error "not found"', function (done) {
+    it('404s on Error "not found"', function (done) {
       var res = createMockRes({formatter: 'json'});
 
       expectNoLogging();
       expectStatus(res, 404);
-      sandbox.stub(res, 'send', function (result) {
-        sandbox.verify();
-        expect(result).to.deep.equal({
-          message: 'Not Found',
-          code: 404
-        });
-        done();
-      });
-
+      expectResult(res, {
+        message: 'Not Found',
+        code: 404
+      }, done);
       fn(function () {
         throw Error('something not found: etc etc');
       }, res);
@@ -121,27 +153,16 @@ describe(filename, function () {
         res = createMockRes({formatter: 'html'});
 
       expectNoLogging();
-      sandbox.stub(res, 'send', function (result) {
-        sandbox.verify();
-        expect(result).to.equal(data);
-        done();
-      });
-
-      fn(function () {
-        return data;
-      }, res);
+      expectResult(res, data, done);
+      fn(_.constant(data), res);
     });
 
-    it('404 on Error "not found"', function (done) {
+    it('404s on Error "not found"', function (done) {
       var res = createMockRes({formatter: 'html'});
 
       expectNoLogging();
       expectStatus(res, 404);
-      sandbox.stub(res, 'send', function () {
-        sandbox.verify();
-        done();
-      });
-
+      expectResult(res, '404 Not Found', done);
       fn(function () {
         throw Error('something not found: etc etc');
       }, res);
@@ -170,10 +191,8 @@ describe(filename, function () {
         res = createMockRes();
 
       req.url = 'a';
-      res.send = function (result) {
-        expect(result).to.equal('["aa","aaa"]');
-        done();
-      };
+      expectNoLogging();
+      expectResult(res, '["aa","aaa"]', done);
       fn()(req, res);
     });
 
@@ -182,25 +201,19 @@ describe(filename, function () {
         res = createMockRes();
 
       req.url = 'a';
-      res.send = function (result) {
-        expect(result).to.equal('["cc","ccc"]');
-        done();
-      };
+      expectResult(res, '["cc","ccc"]', done);
       fn({prefix: 'c'})(req, res);
     });
 
-    it('can filter results', function (done) {
+    it('can filter results if given appropriate transform', function (done) {
       var req = createMockReq(),
-        res = createMockRes();
+        res = createMockRes(),
+        onlyCFilter = filter({wantStrings: true}, function (str) { return str.indexOf('c') !== -1; });
 
       req.url = '';
-      res.send = function (result) {
-        expect(result).to.equal('["c","cc","ccc"]');
-        done();
-      };
-      fn({filters: [filter({wantStrings: true}, function (str) {
-        return str.indexOf('c') !== -1;
-      })]})(req, res);
+      expectNoLogging();
+      expectResult(res, '["c","cc","ccc"]', done);
+      fn({transforms: [onlyCFilter]})(req, res);
     });
   });
 });

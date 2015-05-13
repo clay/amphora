@@ -20,7 +20,10 @@ module.exports = function (options) {
   //mock these methods
   res.status = _.constant(res);
   res.send = _.constant(res);
-  res.json = _.constant(res);
+  res.json = function (json) {
+    res.send(json);
+    return res;
+  };
   res.set = _.constant(res);
   res.pipe = _.constant(res);
   res.locals = {site: 'someSite'};
@@ -29,6 +32,7 @@ module.exports = function (options) {
   res.sendStatus = function (code) {
     res.status(code);
     res.send('sendStatus: whatever');
+    return res;
   };
 
   //options selects a formatter

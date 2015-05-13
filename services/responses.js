@@ -98,29 +98,34 @@ function notImplemented(req, res) {
  */
 function methodNotAllowed(options) {
   var allowed = options && options.allow || [];
-  return function (req, res) {
+  return function (req, res, next) {
     var code = 405,
       method = req.method,
       message = 'Method ' + method + ' not allowed';
-    res.set('Allow', allowed.join(', ').toUpperCase());
-    res.status(code).format({
-      json: function () {
-        //send the message as well
-        res.send({
-          message: message,
-          code: code,
-          allow: allowed
-        });
-      },
-      html: function () {
-        //send some html (should probably be some default, or a render of a 500 page).
-        res.send(code + ' ' + message);
-      },
-      'default': function () {
-        //send whatever is default for this type of data with this status code.
-        res.sendStatus(code);
-      }
-    });
+
+    if (_.contains(allowed, method.toLowerCase())) {
+      next();
+    } else {
+      res.set('Allow', allowed.join(', ').toUpperCase());
+      res.status(code).format({
+        json: function () {
+          //send the message as well
+          res.send({
+            message: message,
+            code: code,
+            allow: allowed
+          });
+        },
+        html: function () {
+          //send some html (should probably be some default, or a render of a 500 page).
+          res.send(code + ' ' + message);
+        },
+        'default': function () {
+          //send whatever is default for this type of data with this status code.
+          res.sendStatus(code);
+        }
+      });
+    }
   };
 }
 
@@ -319,14 +324,13 @@ function list(options) {
 
 /**
  * List all things in the db that start with this prefix
- * @param [options]
  */
-function listWithoutVersions(options) {
-  options = _.defaults(options || {}, {
-    filters: [filter({wantStrings: true}, function (str) {
+function listWithoutVersions() {
+  var options = {
+    transforms: [filter({wantStrings: true}, function (str) {
       return str.indexOf('@') === -1;
     })]
-  });
+  };
   return list(options);
 }
 

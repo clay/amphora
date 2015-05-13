@@ -4,9 +4,12 @@ var _ = require('lodash'),
   express = require('express'),
   request = require('supertest-as-promised'),
   files = require('../../services/files'),
+  references = require('../../services/references'),
   routes = require('../../services/routes'),
   db = require('../../services/db'),
   bluebird = require('bluebird'),
+  multiplex = require('multiplex-templates'),
+  log = require('../../services/log'),
   app,
   host;
 
@@ -110,10 +113,27 @@ function setHost(value) {
 }
 
 function stubComponentPath(sandbox) {
-  var getComponentPath = sandbox.stub(files, 'getComponentPath');
-  getComponentPath.withArgs('valid').returns('validThing');
-  getComponentPath.withArgs('missing').returns('missingThing');
-  getComponentPath.withArgs('invalid').returns(null);
+  var stub = sandbox.stub(files, 'getComponentPath');
+  stub.withArgs('valid').returns('validThing');
+  stub.withArgs('missing').returns('missingThing');
+  stub.withArgs('invalid').returns(null);
+  return sandbox;
+}
+
+function stubGetTemplate(sandbox) {
+  var stub = sandbox.stub(references, 'getTemplate');
+  stub.withArgs('valid').returns('some/valid/template.nunjucks');
+  return sandbox;
+}
+
+function stubMultiplexRender(sandbox) {
+  var stub = sandbox.stub(multiplex, 'render');
+  stub.withArgs('some/valid/template.nunjucks').returns('<valid></valid>');
+  return sandbox;
+}
+
+function stubLogging(sandbox) {
+  sandbox.stub(log);
   return sandbox;
 }
 
@@ -131,6 +151,9 @@ function beforeEach(sandbox, hostname, data) {
   app = express();
   host = hostname;
   stubComponentPath(sandbox);
+  stubGetTemplate(sandbox);
+  stubMultiplexRender(sandbox);
+  stubLogging(sandbox);
   routes.addHost(app, hostname);
 
   return db.clear().then(function () {

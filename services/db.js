@@ -85,7 +85,7 @@ module.exports.list = function (options) {
 
   //The prefix option is a shortcut for a greaterThan and lessThan range.
   if (options.prefix) {
-    // \x00 is the first possible alphanumeric character, and /xFF is the last
+    // \x00 is the first possible alphanumeric character, and \xFF is the last
     options.gte = options.prefix + '\x00';
     options.lte = options.prefix + '\xff';
   }
@@ -101,10 +101,10 @@ module.exports.list = function (options) {
     transformOptions.isArray = true;
   }
 
-  //apply all filters
+  //apply all transforms
   readStream = db.createReadStream(options);
-  readStream = _.reduce(options.filters, function (readStream, filter) {
-    return readStream.pipe(filter);
+  readStream = _.reduce(options.transforms, function (readStream, transform) {
+    return readStream.pipe(transform);
   }, readStream);
 
   return readStream.pipe(jsonTransform(transformOptions));

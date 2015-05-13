@@ -41,6 +41,18 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406);
     });
 
+    describe('/components/:name.html', function () {
+      var path = this.title;
+
+      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'valid'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
+      acceptsJson(path, {name: 'missing'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
+
+      acceptsHtml(path, {name: 'invalid'}, 404);
+      acceptsHtml(path, {name: 'valid'}, 200, '<valid></valid>');
+      acceptsHtml(path, {name: 'missing'}, 404);
+    });
+
     describe('/components/:name@:version', function () {
       var path = this.title;
 
@@ -75,6 +87,18 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
+    });
+
+    describe('/components/:name/instances/:id.html', function () {
+      var path = this.title;
+
+      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404);
+      acceptsJson(path, {name: 'valid', id: 'valid'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
+      acceptsJson(path, {name: 'valid', id: 'missing'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
+
+      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
+      acceptsHtml(path, {name: 'valid', id: 'valid'}, 200, '<valid></valid>');
+      acceptsHtml(path, {name: 'valid', id: 'missing'}, 404);
     });
 
     describe('/components/:name/instances/:id@:version', function () {
