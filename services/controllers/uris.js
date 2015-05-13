@@ -30,7 +30,7 @@ function putUriFromReference(req, res) {
 }
 
 function routes(router) {
-  router.get('/', responses.listAllWithPrefix);
+  router.get('/', responses.list());
   router.get('/:name', getUriFromReference);
   router.put('/:name', putUriFromReference);
   router.post('/', responses.notImplemented);

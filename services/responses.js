@@ -11,6 +11,7 @@ var _ = require('lodash'),
   bluebird = require('bluebird'),
   log = require('./log'),
   Flake = require('flake-idgen'),
+  filter = require('through2-filter'),
   flake = new Flake();
 
 function getUniqueId() {
@@ -287,24 +288,46 @@ function expectHTML(fn, res) {
 }
 
 /**
- * List all things in the db that start with this prefix
- * @param req
- * @param res
+ * List all things in the db
+ * @param [options]
+ *   options.prefix: string
+ *   options.values: boolean,
+ *   options.filters: array
  */
-function listAllWithPrefix(req, res) {
-  var path = normalizePath(req.baseUrl + req.url),
-    list = db.list({prefix: path, values: false});
+function list(options) {
+  options = options || {};
 
-  if (isPromise(list)) {
-    expectJSON(_.constant(list));
-  } else if (isPipeableStream(list)) {
-    res.set('Content-Type', 'application/json');
-    list.on('error', function (error) {
-      log.error('listAllWithPrefix::error', path, error);
-    }).pipe(res);
-  } else {
-    throw new Error('listAllWithPrefix cannot handle type ' + (typeof list));
-  }
+  return function (req, res) {
+    var listOptions = _.defaults(options || {}, {
+        prefix: normalizePath(req.baseUrl + req.url),
+        values: false
+      }),
+      list = db.list(listOptions);
+
+    if (isPromise(list)) {
+      expectJSON(_.constant(list));
+    } else if (isPipeableStream(list)) {
+      res.set('Content-Type', 'application/json');
+      list.on('error', function (error) {
+        log.error('listAllWithPrefix::error', listOptions.prefix, error);
+      }).pipe(res);
+    } else {
+      throw new Error('listAllWithPrefix cannot handle type ' + (typeof list));
+    }
+  };
+}
+
+/**
+ * List all things in the db that start with this prefix
+ * @param [options]
+ */
+function listWithoutVersions(options) {
+  options = _.defaults(options || {}, {
+    filters: [filter({wantStrings: true}, function (str) {
+      return str.indexOf('@') === -1;
+    })]
+  });
+  return list(options);
 }
 
 /**
@@ -352,6 +375,7 @@ module.exports.expectJSON = expectJSON;
 module.exports.expectHTML = expectHTML;
 
 //straight from DB
-module.exports.listAllWithPrefix = listAllWithPrefix;
+module.exports.list = list;
+module.exports.listWithoutVersions = listWithoutVersions;
 module.exports.getRouteFromDB = getRouteFromDB;
 module.exports.putRouteFromDB = putRouteFromDB;

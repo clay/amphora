@@ -136,7 +136,8 @@ function beforeEach(sandbox, hostname, data) {
   return db.clear().then(function () {
     return bluebird.all([
       db.put('/components/valid', JSON.stringify(data)),
-      db.put('/components/valid/instances/valid', JSON.stringify(data))
+      db.put('/components/valid/instances/valid', JSON.stringify(data)),
+      db.put('/components/valid/instances/valid@valid', JSON.stringify(data))
     ]);
   });
 }

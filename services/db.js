@@ -90,17 +90,24 @@ module.exports.list = function (options) {
     options.lte = options.prefix + '\xff';
   }
 
-  var transformOptions = {
-    objectMode: options.values,
-    isArray: options.isArray
-  };
+  var readStream,
+    transformOptions = {
+      objectMode: options.values,
+      isArray: options.isArray
+    };
 
   //if keys but no values, or values but no keys, always return as array.
   if ((options.keys && !options.values) || (!options.keys && options.values)) {
     transformOptions.isArray = true;
   }
 
-  return db.createReadStream(options).pipe(jsonTransform(transformOptions));
+  //apply all filters
+  readStream = db.createReadStream(options);
+  readStream = _.reduce(options.filters, function (readStream, filter) {
+    return readStream.pipe(filter);
+  }, readStream);
+
+  return readStream.pipe(jsonTransform(transformOptions));
 };
 
 /**

@@ -97,10 +97,6 @@ function routeByExtension(req, res) {
   }
 }
 
-function listInstances(req, res) {
-  return responses.listAllWithPrefix(req, res);
-}
-
 function componentMustExist(req, res, next) {
   var name = req.params.name;
   name = name.split('@')[0];
@@ -141,7 +137,7 @@ function routes(router) {
 
 
   router.all('/:name/instances', acceptJSONOnly);
-  router.get('/:name/instances', listInstances);
+  router.get('/:name/instances', responses.listWithoutVersions());
   router.all('/:name/instances', responses.methodNotAllowed({allow: ['get']}));
   router.get('/:name/instances/:id.:ext', routeByExtension);
 

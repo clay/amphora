@@ -7,35 +7,13 @@ var _ = require('lodash'),
   expect = require('chai').expect,
   sinon = require('sinon'),
   bluebird = require('bluebird'),
-  log = require('./log');
-
-
+  log = require('./log'),
+  filter = require('through2-filter'),
+  createMockReq = require('../test/fixtures/mocks/req'),
+  createMockRes = require('../test/fixtures/mocks/res');
 
 describe(filename, function () {
   var sandbox;
-
-  /**
-   * Create fake response object.
-   * @param options
-   * @returns {{}}
-   */
-  function createMockRes(options) {
-    options = options || {};
-    var res = {};
-    res.status = _.constant(res);
-    res.send = _.constant(res);
-    res.json = _.constant(res);
-    res.locals = {site: 'someSite'};
-    res.sendStatus = function (code) {
-      res.status(code);
-      res.send('sendStatus: whatever');
-    };
-    res.format = function (formatters) {
-      formatters[options.formatter || 'default']();
-      return res;
-    };
-    return res;
-  }
 
   /**
    * Shortcut
@@ -170,5 +148,59 @@ describe(filename, function () {
     });
   });
 
+  describe('list', function () {
+    var fn = lib[this.title];
 
+    beforeEach(function () {
+      return db.clear().then(function () {
+        return bluebird.join(
+          db.put('a', 'b'),
+          db.put('aa', 'b'),
+          db.put('aaa', 'b'),
+          db.put('c', 'd'),
+          db.put('cc', 'd'),
+          db.put('ccc', 'd'),
+          db.put('e', 'f')
+        );
+      });
+    });
+
+    it('uses url as prefix if no options given', function (done) {
+      var req = createMockReq(),
+        res = createMockRes();
+
+      req.url = 'a';
+      res.send = function (result) {
+        expect(result).to.equal('["aa","aaa"]');
+        done();
+      };
+      fn()(req, res);
+    });
+
+    it('should use prefix in options if given', function (done) {
+      var req = createMockReq(),
+        res = createMockRes();
+
+      req.url = 'a';
+      res.send = function (result) {
+        expect(result).to.equal('["cc","ccc"]');
+        done();
+      };
+      fn({prefix: 'c'})(req, res);
+    });
+
+    it('can filter results', function (done) {
+      var req = createMockReq(),
+        res = createMockRes();
+
+      req.url = '';
+      res.send = function (result) {
+        expect(result).to.equal('["c","cc","ccc"]');
+        done();
+      };
+      fn({filters: [filter({wantStrings: true}, function (str) {
+        return str.indexOf('c') !== -1;
+      })]})(req, res);
+    });
+  });
 });

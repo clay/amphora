@@ -158,7 +158,7 @@ function createPage(req, res) {
 }
 
 function routes(router) {
-  router.get('/', responses.listAllWithPrefix);
+  router.get('/', responses.listWithoutVersions());
   router.get('/:name.:ext', routeByExtension);
   router.get('/:name', responses.getRouteFromDB);
   router.put('/:name', responses.putRouteFromDB);
