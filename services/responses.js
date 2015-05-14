@@ -262,6 +262,14 @@ function handleError(res) {
   };
 }
 
+function acceptJSONOnly(req, res, next) {
+  if (req.accepts('json')) {
+    next();
+  } else {
+    notAcceptable({accept: ['application/json']})(req, res);
+  }
+}
+
 /**
  * Reusable code to return JSON data, both for good results AND errors.
  *
@@ -375,6 +383,7 @@ module.exports.serverError = serverError; //bad 500
 
 //generic handlers
 module.exports.handleError = handleError; //404 or 500 based on exception
+module.exports.acceptJSONOnly = acceptJSONOnly; //406 on non-JSON body
 module.exports.expectJSON = expectJSON;
 module.exports.expectHTML = expectHTML;
 

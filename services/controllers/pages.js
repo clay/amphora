@@ -158,8 +158,11 @@ function createPage(req, res) {
 }
 
 function routes(router) {
+  router.all('*', responses.acceptJSONOnly);
+  router.all('/', responses.methodNotAllowed({allow: ['get']}));
   router.get('/', responses.listWithoutVersions());
   router.get('/:name.:ext', routeByExtension);
+  router.all('/:name', responses.methodNotAllowed({allow: ['get', 'put']}));
   router.get('/:name', responses.getRouteFromDB);
   router.put('/:name', responses.putRouteFromDB);
   router.post('/', createPage);

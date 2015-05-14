@@ -17,7 +17,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEach(sandbox,  hostname, data);
+      return apiAccepts.beforeEachComponentTest(sandbox,  hostname, data);
     });
 
     afterEach(function () {
