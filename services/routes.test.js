@@ -1,6 +1,6 @@
 'use strict';
 var _ = require('lodash'),
-  filename = _.startCase(__filename.split('/').pop().split('.').shift()),
+  filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./' + filename),
   expect = require('chai').expect,
   sinon = require('sinon'),
@@ -12,7 +12,7 @@ var _ = require('lodash'),
   bluebird = require('bluebird'),
   express = require('express');
 
-describe(filename, function () {
+describe(_.startCase(filename), function () {
   var sandbox;
 
   beforeEach(function () {

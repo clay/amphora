@@ -1,13 +1,13 @@
 'use strict';
 var _ = require('lodash'),
-  filename = _.startCase(__filename.split('/').pop().split('.').shift()),
+  filename = __filename.split('/').pop().split('.').shift(),
   mockFS = require('mock-fs'),
   expect = require('chai').expect,
   sinon = require('sinon'),
   fs = require('fs'),
   files = require('./files');
 
-describe(filename, function () {
+describe(_.startCase(filename), function () {
   var mock, sandbox;
 
   before(function () {

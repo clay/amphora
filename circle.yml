@@ -1,0 +1,9 @@
+machine:
+  timezone:
+    America/New_York
+  node:
+    version: iojs-v1.2.0
+dependencies:
+  pre:
+    - npm install pangyp -g
+

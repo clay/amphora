@@ -1,7 +1,7 @@
 'use strict';
 
 var _ = require('lodash'),
-  filename = _.startCase(__filename.split('/').pop().split('.').shift()),
+  filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./' + filename),
   db = require('./db'),
   expect = require('chai').expect,
@@ -12,7 +12,7 @@ var _ = require('lodash'),
   createMockReq = require('../test/fixtures/mocks/req'),
   createMockRes = require('../test/fixtures/mocks/res');
 
-describe(filename, function () {
+describe(_.startCase(filename), function () {
   var sandbox;
 
   /**
