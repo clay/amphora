@@ -10,6 +10,7 @@ var _ = require('lodash'),
   bluebird = require('bluebird'),
   multiplex = require('multiplex-templates'),
   log = require('../../services/log'),
+  expect = require('chai').expect,
   app,
   host;
 
@@ -100,6 +101,25 @@ function acceptsJson(method) {
       status: status,
       accept: 'application/json',
       contentType: /json/
+    });
+  };
+}
+
+function updatesTag(method) {
+  return function (path, replacements, tag, data) {
+    var realPath = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
+
+    it(JSON.stringify(replacements) + ' updates tag ' + tag, function () {
+      return request(app)[method](realPath)
+        .send(data)
+        .type('application/json')
+        .set('Accept', 'application/json')
+        .set('Host', host)
+        .then(function () {
+          return db.get(realPath + '@' + tag).then(function (result) {
+            expect(result).to.deep.equal(data);
+          });
+        });
     });
   };
 }
@@ -232,6 +252,7 @@ module.exports.setHost = setHost;
 module.exports.acceptsHtml = acceptsHtml;
 module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
+module.exports.updatesTag = updatesTag;
 module.exports.stubComponentPath = stubComponentPath;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
 module.exports.beforeEachPageTest = beforeEachPageTest;

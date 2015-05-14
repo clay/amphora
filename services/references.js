@@ -47,6 +47,13 @@ function getComponentData(ref, locals) {
   componentName = getComponentName(ref);
   componentModule = files.getComponentModule(componentName);
 
+  /**
+   * GET to :id returns (full), same as :id@latest
+   * GET to :id@latest (full), same as :id
+   * GET to :id@published (full)
+   * GET to :id@version returns either (diff) for version or (full) for tag (whatever is in db
+   */
+
   if (_.isFunction(componentModule)) {
     promise = componentModule(ref, locals);
   } else {
@@ -69,6 +76,13 @@ function putComponentData(ref, data) {
   //assertions
   componentName = getComponentName(ref);
   componentModule = files.getComponentModule(componentName);
+
+  /**
+   * PUT to :id saves (full), also creates new :id@version (diff) and :id@latest (full)
+   * PUT to :id@latest (full) also creates new :id@version (diff) and :id (full)
+   * PUT to :id@published (full) creates new :id@version (diff)
+   * PUT to :id@version (tag) (full) does not create new version
+   */
 
   if (componentModule && _.isFunction(componentModule.put)) {
     promise = componentModule.put(ref, data);
