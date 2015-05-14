@@ -195,6 +195,37 @@ function beforeEachPageTest(sandbox, hostname, data) {
   });
 }
 
+/**
+ * Before each test, make the DB and Host consistent, and get a _new_ version of express.
+ *
+ * Yes, brand new, for every single test.
+ *
+ * @param sandbox
+ * @param hostname
+ * @param data
+ * @returns {Promise}
+ */
+function beforeEachUriTest(sandbox, hostname, data) {
+  app = express();
+  host = hostname;
+  stubComponentPath(sandbox);
+  stubGetTemplate(sandbox);
+  stubMultiplexRender(sandbox);
+  stubLogging(sandbox);
+  routes.addHost(app, hostname);
+
+  return db.clear().then(function () {
+    return bluebird.all([
+      db.put('/components/valid', JSON.stringify(data)),
+      db.put('/components/valid/instances/valid', JSON.stringify(data)),
+      db.put('/components/valid/instances/valid@valid', JSON.stringify(data)),
+      db.put('/pages/valid', JSON.stringify(data)),
+      db.put('/pages/valid@valid', JSON.stringify(data)),
+      db.put('/uris/valid', JSON.stringify(data))
+    ]);
+  });
+}
+
 
 module.exports.setApp = setApp;
 module.exports.setHost = setHost;
@@ -204,3 +235,4 @@ module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.stubComponentPath = stubComponentPath;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
 module.exports.beforeEachPageTest = beforeEachPageTest;
+module.exports.beforeEachUriTest = beforeEachUriTest;
