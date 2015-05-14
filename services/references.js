@@ -44,10 +44,7 @@ function getComponentData(ref, locals) {
     componentName,
     componentModule;
 
-  //assertions
-  is(ref, 'reference');
   componentName = getComponentName(ref);
-  is(componentName, 'component name', ref);
   componentModule = files.getComponentModule(componentName);
 
   if (_.isFunction(componentModule)) {
@@ -70,11 +67,8 @@ function putComponentData(ref, data) {
   var promise, componentModule, componentName;
 
   //assertions
-  is(ref, 'reference');
   componentName = getComponentName(ref);
-  is(componentName, 'component name', ref);
   componentModule = files.getComponentModule(componentName);
-  is.object(data, ref);
 
   if (componentModule && _.isFunction(componentModule.put)) {
     promise = componentModule.put(ref, data);
@@ -84,7 +78,7 @@ function putComponentData(ref, data) {
     promise = db.put(ref, JSON.stringify(data)).return(data);
   }
 
-  return promise;
+  return is.promise(promise, ref);
 }
 
 /**
@@ -95,10 +89,7 @@ function putComponentData(ref, data) {
 function deleteComponentData(ref) {
   var componentModule, componentName;
 
-  //assertions
-  is(ref, 'reference');
   componentName = getComponentName(ref);
-  is(componentName, 'component name', ref);
   componentModule = files.getComponentModule(componentName);
 
   //get old values, so we can return them when the thing is deleted.
@@ -112,7 +103,7 @@ function deleteComponentData(ref) {
       promise = db.del(ref);
     }
 
-    return promise.return(oldData);
+    return is.promise(promise, ref).return(oldData);
   });
 }
 
@@ -123,9 +114,6 @@ function deleteComponentData(ref) {
  * @returns {ReadStream}
  */
 function listComponentInstances(ref) {
-  is(ref, 'reference');
-  is(getComponentName(ref), 'component name', ref);
-
   return db.list({prefix: ref, values: false, isArray: false})
     .on('error', function (error) {
       log.warn('listComponentInstances::error', path, error);
@@ -143,10 +131,6 @@ function listComponentData(ref, locals) {
     componentName = getComponentName(ref),
     componentModule = files.getComponentModule(componentName);
 
-  //assertions
-  is(ref, 'reference');
-  is(componentName, 'component name', ref);
-
   if (componentModule && _.isFunction(componentModule.list)) {
     result = componentModule.list(ref, locals);
   } else {
@@ -163,11 +147,7 @@ function listComponentData(ref, locals) {
  * @returns {Promise.object}
  */
 function getPageData(ref) {
-  is('page reference', ref);
-  is.string.match(ref, /^\/pages\/.*/); //case matters, only beginning of string
-
-  return db.get(ref)
-    .then(JSON.parse);
+  return db.get(ref).then(JSON.parse);
 }
 
 /**
@@ -177,12 +157,7 @@ function getPageData(ref) {
  * @returns {Promise.object}
  */
 function putPageData(ref, data) {
-  is(ref, 'page reference');
-  is.string.match(ref, /^\/pages\/.*/); //case matters, only beginning of string
-  is.object(data, ref);
-
-  return db.put(ref, JSON.stringify(data))
-    .return(data);
+  return db.put(ref, JSON.stringify(data)).return(data);
 }
 
 /**
@@ -191,9 +166,6 @@ function putPageData(ref, data) {
  * @returns {Promise.string}
  */
 function getUriData(ref) {
-  is(ref, 'uri reference');
-  is.string.match(ref, /^\/uris\/.*/); //case matters, only beginning of string
-
   return db.get(ref);
 }
 
@@ -204,10 +176,6 @@ function getUriData(ref) {
  * @returns {Promise.string}
  */
 function putUriData(ref, data) {
-  is(ref, 'uri reference');
-  is.string.match(ref, /^\/uris\/.*/); //case matters, only beginning of string
-  is.string(data, ref);
-
   return db.put(ref, data).return(data);
 }
 
@@ -219,10 +187,6 @@ function putUriData(ref, data) {
 function getSchema(ref) {
   return bluebird.try(function () {
     var componentName = getComponentName(ref);
-
-    is(ref, 'reference');
-    is(componentName, 'component name', ref);
-
     return schema.getSchema(files.getComponentPath(componentName));
   });
 }
@@ -233,12 +197,10 @@ function getSchema(ref) {
  * @returns {*}
  */
 function getTemplate(ref) {
-  is(ref, 'reference');
 
   // if there are slashes in this name, they've given us a reference like /components/name/instances/id
   if (ref.indexOf('/') !== -1) {
     ref = getComponentName(ref);
-    is(ref, 'component name', ref);
   }
 
   var filePath = files.getComponentPath(ref),

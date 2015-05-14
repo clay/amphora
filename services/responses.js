@@ -11,6 +11,7 @@ var _ = require('lodash'),
   bluebird = require('bluebird'),
   log = require('./log'),
   Flake = require('flake-idgen'),
+  filter = require('through2-filter'),
   flake = new Flake();
 
 function getUniqueId() {
@@ -97,29 +98,34 @@ function notImplemented(req, res) {
  */
 function methodNotAllowed(options) {
   var allowed = options && options.allow || [];
-  return function (req, res) {
+  return function (req, res, next) {
     var code = 405,
       method = req.method,
       message = 'Method ' + method + ' not allowed';
-    res.set('Allow', allowed.join(', ').toUpperCase());
-    res.status(code).format({
-      json: function () {
-        //send the message as well
-        res.send({
-          message: message,
-          code: code,
-          allow: allowed
-        });
-      },
-      html: function () {
-        //send some html (should probably be some default, or a render of a 500 page).
-        res.send(code + ' ' + message);
-      },
-      'default': function () {
-        //send whatever is default for this type of data with this status code.
-        res.sendStatus(code);
-      }
-    });
+
+    if (_.contains(allowed, method.toLowerCase())) {
+      next();
+    } else {
+      res.set('Allow', allowed.join(', ').toUpperCase());
+      res.status(code).format({
+        json: function () {
+          //send the message as well
+          res.send({
+            message: message,
+            code: code,
+            allow: allowed
+          });
+        },
+        html: function () {
+          //send some html (should probably be some default, or a render of a 500 page).
+          res.send(code + ' ' + message);
+        },
+        'default': function () {
+          //send whatever is default for this type of data with this status code.
+          res.sendStatus(code);
+        }
+      });
+    }
   };
 }
 
@@ -256,6 +262,14 @@ function handleError(res) {
   };
 }
 
+function acceptJSONOnly(req, res, next) {
+  if (req.accepts('json')) {
+    next();
+  } else {
+    notAcceptable({accept: ['application/json']})(req, res);
+  }
+}
+
 /**
  * Reusable code to return JSON data, both for good results AND errors.
  *
@@ -287,24 +301,45 @@ function expectHTML(fn, res) {
 }
 
 /**
- * List all things in the db that start with this prefix
- * @param req
- * @param res
+ * List all things in the db
+ * @param [options]
+ *   options.prefix: string
+ *   options.values: boolean,
+ *   options.filters: array
  */
-function listAllWithPrefix(req, res) {
-  var path = normalizePath(req.baseUrl + req.url),
-    list = db.list({prefix: path, values: false});
+function list(options) {
+  options = options || {};
 
-  if (isPromise(list)) {
-    expectJSON(_.constant(list));
-  } else if (isPipeableStream(list)) {
-    res.set('Content-Type', 'application/json');
-    list.on('error', function (error) {
-      log.error('listAllWithPrefix::error', path, error);
-    }).pipe(res);
-  } else {
-    throw new Error('listAllWithPrefix cannot handle type ' + (typeof list));
-  }
+  return function (req, res) {
+    var listOptions = _.defaults(options || {}, {
+        prefix: normalizePath(req.baseUrl + req.url),
+        values: false
+      }),
+      list = db.list(listOptions);
+
+    if (isPromise(list)) {
+      expectJSON(_.constant(list));
+    } else if (isPipeableStream(list)) {
+      res.set('Content-Type', 'application/json');
+      list.on('error', function (error) {
+        log.error('listAllWithPrefix::error', listOptions.prefix, error);
+      }).pipe(res);
+    } else {
+      throw new Error('listAllWithPrefix cannot handle type ' + (typeof list));
+    }
+  };
+}
+
+/**
+ * List all things in the db that start with this prefix
+ */
+function listWithoutVersions() {
+  var options = {
+    transforms: [filter({wantStrings: true}, function (str) {
+      return str.indexOf('@') === -1;
+    })]
+  };
+  return list(options);
 }
 
 /**
@@ -348,10 +383,12 @@ module.exports.serverError = serverError; //bad 500
 
 //generic handlers
 module.exports.handleError = handleError; //404 or 500 based on exception
+module.exports.acceptJSONOnly = acceptJSONOnly; //406 on non-JSON body
 module.exports.expectJSON = expectJSON;
 module.exports.expectHTML = expectHTML;
 
 //straight from DB
-module.exports.listAllWithPrefix = listAllWithPrefix;
+module.exports.list = list;
+module.exports.listWithoutVersions = listWithoutVersions;
 module.exports.getRouteFromDB = getRouteFromDB;
 module.exports.putRouteFromDB = putRouteFromDB;

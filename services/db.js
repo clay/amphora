@@ -85,22 +85,29 @@ module.exports.list = function (options) {
 
   //The prefix option is a shortcut for a greaterThan and lessThan range.
   if (options.prefix) {
-    // \x00 is the first possible alphanumeric character, and /xFF is the last
+    // \x00 is the first possible alphanumeric character, and \xFF is the last
     options.gte = options.prefix + '\x00';
     options.lte = options.prefix + '\xff';
   }
 
-  var transformOptions = {
-    objectMode: options.values,
-    isArray: options.isArray
-  };
+  var readStream,
+    transformOptions = {
+      objectMode: options.values,
+      isArray: options.isArray
+    };
 
   //if keys but no values, or values but no keys, always return as array.
   if ((options.keys && !options.values) || (!options.keys && options.values)) {
     transformOptions.isArray = true;
   }
 
-  return db.createReadStream(options).pipe(jsonTransform(transformOptions));
+  //apply all transforms
+  readStream = db.createReadStream(options);
+  readStream = _.reduce(options.transforms, function (readStream, transform) {
+    return readStream.pipe(transform);
+  }, readStream);
+
+  return readStream.pipe(jsonTransform(transformOptions));
 };
 
 /**

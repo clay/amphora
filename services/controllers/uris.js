@@ -30,7 +30,10 @@ function putUriFromReference(req, res) {
 }
 
 function routes(router) {
-  router.get('/', responses.listAllWithPrefix);
+  router.all('*', responses.acceptJSONOnly);
+  router.all('/', responses.methodNotAllowed({allow: ['get']}));
+  router.get('/', responses.list());
+  router.all('/:name', responses.methodNotAllowed({allow: ['get', 'put']}));
   router.get('/:name', getUriFromReference);
   router.put('/:name', putUriFromReference);
   router.post('/', responses.notImplemented);

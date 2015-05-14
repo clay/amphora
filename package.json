@@ -28,6 +28,7 @@
     "memdown": "^1.0.0",
     "multiplex-templates": "^1.0",
     "nunjucks-filters": "^1.0",
+    "through2-filter": "^1.4",
     "vhost": "^3.0.0",
     "winston": "^0.9"
   },

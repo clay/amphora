@@ -69,36 +69,42 @@ function getSchema(req, res) {
   }, res);
 }
 
+function onlyAcceptExtension(type, req, res, cb) {
+  var accepts = req.headers.accept,
+    isAll = accepts.indexOf('*/*') !== -1,
+    isType = accepts.indexOf(type) !== -1;
+
+  if (!isAll && !isType) {
+    responses.notAcceptable({accept: [type]})(req, res);
+  } else {
+    req.headers.accept = type;
+    cb(req, res);
+  }
+}
+
 /**
  * Change the acceptance type based on the extension they gave us
+ *
+ * Fail if they don't accept right protocol and not *
  *
  * @param req
  * @param res
  */
 function routeByExtension(req, res) {
-  log.info('routeByExtension', req.params);
-
   switch (req.params.ext.toLowerCase()) {
     case 'html':
-      req.headers.accept = 'text/html';
-      renderComponent(req, res);
+      onlyAcceptExtension('text/html', req, res, renderComponent);
       break;
 
     case 'yaml':
-      req.headers.accept = 'text/yaml';
-      responses.notImplemented(req, res);
+      onlyAcceptExtension('text/yaml', req, res, responses.notImplemented.bind(responses));
       break;
 
     case 'json': // jshint ignore:line
     default:
-      req.headers.accept = 'application/json';
-      getRouteFromComponent(req, res);
+      onlyAcceptExtension('application/json', req, res, getRouteFromComponent);
       break;
   }
-}
-
-function listInstances(req, res) {
-  return responses.listAllWithPrefix(req, res);
 }
 
 function componentMustExist(req, res, next) {
@@ -113,51 +119,42 @@ function componentMustExist(req, res, next) {
   }
 }
 
-function acceptJSONOnly(req, res, next) {
-  if (req.accepts('json')) {
-    next();
-  } else {
-    responses.notAcceptable({accept: ['application/json']})(req, res);
-  }
-}
-
 function routes(router) {
-  router.get('/', responses.notImplemented);
   router.all('/', responses.methodNotAllowed({allow: ['get']}));
+  router.get('/', responses.notImplemented);
+
   router.all('/:name*', componentMustExist);
   router.get('/:name.:ext', routeByExtension);
 
-  router.all('/:name@:version', acceptJSONOnly);
+  router.all('/:name@:version', responses.acceptJSONOnly);
+  router.all('/:name@:version', responses.methodNotAllowed({allow: ['get', 'put']}));
   router.get('/:name@:version', getRouteFromComponent);
   router.put('/:name@:version', putRouteFromComponent);
-  router.all('/:name@:version', responses.methodNotAllowed({allow: ['get', 'put']}));
 
-  router.all('/:name', acceptJSONOnly);
+  router.all('/:name', responses.acceptJSONOnly);
+  router.all('/:name', responses.methodNotAllowed({allow: ['get', 'put', 'delete']}));
   router.get('/:name', getRouteFromComponent);
   router.put('/:name', putRouteFromComponent);
   router.delete('/:name', deleteRouteFromComponent);
-  router.all('/:name', responses.methodNotAllowed({allow: ['get', 'put', 'delete']}));
 
-
-
-  router.all('/:name/instances', acceptJSONOnly);
-  router.get('/:name/instances', listInstances);
+  router.all('/:name/instances', responses.acceptJSONOnly);
   router.all('/:name/instances', responses.methodNotAllowed({allow: ['get']}));
+  router.get('/:name/instances', responses.listWithoutVersions());
   router.get('/:name/instances/:id.:ext', routeByExtension);
 
-  router.all('/:name/instances/:id@:version', acceptJSONOnly);
+  router.all('/:name/instances/:id@:version', responses.acceptJSONOnly);
+  router.all('/:name/instances/:id@:version', responses.methodNotAllowed({allow: ['get', 'put']}));
   router.get('/:name/instances/:id@:version', getRouteFromComponent);
   router.put('/:name/instances/:id@:version', putRouteFromComponent);
-  router.all('/:name/instances/:id@:version', responses.methodNotAllowed({allow: ['get', 'put']}));
 
-  router.all('/:name/instances/:id', acceptJSONOnly);
+  router.all('/:name/instances/:id', responses.acceptJSONOnly);
+  router.all('/:name/instances/:id', responses.methodNotAllowed({allow: ['get', 'put', 'delete']}));
   router.get('/:name/instances/:id', getRouteFromComponent);
   router.put('/:name/instances/:id', putRouteFromComponent);
   router.delete('/:name/instances/:id', deleteRouteFromComponent);
-  router.all('/:name/instances/:id', responses.methodNotAllowed({allow: ['get', 'put', 'delete']}));
 
-  router.get('/:name/schema', getSchema);
   router.all('/:name/schema', responses.methodNotAllowed({allow: ['get']}));
+  router.get('/:name/schema', getSchema);
 }
 
 module.exports = routes;

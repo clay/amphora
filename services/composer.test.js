@@ -8,22 +8,9 @@ var _ = require('lodash'),
   bluebird = require('bluebird'),
   log = require('./log'),
   plex = require('multiplex-templates'),
-  references = require('./references');
-
-function createMockReq() {
-  var req = {};
-  req.url = 'someUrl';
-  req.vhost = {hostname: ''};
-  return req;
-}
-
-function createMockRes() {
-  var res = {};
-  res.status = _.constant(res);
-  res.send = _.constant(res);
-  res.locals = {site: 'someSite'};
-  return res;
-}
+  references = require('./references'),
+  createMockReq = require('../test/fixtures/mocks/req'),
+  createMockRes = require('../test/fixtures/mocks/res');
 
 describe(filename, function () {
   var sandbox,
