@@ -8,18 +8,9 @@ var _ = require('lodash'),
   bluebird = require('bluebird'),
   log = require('./log'),
   chalk = require('chalk'),
-  Flake = require('flake-idgen'),
-  flake = new Flake();
+  uid = require('./uid');
 
 _.mixin(require('lodash-ny-util'));
-
-/**
- * Returns base64 unique id that's also sortable (by creation time)
- * @returns {String}
- */
-function getUniqueId() {
-  return flake.next().toString('base64');
-}
 
 /**
  * @param {string} ref
@@ -113,7 +104,7 @@ function addComponent(ref, data, locals) {
 
   //if no instance, add one
   if (!hasInstance) {
-    ref += '/instances/' + getUniqueId();
+    ref += '/instances/' + uid();
   }
 
   importer = getImporter(ref, data, locals);

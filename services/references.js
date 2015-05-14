@@ -17,7 +17,8 @@ var config = require('config'),
   glob = require('glob'),
   bluebird = require('bluebird'),
   is = require('./assert-is'),
-  log = require('./log');
+  log = require('./log'),
+  uid = require('./uid');
 
 /**
  * Takes a ref, and returns the component name within it.
@@ -47,13 +48,6 @@ function getComponentData(ref, locals) {
   componentName = getComponentName(ref);
   componentModule = files.getComponentModule(componentName);
 
-  /**
-   * GET to :id returns (full), same as :id@latest
-   * GET to :id@latest (full), same as :id
-   * GET to :id@published (full)
-   * GET to :id@version returns either (diff) for version or (full) for tag (whatever is in db
-   */
-
   if (_.isFunction(componentModule)) {
     promise = componentModule(ref, locals);
   } else {
@@ -65,17 +59,86 @@ function getComponentData(ref, locals) {
 }
 
 /**
+ * PUT to just :id or @latest writes to both locations and creates a new version.
+ * @param ref
+ * @param data
+ * @returns {Promise}
+ */
+function putComponentDataToLatest(ref, data) {
+  data = JSON.stringify(data);
+  return db.batch([
+    { type: 'put', key: ref, value: data },
+    { type: 'put', key: ref + '@latest', value: data },
+    { type: 'put', key: ref + '@' + uid(), value: data}
+  ]);
+}
+
+/**
+ *
+ * @param ref
+ * @param data
+ * @returns {Promise}
+ */
+function putComponentDataToPublished(ref, data) {
+  data = JSON.stringify(data);
+  return db.batch([
+    { type: 'put', key: ref + '@published', value: data },
+    { type: 'put', key: ref + '@' + uid(), value: data}
+  ]);
+}
+
+/**
+ *
+ * @param ref
+ * @param data
+ * @param tag
+ * @returns {Promise}
+ */
+function putComponentDataToTag(ref, data, tag) {
+  data = JSON.stringify(data);
+  return db.batch([
+    { type: 'put', key: ref + '@' + tag, value: data }
+  ]);
+}
+
+/**
+ *
+ * @param ref
+ * @param data
+ * @returns {Promise}
+ */
+function putComponentDataToDB(ref, data) {
+  let split = ref.split('@'),
+    path = split[0],
+    version = split[1];
+
+  if (version) {
+    switch (version) {
+      case 'list':
+        throw new Error('Cannot PUT to @list.');
+      case 'latest':
+        return putComponentDataToLatest(path, data);
+
+      case 'published':
+        return putComponentDataToPublished(path, data);
+
+      default:
+        return putComponentDataToTag(path, data);
+
+    }
+  } else {
+    return putComponentDataToLatest(path, data);
+  }
+}
+
+/**
  *
  * @param {string} ref
  * @param {object} data
  * @returns {Promise}
  */
 function putComponentData(ref, data) {
-  var promise, componentModule, componentName;
-
-  //assertions
-  componentName = getComponentName(ref);
-  componentModule = files.getComponentModule(componentName);
+  let promise, componentModule;
 
   /**
    * PUT to :id saves (full), also creates new :id@version (diff) and :id@latest (full)
@@ -84,12 +147,13 @@ function putComponentData(ref, data) {
    * PUT to :id@version (tag) (full) does not create new version
    */
 
+  componentModule = files.getComponentModule(getComponentName(ref));
   if (componentModule && _.isFunction(componentModule.put)) {
     promise = componentModule.put(ref, data);
   } else {
     // default back to db.js, (db takes strings, not objects)
     // returns data that was successfully PUT
-    promise = db.put(ref, JSON.stringify(data)).return(data);
+    promise = putComponentDataToDB(ref, data);
   }
 
   return is.promise(promise, ref);

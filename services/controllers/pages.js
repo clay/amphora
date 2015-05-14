@@ -14,6 +14,7 @@ var _ = require('lodash'),
   responses = require('../responses'),
   composer = require('../composer'),
   log = require('../log'),
+  uid = require('../uid'),
   chalk = require('chalk');
 
 /**
@@ -73,7 +74,7 @@ function cloneDefaultComponents(pageData) {
     var componentName = references.getComponentName(value);
 
     obj[key] = references.getComponentData('/components/' + componentName).then(function (componentData) {
-      var componentInstance = '/components/' + componentName + '/instances/' + responses.getUniqueId();
+      var componentInstance = '/components/' + componentName + '/instances/' + uid();
       addOp(componentInstance, componentData, ops);
       return componentInstance;
     });
@@ -128,7 +129,7 @@ function createPage(req, res) {
   var body = req.body,
     layoutReference = body && body.layout,
     pageData = body && _.omit(body, 'layout'),
-    pageReference = '/pages/' + responses.getUniqueId();
+    pageReference = '/pages/' + uid();
 
   is(layoutReference, 'layout reference');
 

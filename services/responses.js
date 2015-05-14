@@ -10,13 +10,8 @@ var _ = require('lodash'),
   db = require('./db'),
   bluebird = require('bluebird'),
   log = require('./log'),
-  Flake = require('flake-idgen'),
   filter = require('through2-filter'),
-  flake = new Flake();
-
-function getUniqueId() {
-  return flake.next().toString('base64');
-}
+  uid = require('./uid');
 
 /**
  * Duck-typing.
@@ -371,7 +366,6 @@ function putRouteFromDB(req, res) {
 module.exports.removeQueryString = removeQueryString;
 module.exports.removeExtension = removeExtension;
 module.exports.normalizePath = normalizePath;
-module.exports.getUniqueId = getUniqueId;
 
 //error responses
 module.exports.clientError = clientError; //400 client error
