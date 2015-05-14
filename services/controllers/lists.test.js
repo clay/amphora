@@ -1,7 +1,7 @@
 'use strict';
 
 var _ = require('lodash'),
-  filename = _.startCase(__filename.split('/').pop().split('.').shift()),
+  filename = __filename.split('/').pop().split('.').shift(),
   lib = require('./' + filename),
   responses = require('../responses'),
   sinon = require('sinon'),
@@ -9,7 +9,7 @@ var _ = require('lodash'),
 
 
 
-describe(filename, function () {
+describe(_.startCase(filename), function () {
   var sandbox;
 
   function createMockReq() {
