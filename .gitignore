@@ -14,6 +14,7 @@ lib-cov
 npm-debug.log
 node_modules
 coverage.html
+coverage
 
 # config
 config/*.yaml
