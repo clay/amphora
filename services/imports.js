@@ -8,7 +8,8 @@ var _ = require('lodash'),
   bluebird = require('bluebird'),
   log = require('./log'),
   chalk = require('chalk'),
-  uid = require('./uid');
+  uid = require('./uid'),
+  components = require('./controllers/components');
 
 _.mixin(require('lodash-ny-util'));
 
@@ -69,7 +70,7 @@ function callImport(fn, ref, data, locals, err) {
  */
 function getImporter(ref, data, locals) {
   var result,
-    componentName = references.getComponentName(ref),
+    componentName = components.getName(ref),
     componentModule = files.getComponentModule(componentName),
     fn = componentModule && componentModule.import;
 
@@ -111,7 +112,7 @@ function addComponent(ref, data, locals) {
 
   if (hasInstance) {
     //if referring to an instance component, if it doesn't already exist, import it.
-    result = references.getComponentData(ref, locals)
+    result = components.get(ref, locals)
       .then(_.constant([])) //exists; no import needed
       .catch(importer); //missing; import from component
   } else {
@@ -136,7 +137,7 @@ function addPage(url, layoutRef, pageSpecific, locals) {
   locals = _.defaults(locals || {}, {});
 
   return bluebird.join(
-    references.getComponentData(layoutRef),
+    components.get(layoutRef),
     bluebird.props(_.mapValues(pageSpecific, function (componentRef) {
       //at the root level of a layout there is no data yet, just locals; They'll have to fetch it themselves if they need to.
       return addComponent(componentRef, null, locals);

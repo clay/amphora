@@ -212,58 +212,6 @@ describe(_.startCase(filename), function () {
 
 
   describe('resolveDataReferences', function () {
-    it('looks up references', function (done) {
-      var mock,
-        data = {
-          a: {_ref:'/components/b'},
-          c: {d: {_ref:'/components/e'}}
-        };
 
-      sandbox.stub(files, 'getComponentModule', _.noop);
-
-      mock = sandbox.mock(db);
-      mock.expects('get').withArgs('/components/b').once().returns(bluebird.resolve(JSON.stringify({g: 'h'})));
-      mock.expects('get').withArgs('/components/e').once().returns(bluebird.resolve(JSON.stringify({i: 'j'})));
-
-      references.resolveDataReferences(data).done(function (result) {
-        sandbox.verify();
-        expect(result).to.deep.equal({
-          a: { _ref: '/components/b', g: 'h' },
-          c: { d: { _ref: '/components/e', i: 'j' } }
-        });
-        done();
-      });
-    });
-
-    it('looks up references recursively', function (done) {
-      var mock,
-        data = {
-          a: {_ref:'/components/b'},
-          c: {d: {_ref:'/components/e'}}
-        };
-
-      sandbox.stub(files, 'getComponentModule', _.noop);
-
-      mock = sandbox.mock(db);
-      mock.expects('get').withArgs('/components/b').once().returns(bluebird.resolve(JSON.stringify({g: 'h'})));
-      mock.expects('get').withArgs('/components/e').once().returns(bluebird.resolve(JSON.stringify({i: 'j', k: {_ref:'/components/m'}})));
-      mock.expects('get').withArgs('/components/m').once().returns(bluebird.resolve(JSON.stringify({n: 'o'})));
-
-      references.resolveDataReferences(data).done(function (result) {
-        sandbox.verify();
-        expect(result).to.deep.equal({
-          a: { _ref: '/components/b', g: 'h' },
-          c: { d: {
-            _ref: '/components/e',
-            i: 'j',
-            k: {
-              _ref: '/components/m',
-              n: 'o' //we just recursively looked this up from another lookup
-            }
-          } }
-        });
-        done();
-      });
-    });
   });
 });

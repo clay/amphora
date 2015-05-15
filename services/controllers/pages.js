@@ -15,7 +15,8 @@ var _ = require('lodash'),
   composer = require('../composer'),
   log = require('../log'),
   uid = require('../uid'),
-  chalk = require('chalk');
+  chalk = require('chalk'),
+  components = require('./components');
 
 /**
  * Get a list of the areas in a layout that have to be filled with pageData.
@@ -71,9 +72,9 @@ function addOp(ref, data, ops) {
 function cloneDefaultComponents(pageData) {
   var ops = [];
   return bluebird.props(_.reduce(pageData, function (obj, value, key) {
-    var componentName = references.getComponentName(value);
+    var componentName = components.getName(value);
 
-    obj[key] = references.getComponentData('/components/' + componentName).then(function (componentData) {
+    obj[key] = components.get('/components/' + componentName).then(function (componentData) {
       var componentInstance = '/components/' + componentName + '/instances/' + uid();
       addOp(componentInstance, componentData, ops);
       return componentInstance;
@@ -134,7 +135,7 @@ function createPage(req, res) {
   is(layoutReference, 'layout reference');
 
   responses.expectJSON(function () {
-    return references.getComponentData(layoutReference).then(function (layoutData) {
+    return components.get(layoutReference).then(function (layoutData) {
       validatePageData(pageData, layoutData);
 
       return cloneDefaultComponents(pageData);
