@@ -4,7 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test/index.js"
+    "test": "./node_modules/.bin/mocha test/index.js && ./node_modules/.bin/mocha -r blanket -R html-cov test/index.js > $CIRCLE_ARTIFACTS/coverage.html"
+  },
+  "config": {
+    "blanket": {
+      "pattern": "index.js",
+      "data-cover-never": "node_modules"
+    }
   },
   "repository": {
     "type": "git",
@@ -33,6 +39,7 @@
     "winston": "^0.9"
   },
   "devDependencies": {
+    "blanket": "^1.1.7",
     "chai": "^2.1",
     "mocha": "^2.2",
     "mock-fs": "^2.5.0",
