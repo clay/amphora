@@ -7,3 +7,6 @@ var app = require('express')(),
 module.exports = function () {
   return routes(app);
 };
+
+module.exports.db = require('./lib/services/db');
+module.exports.components = require('./lib/services/components');
