@@ -8,6 +8,7 @@ var _ = require('lodash'),
   bluebird = require('bluebird'),
   log = require('./log'),
   plex = require('multiplex-templates'),
+  components = require('./controllers/components'),
   references = require('./references'),
   createMockReq = require('../test/fixtures/mocks/req'),
   createMockRes = require('../test/fixtures/mocks/res');
@@ -24,18 +25,23 @@ describe(_.startCase(filename), function () {
     sandbox.restore();
   });
 
+  function expectNoLogging() {
+    var mock = sandbox.mock(log);
+    mock.expects('info').never();
+    mock.expects('warn').never();
+    mock.expects('error').never();
+  }
+
   describe('renderComponent', function () {
     it('data not found', function (done) {
       //not called for 404 Not Found
-      sandbox.mock(log).expects('info').never();
-      sandbox.mock(log).expects('warn').never();
-      sandbox.mock(log).expects('error').never();
+      expectNoLogging();
 
       //should not fetch template if there is no data, that would be a waste
-      sandbox.mock(references).expects('getTemplate').never();
+      sandbox.mock(components).expects('getTemplate').never();
 
       //should attempt to fetch the data, for sure.
-      sandbox.mock(references).expects('getComponentData').once().returns(bluebird.reject(new Error('thing')));
+      sandbox.mock(components).expects('get').once().returns(bluebird.reject(new Error('thing')));
 
       var mockRes = createMockRes();
 
@@ -53,10 +59,10 @@ describe(_.startCase(filename), function () {
       sandbox.mock(log).expects('info').once();
 
       //get the template that will be composed
-      sandbox.mock(references).expects('getTemplate').once();
+      sandbox.mock(components).expects('getTemplate').once();
 
       //get the data that will be composed in the template
-      sandbox.mock(references).expects('getComponentData').once().returns(bluebird.resolve({site: mockSite}));
+      sandbox.mock(components).expects('get').once().returns(bluebird.resolve({site: mockSite}));
 
       var mockRes = createMockRes();
 
@@ -72,7 +78,7 @@ describe(_.startCase(filename), function () {
   describe('renderPage', function () {
     it('basic case', function (done) {
       var res = createMockRes(),
-        refMock = sandbox.mock(references);
+        componentsMock = sandbox.mock(components);
 
       //THIS IS WHAT WE EXPECT FROM THE BASIC PROCESS:
 
@@ -80,10 +86,10 @@ describe(_.startCase(filename), function () {
       sandbox.mock(db).expects('get').once().returns(bluebird.resolve('{"layout":"/components/hey"}'));
 
       //2. get the data that will be composed in the template
-      refMock.expects('getComponentData').once().returns(bluebird.resolve({}));
+      componentsMock.expects('get').once().returns(bluebird.resolve({}));
 
       //3. get the template that will be composed
-      refMock.expects('getTemplate').once().returns('asdf');
+      componentsMock.expects('getTemplate').once().returns('asdf');
 
       //4. rendering should happen (they should NOT try to send this on their own)
       sandbox.mock(plex).expects('render').once();

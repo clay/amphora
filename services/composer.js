@@ -83,7 +83,7 @@ function renderByConfiguration(options, res) {
   is.object(options.data, 'options.data');
   is.string(options.data.template, 'options.data.template');
 
-  return references.resolveDataReferences(options.data)
+  return components.resolveDataReferences(options.data)
     .then(applyOptions(options, res))
     .then(renderTemplate());
 }

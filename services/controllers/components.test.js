@@ -16,25 +16,6 @@ var _ = require('lodash'),
 describe(_.startCase(filename), function () {
   var sandbox;
 
-  function createMockReq() {
-    return {};
-  }
-
-  function createMockRes() {
-    return {};
-  }
-
-  /**
-   * Fail unit test immediately with message;
-   * @param {string} msg
-   * @param {string} [actual]
-   * @param {string} [expected]
-   * @param {string} [operator]
-   */
-  function fail(msg, actual, expected, operator) {
-    require('chai').assert.fail(actual, expected, msg, operator);
-  }
-
   /**
    * Shortcut
    */
@@ -170,27 +151,39 @@ describe(_.startCase(filename), function () {
   describe('putTag', function () {
     var fn = lib[this.title];
 
-    it('puts to tag', function () {
-      sandbox.mock(db).expects('batch').withArgs();
-      fn('/components/whatever', {}, 'special');
+    it('puts to tag', function (done) {
+      sandbox.mock(db).expects('batch').withArgs().once().returns(bluebird.resolve());
+      fn('/components/whatever', {}, 'special').done(function () {
+        done();
+      }, function (err) {
+        done(err);
+      });
     });
   });
 
   describe('putPublished', function () {
     var fn = lib[this.title];
 
-    it('puts to published', function () {
-      sandbox.mock(db).expects('batch').withArgs();
-      fn('/components/whatever', {}, 'special');
+    it('puts to published', function (done) {
+      sandbox.mock(db).expects('batch').withArgs().once().returns(bluebird.resolve());
+      fn('/components/whatever', {}).done(function () {
+        done();
+      }, function (err) {
+        done(err);
+      });
     });
   });
 
   describe('putLatest', function () {
     var fn = lib[this.title];
 
-    it('puts to latest', function () {
-      sandbox.mock(db).expects('batch').withArgs();
-      fn('/components/whatever', {}, 'special');
+    it('puts to latest', function (done) {
+      sandbox.mock(db).expects('batch').withArgs().once().returns(bluebird.resolve());
+      fn('/components/whatever', {}).done(function () {
+        done();
+      }, function (err) {
+        done(err);
+      });
     });
   });
 
@@ -201,9 +194,15 @@ describe(_.startCase(filename), function () {
 
     });
 
-    it('deletes', function () {
-      sandbox.mock(db).expects('del').withArgs();
-      fn('/components/whatever', {}, 'special');
+    it('deletes', function (done) {
+      var mockDb = sandbox.mock(db);
+      mockDb.expects('get').withArgs().once().returns(bluebird.resolve('{}'));
+      mockDb.expects('del').withArgs().once().returns(bluebird.resolve());
+      fn('/components/whatever').done(function () {
+        done();
+      }, function (err) {
+        done(err);
+      });
     });
   });
 

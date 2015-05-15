@@ -34,7 +34,7 @@ var _ = require('lodash'),
  * @example /components/image.html  returns image
  */
 function getName(ref) {
-  var result = /components\/(.+?)[\/\.]/.exec(ref) || /components\/(.+)/.exec(ref);
+  var result = /components\/(.+?)[\/\.@]/.exec(ref) || /components\/(.+)/.exec(ref);
 
   return result && result[1];
 }

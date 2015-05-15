@@ -5,6 +5,7 @@ var _ = require('lodash'),
   request = require('supertest-as-promised'),
   files = require('../../services/files'),
   references = require('../../services/references'),
+  components = require('../../services/controllers/components'),
   routes = require('../../services/routes'),
   db = require('../../services/db'),
   bluebird = require('bluebird'),
@@ -141,7 +142,7 @@ function stubComponentPath(sandbox) {
 }
 
 function stubGetTemplate(sandbox) {
-  var stub = sandbox.stub(references, 'getTemplate');
+  var stub = sandbox.stub(components, 'getTemplate');
   stub.withArgs('valid').returns('some/valid/template.nunjucks');
   return sandbox;
 }
