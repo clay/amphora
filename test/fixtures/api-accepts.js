@@ -3,13 +3,15 @@
 var _ = require('lodash'),
   express = require('express'),
   request = require('supertest-as-promised'),
-  files = require('../../services/files'),
-  references = require('../../services/references'),
-  routes = require('../../services/routes'),
-  db = require('../../services/db'),
+  files = require('../../lib/files'),
+  components = require('../../lib/services/components'),
+  routes = require('../../lib/routes'),
+  db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
   multiplex = require('multiplex-templates'),
-  log = require('../../services/log'),
+  log = require('../../lib/log'),
+  expect = require('chai').expect,
+  filter = require('through2-filter'),
   app,
   host;
 
@@ -104,6 +106,76 @@ function acceptsJson(method) {
   };
 }
 
+function updatesOther(method) {
+  return function (path, otherPath, replacements, data) {
+    var realPath = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path),
+      realOtherPath = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, otherPath);
+
+    it(JSON.stringify(replacements) + ' updates other ' + otherPath, function () {
+      return request(app)[method](realPath)
+        .send(data)
+        .type('application/json')
+        .set('Accept', 'application/json')
+        .set('Host', host)
+        .then(function () {
+          return db.get(realOtherPath).then(JSON.parse).then(function (result) {
+            expect(result).to.deep.equal(data);
+          });
+        });
+    });
+  };
+}
+
+function getVersions(ref) {
+  var str = '',
+    errors = [],
+    deferred = bluebird.defer(),
+    prefix = ref.split('@')[0];
+
+  db.list({prefix: prefix, values: false, transforms: [filter({wantStrings: true}, function (str) {
+    return str.indexOf('@') !== -1;
+  })]})
+    .on('data', function (data) {
+      str += data;
+    }).on('error', function (err) {
+      errors.push(err);
+    }).on('end', function () {
+      if (errors.length) {
+        deferred.reject(_.first(errors));
+      } else {
+        deferred.resolve(JSON.parse(str));
+      }
+    });
+
+  return deferred.promise;
+}
+
+function createsNewVersion(method) {
+  return function (path, replacements, data) {
+    var realPath = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
+
+    it(realPath + ' creates new version', function () {
+      return getVersions(realPath).then(function (oldVersions) {
+        return request(app)[method](realPath)
+          .send(data)
+          .type('application/json')
+          .set('Accept', 'application/json')
+          .set('Host', host)
+          .expect(200)
+          .expect(data)
+          .then(function () {
+            return getVersions(realPath);
+          }).then(function (newVersions) {
+            //no versions are deleted
+            expect(newVersions).to.include.members(oldVersions);
+            //should have one new version, not counting realPath
+            expect(_.without(newVersions, realPath).length - oldVersions.length).to.be.at.least(1);
+          });
+      });
+    });
+  };
+}
+
 function setApp(value) {
   app = value;
 }
@@ -121,7 +193,7 @@ function stubComponentPath(sandbox) {
 }
 
 function stubGetTemplate(sandbox) {
-  var stub = sandbox.stub(references, 'getTemplate');
+  var stub = sandbox.stub(components, 'getTemplate');
   stub.withArgs('valid').returns('some/valid/template.nunjucks');
   return sandbox;
 }
@@ -232,6 +304,8 @@ module.exports.setHost = setHost;
 module.exports.acceptsHtml = acceptsHtml;
 module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
+module.exports.updatesOther = updatesOther;
+module.exports.createsNewVersion = createsNewVersion;
 module.exports.stubComponentPath = stubComponentPath;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
 module.exports.beforeEachPageTest = beforeEachPageTest;
