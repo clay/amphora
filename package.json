@@ -8,7 +8,7 @@
   },
   "config": {
     "blanket": {
-      "pattern": "index.js",
+      "pattern": "///[\\w-]+\\.js$/",
       "data-cover-never": "node_modules"
     }
   },
