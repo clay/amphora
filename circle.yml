@@ -5,5 +5,10 @@ machine:
     version: iojs-v1.2.0
 dependencies:
   pre:
-    - npm install pangyp -g
+    - npm install -g istanbul
+    - npm install -g pangyp
+test:
+  post:
+    - cp -r ./coverage/* $CIRCLE_ARTIFACTS
+
 

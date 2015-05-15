@@ -4,13 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha test/index.js && ./node_modules/.bin/mocha -r blanket -R html-cov test/index.js > $CIRCLE_ARTIFACTS/coverage.html"
-  },
-  "config": {
-    "blanket": {
-      "pattern": "///[\\w-]+\\.js$/",
-      "data-cover-never": "node_modules"
-    }
+    "test": "istanbul cover node_modules/.bin/_mocha -- -R spec"
   },
   "repository": {
     "type": "git",
@@ -39,7 +33,6 @@
     "winston": "^0.9"
   },
   "devDependencies": {
-    "blanket": "^1.1.7",
     "chai": "^2.1",
     "mocha": "^2.2",
     "mock-fs": "^2.5.0",
