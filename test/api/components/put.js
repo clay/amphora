@@ -13,7 +13,8 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      updatesTag = apiAccepts.updatesTag(_.camelCase(filename)),
+      updatesOther = apiAccepts.updatesOther(_.camelCase(filename)),
+      createsNewVersion = apiAccepts.createsNewVersion(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' };
 
     beforeEach(function () {
@@ -96,7 +97,12 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
 
-      updatesTag(path, {name: 'valid', id: 'valid'}, 'latest', data);
+      updatesOther(path, path + '@latest', {name: 'valid', id: 'newId'}, data);
+      updatesOther(path + '@latest', path, {name: 'valid', id: 'newId'}, data);
+
+      createsNewVersion(path, {name: 'valid', id: 'newId'}, data);
+      createsNewVersion(path + '@latest', {name: 'valid', id: 'newId'}, data);
+      createsNewVersion(path + '@published', {name: 'valid', id: 'newId'}, data);
     });
 
     describe('/components/:name/instances/:id@:version', function () {

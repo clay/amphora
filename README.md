@@ -3,6 +3,8 @@ Codename: New York Byline
 
 📰 _"Catchy super fun slogan here!"_
 
+[![Coverage Status](https://coveralls.io/repos/nymag/byline/badge.svg?branch=master&t=cQ880T)](https://coveralls.io/r/nymag/byline?branch=master)
+
 A full-stack framework for creating the web.  
 The tools to bring devs, designers and creators together to make great things online.
 
