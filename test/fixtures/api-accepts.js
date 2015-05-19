@@ -4,6 +4,7 @@ var _ = require('lodash'),
   express = require('express'),
   request = require('supertest-as-promised'),
   files = require('../../lib/files'),
+  fs = require('fs'),
   components = require('../../lib/services/components'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
@@ -184,11 +185,15 @@ function setHost(value) {
   host = value;
 }
 
-function stubComponentPath(sandbox) {
-  var stub = sandbox.stub(files, 'getComponentPath');
-  stub.withArgs('valid').returns('validThing');
-  stub.withArgs('missing').returns('missingThing');
-  stub.withArgs('invalid').returns(null);
+function stubFiles(sandbox) {
+  var stubGetComponentPath = sandbox.stub(files, 'getComponentPath');
+  stubGetComponentPath.withArgs('valid').returns('validThing');
+  stubGetComponentPath.withArgs('missing').returns('missingThing');
+  stubGetComponentPath.withArgs('invalid').returns(null);
+}
+
+function stubFS(sandbox) {
+  var stubReaddirSync = sandbox.stub(fs, 'readdirSync');
   return sandbox;
 }
 
@@ -243,7 +248,8 @@ function beforeTesting(suite, hostname, data) {
 function beforeEachComponentTest(sandbox, hostname, data) {
   app = express();
   host = hostname;
-  stubComponentPath(sandbox);
+  stubFiles(sandbox);
+  stubFS(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
   stubLogging(sandbox);
@@ -271,7 +277,8 @@ function beforeEachComponentTest(sandbox, hostname, data) {
 function beforeEachPageTest(sandbox, hostname, data) {
   app = express();
   host = hostname;
-  stubComponentPath(sandbox);
+  stubFiles(sandbox);
+  stubFS(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
   stubLogging(sandbox);
@@ -301,7 +308,8 @@ function beforeEachPageTest(sandbox, hostname, data) {
 function beforeEachUriTest(sandbox, hostname, data) {
   app = express();
   host = hostname;
-  stubComponentPath(sandbox);
+  stubFiles(sandbox);
+  stubFS(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
   stubLogging(sandbox);
@@ -327,7 +335,7 @@ module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.updatesOther = updatesOther;
 module.exports.createsNewVersion = createsNewVersion;
-module.exports.stubComponentPath = stubComponentPath;
+module.exports.stubComponentPath = stubFS;
 module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
 module.exports.beforeEachPageTest = beforeEachPageTest;
