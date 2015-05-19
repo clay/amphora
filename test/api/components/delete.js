@@ -14,6 +14,10 @@ describe(endpointName, function () {
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' };
 
+    before(function () {
+      return apiAccepts.beforeTesting(this, hostname, data);
+    });
+
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
       return apiAccepts.beforeEachComponentTest(sandbox,  hostname, data);

@@ -210,6 +210,27 @@ function stubLogging(sandbox) {
 }
 
 /**
+ * Before starting testing at all, prepare certain things to make sure our performance testing is accurate.
+ */
+
+function beforeTesting(suite, hostname, data) {
+  //extra time to prime the 'requires'
+  suite.timeout(100);
+
+  app = express();
+  routes.addHost(app, hostname);
+
+  return db.clear().then(function () {
+    return bluebird.all([
+      request(app).put('/components/valid', JSON.stringify(data)),
+      request(app).get('/components/valid'),
+      request(app).post('/components/valid', JSON.stringify(data)),
+      request(app).delete('/components/valid')
+    ]);
+  });
+}
+
+/**
  * Before each test, make the DB and Host consistent, and get a _new_ version of express.
  *
  * Yes, brand new, for every single test.
@@ -307,6 +328,7 @@ module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.updatesOther = updatesOther;
 module.exports.createsNewVersion = createsNewVersion;
 module.exports.stubComponentPath = stubComponentPath;
+module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
 module.exports.beforeEachPageTest = beforeEachPageTest;
 module.exports.beforeEachUriTest = beforeEachUriTest;
