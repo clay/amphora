@@ -41,6 +41,18 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406);
     });
 
+    describe('/components/:name/schema', function () {
+      var path = this.title;
+
+      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'valid'}, 200, {some:'schema', thatIs:'valid'});
+      acceptsJson(path, {name: 'missing'}, 404);
+
+      acceptsHtml(path, {name: 'invalid'}, 404);
+      acceptsHtml(path, {name: 'valid'}, 406);
+      acceptsHtml(path, {name: 'missing'}, 406);
+    });
+
     describe('/components/:name.html', function () {
       var path = this.title;
 

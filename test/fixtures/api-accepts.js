@@ -4,12 +4,14 @@ var _ = require('lodash'),
   express = require('express'),
   request = require('supertest-as-promised'),
   files = require('../../lib/files'),
+  fs = require('fs'),
   components = require('../../lib/services/components'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
   multiplex = require('multiplex-templates'),
   log = require('../../lib/log'),
+  schema = require('../../lib/schema'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
   app,
@@ -184,11 +186,17 @@ function setHost(value) {
   host = value;
 }
 
-function stubComponentPath(sandbox) {
-  var stub = sandbox.stub(files, 'getComponentPath');
-  stub.withArgs('valid').returns('validThing');
-  stub.withArgs('missing').returns('missingThing');
-  stub.withArgs('invalid').returns(null);
+function stubFiles(sandbox) {
+  var stubGetComponentPath = sandbox.stub(files, 'getComponentPath');
+  stubGetComponentPath.withArgs('valid').returns('validThing');
+  stubGetComponentPath.withArgs('missing').returns('missingThing');
+  stubGetComponentPath.withArgs('invalid').returns(null);
+}
+
+function stubSchema(sandbox) {
+  var stubGet = sandbox.stub(schema, 'getSchema');
+  stubGet.withArgs('validThing').returns({some: 'schema', thatIs: 'valid'});
+  stubGet.withArgs('missingThing').throws(new Error('File not found.'));
   return sandbox;
 }
 
@@ -210,6 +218,27 @@ function stubLogging(sandbox) {
 }
 
 /**
+ * Before starting testing at all, prepare certain things to make sure our performance testing is accurate.
+ */
+
+function beforeTesting(suite, hostname, data) {
+  //extra time to prime the 'requires'
+  suite.timeout(500);
+
+  app = express();
+  routes.addHost(app, hostname);
+
+  return db.clear().then(function () {
+    return bluebird.all([
+      request(app).put('/components/valid', JSON.stringify(data)),
+      request(app).get('/components/valid'),
+      request(app).post('/components/valid', JSON.stringify(data)),
+      request(app).delete('/components/valid')
+    ]);
+  });
+}
+
+/**
  * Before each test, make the DB and Host consistent, and get a _new_ version of express.
  *
  * Yes, brand new, for every single test.
@@ -222,7 +251,8 @@ function stubLogging(sandbox) {
 function beforeEachComponentTest(sandbox, hostname, data) {
   app = express();
   host = hostname;
-  stubComponentPath(sandbox);
+  stubFiles(sandbox);
+  stubSchema(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
   stubLogging(sandbox);
@@ -250,7 +280,8 @@ function beforeEachComponentTest(sandbox, hostname, data) {
 function beforeEachPageTest(sandbox, hostname, data) {
   app = express();
   host = hostname;
-  stubComponentPath(sandbox);
+  stubFiles(sandbox);
+  stubSchema(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
   stubLogging(sandbox);
@@ -280,7 +311,8 @@ function beforeEachPageTest(sandbox, hostname, data) {
 function beforeEachUriTest(sandbox, hostname, data) {
   app = express();
   host = hostname;
-  stubComponentPath(sandbox);
+  stubFiles(sandbox);
+  stubSchema(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
   stubLogging(sandbox);
@@ -306,7 +338,8 @@ module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.updatesOther = updatesOther;
 module.exports.createsNewVersion = createsNewVersion;
-module.exports.stubComponentPath = stubComponentPath;
+module.exports.stubComponentPath = stubSchema;
+module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
 module.exports.beforeEachPageTest = beforeEachPageTest;
 module.exports.beforeEachUriTest = beforeEachUriTest;

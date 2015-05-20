@@ -11,3 +11,7 @@ _.map(tests, function (test) {
 _.map(apiTests, function (test) {
   require(test);
 });
+
+after(function () {
+  require('./fixtures/enforce-performance')(this);
+});
