@@ -15,6 +15,7 @@ describe(endpointName, function () {
       data = { name: 'Manny', species: 'cat' };
 
     before(function () {
+      this.timeout(500);
       return apiAccepts.beforeTesting(this, hostname, data);
     });
 
@@ -43,6 +44,18 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'invalid'}, 404);
       acceptsHtml(path, {name: 'valid'}, 406);
       acceptsHtml(path, {name: 'missing'}, 406);
+    });
+
+    describe('/components/:name/schema', function () {
+      var path = this.title;
+
+      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
+      acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
+
+      acceptsHtml(path, {name: 'invalid'}, 404);
+      acceptsHtml(path, {name: 'valid'}, 405);
+      acceptsHtml(path, {name: 'missing'}, 405);
     });
 
     describe('/components/:name/instances', function () {

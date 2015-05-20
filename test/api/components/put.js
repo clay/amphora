@@ -50,6 +50,18 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406);
     });
 
+    describe('/components/:name/schema', function () {
+      var path = this.title;
+
+      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+
+      acceptsHtml(path, {name: 'invalid'}, 404);
+      acceptsHtml(path, {name: 'valid'}, 405);
+      acceptsHtml(path, {name: 'missing'}, 405);
+    });
+
     describe('/components/:name@:version', function () {
       var path = this.title;
 

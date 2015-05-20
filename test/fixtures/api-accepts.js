@@ -11,6 +11,7 @@ var _ = require('lodash'),
   bluebird = require('bluebird'),
   multiplex = require('multiplex-templates'),
   log = require('../../lib/log'),
+  schema = require('../../lib/schema'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
   app,
@@ -192,8 +193,10 @@ function stubFiles(sandbox) {
   stubGetComponentPath.withArgs('invalid').returns(null);
 }
 
-function stubFS(sandbox) {
-  var stubReaddirSync = sandbox.stub(fs, 'readdirSync');
+function stubSchema(sandbox) {
+  var stubGet = sandbox.stub(schema, 'getSchema');
+  stubGet.withArgs('validThing').returns({some: 'schema', thatIs: 'valid'});
+  stubGet.withArgs('missingThing').throws(new Error('File not found.'));
   return sandbox;
 }
 
@@ -220,7 +223,7 @@ function stubLogging(sandbox) {
 
 function beforeTesting(suite, hostname, data) {
   //extra time to prime the 'requires'
-  suite.timeout(100);
+  suite.timeout(500);
 
   app = express();
   routes.addHost(app, hostname);
@@ -249,7 +252,7 @@ function beforeEachComponentTest(sandbox, hostname, data) {
   app = express();
   host = hostname;
   stubFiles(sandbox);
-  stubFS(sandbox);
+  stubSchema(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
   stubLogging(sandbox);
@@ -278,7 +281,7 @@ function beforeEachPageTest(sandbox, hostname, data) {
   app = express();
   host = hostname;
   stubFiles(sandbox);
-  stubFS(sandbox);
+  stubSchema(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
   stubLogging(sandbox);
@@ -309,7 +312,7 @@ function beforeEachUriTest(sandbox, hostname, data) {
   app = express();
   host = hostname;
   stubFiles(sandbox);
-  stubFS(sandbox);
+  stubSchema(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
   stubLogging(sandbox);
@@ -335,7 +338,7 @@ module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.updatesOther = updatesOther;
 module.exports.createsNewVersion = createsNewVersion;
-module.exports.stubComponentPath = stubFS;
+module.exports.stubComponentPath = stubSchema;
 module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
 module.exports.beforeEachPageTest = beforeEachPageTest;
