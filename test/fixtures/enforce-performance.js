@@ -9,7 +9,7 @@ function enforceFastTest(obj) {
     duration = obj.duration;
 
   // unit tests should never take longer than 15 seconds (we shouldn't be testing IO, because that's not our code)
-  if (duration > 15 || speed !== 'fast') {
+  if (speed !== 'fast') {
     title = obj.title;
     while (obj.parent) {
       obj = obj.parent;
