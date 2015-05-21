@@ -290,14 +290,17 @@ function beforeEachPageTest(sandbox, hostname, pageData, layoutData, componentDa
   stubSchema(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
+  stubLogging(sandbox);
   routes.addHost(app, hostname);
 
   return db.clear().then(function () {
     return bluebird.all([
       db.put('/components/layout', JSON.stringify(layoutData)),
       db.put('/components/layout@valid', JSON.stringify(layoutData)),
-      db.put('/components/valid', JSON.stringify(componentData)),
-      db.put('/components/valid@valid', JSON.stringify(componentData)),
+      db.put('/components/valid', JSON.stringify({deep: {_ref: '/components/validDeep'}})),
+      db.put('/components/valid@valid', JSON.stringify({deep: {_ref: '/components/validDeep'}})),
+      db.put('/components/validDeep', JSON.stringify(componentData)),
+      db.put('/components/validDeep@valid', JSON.stringify(componentData)),
       db.put('/pages/valid', JSON.stringify(pageData)),
       db.put('/pages/valid@valid', JSON.stringify(pageData))
     ]);

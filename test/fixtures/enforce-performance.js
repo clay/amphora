@@ -5,22 +5,23 @@ var _ = require('lodash'),
 
 function enforceFastTest(obj) {
   var title,
+    report,
     speed = obj.speed,
     duration = obj.duration;
 
   // unit tests should never take longer than 15 seconds (we shouldn't be testing IO, because that's not our code)
-  if (speed !== 'fast') {
+  if (duration && speed !== 'fast') {
     title = obj.title;
     while (obj.parent) {
       obj = obj.parent;
       title = obj.title + ' ' + title;
     }
 
-    if (speed === 'slow') {
-      return chalk.dim([title, chalk.red(duration + 'ms ' + speed)].join(' '));
-    } else {
-      return chalk.dim([title, chalk.yellow(duration + 'ms ' + speed)].join(' '));
-    }
+    report = speed ? duration + 'ms ' + speed : duration + 'ms';
+
+    report = speed === 'slow' ? chalk.red(report) : chalk.yellow(report);
+
+    return chalk.dim([title, report].join(' '));
   }
 }
 
