@@ -10,7 +10,7 @@ instrumentation:
     complete-copy: false
     save-baseline: false
     baseline-file: ./coverage/coverage-baseline.json
-    include-all-sources: false
+    include-all-sources: true
     include-pid: false
 reporting:
     print: summary
