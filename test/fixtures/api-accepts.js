@@ -28,7 +28,7 @@ function createTest(options) {
     var promise = request(app)[options.method](realPath);
 
 
-    if (options.body) {
+    if (options.body !== undefined) {
       promise = promise.send(options.body);
     }
 
@@ -40,7 +40,7 @@ function createTest(options) {
     promise = promise.expect('Content-Type', options.contentType)
       .expect(options.status);
 
-    if (options.data) {
+    if (options.data !== undefined) {
       promise = promise.expect(options.data);
     }
 
@@ -54,12 +54,13 @@ function createTest(options) {
  * @returns {Function}
  */
 function acceptsHtml(method) {
-  return function (path, replacements, status) {
+  return function (path, replacements, status, data) {
     createTest({
       description: JSON.stringify(replacements) + ' accepts html',
       path: path,
       method: method,
       replacements: replacements,
+      data: data,
       status: status,
       accept: 'text/html',
       contentType: /html/
@@ -203,12 +204,15 @@ function stubSchema(sandbox) {
 function stubGetTemplate(sandbox) {
   var stub = sandbox.stub(components, 'getTemplate');
   stub.withArgs('valid').returns('some/valid/template.nunjucks');
+  stub.withArgs('layout').returns('some/valid/template.for.layout.nunjucks');
   return sandbox;
 }
 
 function stubMultiplexRender(sandbox) {
-  var stub = sandbox.stub(multiplex, 'render');
-  stub.withArgs('some/valid/template.nunjucks').returns('<valid></valid>');
+  var template = _.template('<valid><% print(JSON.stringify(obj)) %></valid>');
+  sandbox.stub(multiplex, 'render', function (name, data) {
+    return template(_.omit(data, 'state', 'getTemplate', 'locals', 'site'));
+  });
   return sandbox;
 }
 
@@ -274,26 +278,28 @@ function beforeEachComponentTest(sandbox, hostname, data) {
  *
  * @param sandbox
  * @param hostname
- * @param data
+ * @param pageData
+ * @param layoutData
+ * @param componentData
  * @returns {Promise}
  */
-function beforeEachPageTest(sandbox, hostname, data) {
+function beforeEachPageTest(sandbox, hostname, pageData, layoutData, componentData) {
   app = express();
   host = hostname;
   stubFiles(sandbox);
   stubSchema(sandbox);
   stubGetTemplate(sandbox);
   stubMultiplexRender(sandbox);
-  stubLogging(sandbox);
   routes.addHost(app, hostname);
 
   return db.clear().then(function () {
     return bluebird.all([
-      db.put('/components/valid', JSON.stringify(data)),
-      db.put('/components/valid/instances/valid', JSON.stringify(data)),
-      db.put('/components/valid/instances/valid@valid', JSON.stringify(data)),
-      db.put('/pages/valid', JSON.stringify(data)),
-      db.put('/pages/valid@valid', JSON.stringify(data))
+      db.put('/components/layout', JSON.stringify(layoutData)),
+      db.put('/components/layout@valid', JSON.stringify(layoutData)),
+      db.put('/components/valid', JSON.stringify(componentData)),
+      db.put('/components/valid@valid', JSON.stringify(componentData)),
+      db.put('/pages/valid', JSON.stringify(pageData)),
+      db.put('/pages/valid@valid', JSON.stringify(pageData))
     ]);
   });
 }

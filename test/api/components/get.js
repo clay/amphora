@@ -36,7 +36,7 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid'}, 200, data);
       acceptsJson(path, {name: 'missing'}, 404);
 
-      acceptsHtml(path, {name: 'invalid'}, 404);
+      acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid'}, 406);
       acceptsHtml(path, {name: 'missing'}, 406);
     });
@@ -48,7 +48,7 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid'}, 200, {some:'schema', thatIs:'valid'});
       acceptsJson(path, {name: 'missing'}, 404);
 
-      acceptsHtml(path, {name: 'invalid'}, 404);
+      acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid'}, 406);
       acceptsHtml(path, {name: 'missing'}, 406);
     });
@@ -60,9 +60,9 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
       acceptsJson(path, {name: 'missing'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
 
-      acceptsHtml(path, {name: 'invalid'}, 404);
-      acceptsHtml(path, {name: 'valid'}, 200, '<valid></valid>');
-      acceptsHtml(path, {name: 'missing'}, 404);
+      acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid'}, 200, '<valid>{"name":"Manny","species":"cat","template":"valid"}</valid>');
+      acceptsHtml(path, {name: 'missing'}, 404, '404 Not Found');
     });
 
     describe('/components/:name@:version', function () {
@@ -84,7 +84,7 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid'}, 200, '["/components/valid/instances/valid"]');
       acceptsJson(path, {name: 'missing'}, 200, '[]');
 
-      acceptsHtml(path, {name: 'invalid'}, 404);
+      acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid'}, 406);
       acceptsHtml(path, {name: 'missing'}, 406);
     });
@@ -96,7 +96,7 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid', id: 'valid'}, 200, data);
       acceptsJson(path, {name: 'valid', id: 'missing'}, 404);
 
-      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
+      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
     });
@@ -108,9 +108,9 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid', id: 'valid'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
       acceptsJson(path, {name: 'valid', id: 'missing'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
 
-      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsHtml(path, {name: 'valid', id: 'valid'}, 200, '<valid></valid>');
-      acceptsHtml(path, {name: 'valid', id: 'missing'}, 404);
+      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid', id: 'valid'}, 200, '<valid>{"name":"Manny","species":"cat","template":"valid"}</valid>');
+      acceptsHtml(path, {name: 'valid', id: 'missing'}, 404, '404 Not Found');
     });
 
     describe('/components/:name/instances/:id@:version', function () {
@@ -120,7 +120,7 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid', version: 'missing', id: 'valid'}, 404);
       acceptsJson(path, {name: 'valid', version: 'missing', id: 'missing'}, 404);
 
-      acceptsHtml(path, {name: 'invalid', version: 'missing', id: 'valid'}, 404);
+      acceptsHtml(path, {name: 'invalid', version: 'missing', id: 'valid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid', version: 'missing', id: 'valid'}, 406);
       acceptsHtml(path, {name: 'valid', version: 'missing', id: 'missing'}, 406);
     });

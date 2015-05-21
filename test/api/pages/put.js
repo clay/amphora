@@ -13,11 +13,13 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      data = { name: 'Manny', species: 'cat' };
+      pageData = { layout: '/components/layout', center: '/components/valid' },
+      layoutData = { someArea: ['center'] },
+      componentData = { name: 'Manny', species: 'cat' };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachPageTest(sandbox,  hostname, data);
+      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, componentData);
     });
 
     afterEach(function () {
@@ -29,7 +31,7 @@ describe(endpointName, function () {
 
       acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsHtml(path, {}, 406);
+      acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
     });
 
     describe('/pages/:name', function () {
@@ -38,11 +40,11 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid'}, 200, {});
       acceptsJson(path, {name: 'missing'}, 200, {});
 
-      acceptsJsonBody(path, {name: 'valid'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'missing'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'valid'}, pageData, 200, pageData);
+      acceptsJsonBody(path, {name: 'missing'}, pageData, 200, pageData);
 
-      acceptsHtml(path, {name: 'valid'}, 406);
-      acceptsHtml(path, {name: 'missing'}, 406);
+      acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
     describe('/pages/:name@:version', function () {
@@ -51,11 +53,11 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid', version: 'abc'}, 200, {});
       acceptsJson(path, {name: 'missing', version: 'abc'}, 200, {});
 
-      acceptsJsonBody(path, {name: 'valid', version: 'def'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'missing', version: 'def'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'valid', version: 'def'}, pageData, 200, pageData);
+      acceptsJsonBody(path, {name: 'missing', version: 'def'}, pageData, 200, pageData);
 
-      acceptsHtml(path, {name: 'valid', version: 'ghi'}, 406);
-      acceptsHtml(path, {name: 'missing', version: 'ghi'}, 406);
+      acceptsHtml(path, {name: 'valid', version: 'ghi'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'missing', version: 'ghi'}, 406, '406 text/html not acceptable');
     });
   });
 });
