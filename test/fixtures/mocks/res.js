@@ -21,9 +21,11 @@ module.exports = function (options) {
   res.status = _.constant(res);
   res.send = _.constant(res);
   res.json = function (json) {
+    res.type('json');
     res.send(json);
     return res;
   };
+  res.type = _.constant(res);
   res.set = _.constant(res);
   res.pipe = _.constant(res);
   res.locals = {site: 'someSite'};
