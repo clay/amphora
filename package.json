@@ -26,7 +26,7 @@
     "lodash": "^3.5",
     "lodash-ny-util": "^0.1.0",
     "memdown": "^1.0.0",
-    "multiplex-templates": "nymag/multiplex-templates#use-pangyp-for-iojs",
+    "multiplex-templates": "^1.2",
     "node-fetch": "^1.2.1",
     "nunjucks-filters": "^1.0",
     "through2-filter": "^1.4",
