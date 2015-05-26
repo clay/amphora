@@ -44,6 +44,11 @@ function createTest(options) {
       promise = promise.expect(options.data);
     }
 
+    //if there is no extension to the url, then all endpoints should have a Vary header with Accept
+    if (!options.path.match(/.*\/.*\.(.*)/)) {
+      promise.expect('Vary', /Accept/);
+    }
+
     return promise;
   });
 }

@@ -18,9 +18,9 @@ reporting:
         - lcov
     dir: ./coverage
     watermarks:
-        statements: [50, 80]
-        lines: [50, 80]
-        functions: [50, 80]
+        statements: [80, 90]
+        lines: [80, 90]
+        functions: [80, 90]
         branches: [50, 80]
     report-config:
         clover: {file: clover.xml}
@@ -38,10 +38,10 @@ hooks:
     handle-sigint: false
 check:
     global:
-        statements: 85
-        lines: 85
-        branches: 61
-        functions: 78
+        statements: 87
+        lines: 88
+        branches: 66
+        functions: 84
         excludes: []
     each:
         statements: 0
