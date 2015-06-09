@@ -4,7 +4,8 @@ var _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.')[0]),
-  sinon = require('sinon');
+  sinon = require('sinon'),
+  beforeEachTest = require('./all').beforeEachTest;
 
 describe(endpointName, function () {
   describe(filename, function () {
@@ -16,7 +17,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachListTest(sandbox, hostname, data); //Does beforeEach need to be specific to each route?
+      return beforeEachTest(sandbox, hostname, data);
     });
 
     afterEach(function () {
