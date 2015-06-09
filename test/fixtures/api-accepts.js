@@ -19,7 +19,14 @@ var _ = require('lodash'),
 
 /**
  * Create a generic API test.  (shortcut)
- * @param options
+ * @param {object} options
+ * @param options.path          The path to the route, e.g. `uri/:name`
+ * @param options.replacements  Replace path with a value, e.g. `uri/:name` becomes `uri/something`
+ * @param options.accept        E.g. 'application/json'
+ * @param options.contentType   E.g. /json/
+ * @param options.body          Data to send with the request (put, post)
+ * @param options.status        Expected HTTP status to be returned
+ * @param options.data          Expected data to be returned
  */
 function createTest(options) {
   var realPath = _.reduce(options.replacements, function (str, value, key) { return str.replace(':' + key, value); }, options.path);
@@ -95,8 +102,8 @@ function acceptsJsonBody(method) {
 }
 
 /**
- * Create a generic test that accepts HTML
- * @param method
+ * Create a generic test that accepts JSON
+ * @param {String} method
  * @returns {Function}
  */
 function acceptsJson(method) {
@@ -344,6 +351,33 @@ function beforeEachUriTest(sandbox, hostname, data) {
   });
 }
 
+/**
+ * Before each test, make the DB and Host consistent, and get a _new_ version of express.
+ *
+ * Yes, brand new, for every single test.
+ *
+ * @param sandbox
+ * @param hostname
+ * @param data
+ * @returns {Promise}
+ */
+function beforeEachListTest(sandbox, hostname, data) {
+  app = express();
+  host = hostname;
+  stubFiles(sandbox);
+  stubSchema(sandbox);
+  stubGetTemplate(sandbox);
+  stubMultiplexRender(sandbox);
+  stubLogging(sandbox);
+  routes.addHost(app, hostname);
+
+  return db.clear().then(function () {
+    return bluebird.all([
+      db.put('/lists/valid', JSON.stringify(data))
+    ]);
+  });
+}
+
 
 module.exports.setApp = setApp;
 module.exports.setHost = setHost;
@@ -357,3 +391,4 @@ module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
 module.exports.beforeEachPageTest = beforeEachPageTest;
 module.exports.beforeEachUriTest = beforeEachUriTest;
+module.exports.beforeEachListTest = beforeEachListTest;
