@@ -4,7 +4,8 @@ var _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
-  sinon = require('sinon');
+  sinon = require('sinon'),
+  beforeEachTest = require('./all').beforeEachTest;
 
 describe(endpointName, function () {
   describe(filename, function () {
@@ -16,7 +17,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachUriTest(sandbox,  hostname, data);
+      return beforeEachTest(sandbox,  hostname, data);
     });
 
     afterEach(function () {

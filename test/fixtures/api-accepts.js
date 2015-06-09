@@ -256,125 +256,30 @@ function beforeTesting(suite, hostname, data) {
 
 /**
  * Before each test, make the DB and Host consistent, and get a _new_ version of express.
+ * Generic, often called by all.js.
  *
  * Yes, brand new, for every single test.
  *
- * @param sandbox
- * @param hostname
- * @param data
+ * @param {Object} options
+ * @param {Object} options.sandbox
+ * @param {String} options.hostname
+ * @param {Object} options.pathsAndData E.g. `{'path/one': data1, 'path/two': data2}`
  * @returns {Promise}
  */
-function beforeEachComponentTest(sandbox, hostname, data) {
+function beforeEachTest(options) {
   app = express();
-  host = hostname;
-  stubFiles(sandbox);
-  stubSchema(sandbox);
-  stubGetTemplate(sandbox);
-  stubMultiplexRender(sandbox);
-  stubLogging(sandbox);
-  routes.addHost(app, hostname);
+  host = options.hostname;
+  stubFiles(options.sandbox);
+  stubSchema(options.sandbox);
+  stubGetTemplate(options.sandbox);
+  stubMultiplexRender(options.sandbox);
+  stubLogging(options.sandbox);
+  routes.addHost(app, options.hostname);
 
   return db.clear().then(function () {
-    return bluebird.all([
-      db.put('/components/valid', JSON.stringify(data)),
-      db.put('/components/valid/instances/valid', JSON.stringify(data)),
-      db.put('/components/valid/instances/valid@valid', JSON.stringify(data))
-    ]);
-  });
-}
-
-/**
- * Before each test, make the DB and Host consistent, and get a _new_ version of express.
- *
- * Yes, brand new, for every single test.
- *
- * @param sandbox
- * @param hostname
- * @param pageData
- * @param layoutData
- * @param componentData
- * @returns {Promise}
- */
-function beforeEachPageTest(sandbox, hostname, pageData, layoutData, componentData) {
-  app = express();
-  host = hostname;
-  stubFiles(sandbox);
-  stubSchema(sandbox);
-  stubGetTemplate(sandbox);
-  stubMultiplexRender(sandbox);
-  stubLogging(sandbox);
-  routes.addHost(app, hostname);
-
-  return db.clear().then(function () {
-    return bluebird.all([
-      db.put('/components/layout', JSON.stringify(layoutData)),
-      db.put('/components/layout@valid', JSON.stringify(layoutData)),
-      db.put('/components/valid', JSON.stringify({deep: {_ref: '/components/validDeep'}})),
-      db.put('/components/valid@valid', JSON.stringify({deep: {_ref: '/components/validDeep'}})),
-      db.put('/components/validDeep', JSON.stringify(componentData)),
-      db.put('/components/validDeep@valid', JSON.stringify(componentData)),
-      db.put('/pages/valid', JSON.stringify(pageData)),
-      db.put('/pages/valid@valid', JSON.stringify(pageData))
-    ]);
-  });
-}
-
-/**
- * Before each test, make the DB and Host consistent, and get a _new_ version of express.
- *
- * Yes, brand new, for every single test.
- *
- * @param sandbox
- * @param hostname
- * @param data
- * @returns {Promise}
- */
-function beforeEachUriTest(sandbox, hostname, data) {
-  app = express();
-  host = hostname;
-  stubFiles(sandbox);
-  stubSchema(sandbox);
-  stubGetTemplate(sandbox);
-  stubMultiplexRender(sandbox);
-  stubLogging(sandbox);
-  routes.addHost(app, hostname);
-
-  return db.clear().then(function () {
-    return bluebird.all([
-      db.put('/components/valid', JSON.stringify(data)),
-      db.put('/components/valid/instances/valid', JSON.stringify(data)),
-      db.put('/components/valid/instances/valid@valid', JSON.stringify(data)),
-      db.put('/pages/valid', JSON.stringify(data)),
-      db.put('/pages/valid@valid', JSON.stringify(data)),
-      db.put('/uris/valid', JSON.stringify(data))
-    ]);
-  });
-}
-
-/**
- * Before each test, make the DB and Host consistent, and get a _new_ version of express.
- *
- * Yes, brand new, for every single test.
- *
- * @param sandbox
- * @param hostname
- * @param data
- * @returns {Promise}
- */
-function beforeEachListTest(sandbox, hostname, data) {
-  app = express();
-  host = hostname;
-  stubFiles(sandbox);
-  stubSchema(sandbox);
-  stubGetTemplate(sandbox);
-  stubMultiplexRender(sandbox);
-  stubLogging(sandbox);
-  routes.addHost(app, hostname);
-
-  return db.clear().then(function () {
-    return bluebird.all([
-      db.put('/lists/valid', JSON.stringify(data))
-    ]);
+    return bluebird.all(_.map(options.pathsAndData, function(data, path) {
+      return db.put(path, JSON.stringify(data));
+    }));
   });
 }
 
@@ -388,7 +293,4 @@ module.exports.updatesOther = updatesOther;
 module.exports.createsNewVersion = createsNewVersion;
 module.exports.stubComponentPath = stubSchema;
 module.exports.beforeTesting = beforeTesting;
-module.exports.beforeEachComponentTest = beforeEachComponentTest;
-module.exports.beforeEachPageTest = beforeEachPageTest;
-module.exports.beforeEachUriTest = beforeEachUriTest;
-module.exports.beforeEachListTest = beforeEachListTest;
+module.exports.beforeEachTest = beforeEachTest;
