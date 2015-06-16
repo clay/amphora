@@ -18,6 +18,14 @@ var _ = require('lodash'),
   host;
 
 /**
+ * @param {object} replacements
+ * @param {string} path
+ */
+function getRealPath(replacements, path) {
+  return _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
+}
+
+/**
  * Create a generic API test.  (shortcut)
  * @param {object} options
  * @param options.path          The path to the route, e.g. `uri/:name`
@@ -29,7 +37,7 @@ var _ = require('lodash'),
  * @param options.data          Expected data to be returned
  */
 function createTest(options) {
-  var realPath = _.reduce(options.replacements, function (str, value, key) { return str.replace(':' + key, value); }, options.path);
+  var realPath = getRealPath(options.replacements, options.path);
 
   it(options.description, function () {
     var promise = request(app)[options.method](realPath);
@@ -123,8 +131,8 @@ function acceptsJson(method) {
 
 function updatesOther(method) {
   return function (path, otherPath, replacements, data) {
-    var realPath = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path),
-      realOtherPath = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, otherPath);
+    var realPath = getRealPath(replacements, path),
+      realOtherPath = getRealPath(replacements, otherPath);
 
     it(JSON.stringify(replacements) + ' updates other ' + otherPath, function () {
       return request(app)[method](realPath)
@@ -167,7 +175,7 @@ function getVersions(ref) {
 
 function createsNewVersion(method) {
   return function (path, replacements, data) {
-    var realPath = _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
+    var realPath = getRealPath(replacements, path);
 
     it(realPath + ' creates new version', function () {
       return getVersions(realPath).then(function (oldVersions) {
@@ -187,6 +195,32 @@ function createsNewVersion(method) {
             expect(_.without(newVersions, realPath).length - oldVersions.length).to.be.at.least(1);
           });
       });
+    });
+  };
+}
+
+/**
+ * Expect deep data to exist after cascading operation
+ * @param method
+ * @returns {Function}
+ */
+function cascades(method) {
+  return function (path, replacements, data, cascadingTarget, cascadingDeepData) {
+    var realPath = getRealPath(replacements, path);
+
+    it(realPath + ' cascades', function () {
+      return request(app)[method](realPath)
+        .send(data)
+        .type('application/json')
+        .set('Accept', 'application/json')
+        .set('Host', host)
+        .expect(200)
+        .then(function () {
+          //expect deep data to now exist
+          return db.get(cascadingTarget).then(JSON.parse).then(function (result) {
+            expect(result).to.deep.equal(cascadingDeepData);
+          });
+        });
     });
   };
 }
@@ -385,6 +419,7 @@ module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.updatesOther = updatesOther;
 module.exports.createsNewVersion = createsNewVersion;
+module.exports.cascades = cascades;
 module.exports.stubComponentPath = stubSchema;
 module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
