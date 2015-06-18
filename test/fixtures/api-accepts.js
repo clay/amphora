@@ -129,6 +129,47 @@ function acceptsJson(method) {
   };
 }
 
+/**
+ * Create a generic test that accepts JSON with a BODY
+ * @param method
+ * @returns {Function}
+ */
+function acceptsTextBody(method) {
+  return function (path, replacements, body, status, data) {
+    createTest({
+      description: JSON.stringify(replacements) + ' accepts text with body ' + body,
+      path: path,
+      method: method,
+      replacements: replacements,
+      body: body,
+      data: data,
+      status: status,
+      accept: 'text/plain',
+      contentType: /text/
+    });
+  };
+}
+
+/**
+ * Create a generic test that accepts JSON
+ * @param {String} method
+ * @returns {Function}
+ */
+function acceptsText(method) {
+  return function (path, replacements, status, data) {
+    createTest({
+      description: JSON.stringify(replacements) + ' accepts text',
+      path: path,
+      method: method,
+      replacements: replacements,
+      data: data,
+      status: status,
+      accept: 'text/plain',
+      contentType: /text/
+    });
+  };
+}
+
 function updatesOther(method) {
   return function (path, otherPath, replacements, data) {
     var realPath = getRealPath(replacements, path),
@@ -312,7 +353,12 @@ function beforeEachTest(options) {
 
   return db.clear().then(function () {
     return bluebird.all(_.map(options.pathsAndData, function(data, path) {
-      return db.put(path, JSON.stringify(data));
+
+      if (typeof data === 'object') {
+        data = JSON.stringify(data);
+      }
+
+      return db.put(path, data);
     }));
   });
 }
@@ -417,6 +463,8 @@ module.exports.setHost = setHost;
 module.exports.acceptsHtml = acceptsHtml;
 module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
+module.exports.acceptsText = acceptsText;
+module.exports.acceptsTextBody = acceptsTextBody;
 module.exports.updatesOther = updatesOther;
 module.exports.createsNewVersion = createsNewVersion;
 module.exports.cascades = cascades;
