@@ -13,7 +13,9 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      data = { name: 'Manny', species: 'cat' };
+      acceptsTextBody = apiAccepts.acceptsTextBody(_.camelCase(filename)),
+      acceptsText = apiAccepts.acceptsText(_.camelCase(filename)),
+      data = 'mock data';
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
@@ -29,20 +31,24 @@ describe(endpointName, function () {
 
       acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsHtml(path, {}, 406);
+      acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
+      acceptsText(path, {}, 405, 'Method Not Allowed');
     });
 
     describe('/uris/:name', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'valid'}, 200, {});
-      acceptsJson(path, {name: 'missing'}, 200, {});
+      acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });
+      acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });
 
-      acceptsJsonBody(path, {name: 'valid'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'missing'}, data, 200, data);
+      acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
 
-      acceptsHtml(path, {name: 'valid'}, 406);
-      acceptsHtml(path, {name: 'missing'}, 406);
+      acceptsText(path, {name: 'valid'}, 200, '');
+      acceptsText(path, {name: 'missing'}, 200, '');
+
+      acceptsTextBody(path, {name: 'valid'}, data, 200, data);
+      acceptsTextBody(path, {name: 'missing'}, data, 200, data);
     });
   });
 });
