@@ -62,8 +62,8 @@ describe(endpointName, function () {
       var path = this.title;
 
       acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
-      acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
-      acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
+      acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'post'], code: 405, message: 'Method DELETE not allowed' });
+      acceptsJson(path, {name: 'missing'}, 405, { allow:['get', 'post'], code: 405, message: 'Method DELETE not allowed' });
 
       acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');

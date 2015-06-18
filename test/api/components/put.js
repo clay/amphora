@@ -93,12 +93,12 @@ describe(endpointName, function () {
       var path = this.title;
 
       acceptsJson(path, {name: 'invalid'}, 404, { code: 404, message: 'Not Found' });
-      acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {name: 'missing'}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
 
       acceptsJsonBody(path, {name: 'invalid'}, {}, 404, { code: 404, message: 'Not Found' });
-      acceptsJsonBody(path, {name: 'valid'}, data, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsJsonBody(path, {name: 'missing'}, data, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {name: 'valid'}, data, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {name: 'missing'}, data, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
 
       acceptsHtml(path, {name: 'invalid'}, 404);
       acceptsHtml(path, {name: 'valid'}, 406);

@@ -11,7 +11,9 @@ describe(endpointName, function () {
     var sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
+      acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
+      expectDataPlusRef = apiAccepts.expectDataPlusRef,
       data = { name: 'Manny', species: 'cat' };
 
     beforeEach(function () {
@@ -32,49 +34,53 @@ describe(endpointName, function () {
     describe('/components/:name', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'invalid'}, 404, { message: "Not Found", code: 404 });
       acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
       acceptsJson(path, {name: 'missing'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
 
-      acceptsHtml(path, {name: 'invalid'}, 404);
-      acceptsHtml(path, {name: 'valid'}, 406);
-      acceptsHtml(path, {name: 'missing'}, 406);
+      acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
     describe('/components/:name/schema', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method POST not allowed' });
       acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method POST not allowed' });
 
-      acceptsHtml(path, {name: 'invalid'}, 404);
-      acceptsHtml(path, {name: 'valid'}, 405);
-      acceptsHtml(path, {name: 'missing'}, 405);
+      acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid'}, 405, '405 Method POST not allowed');
+      acceptsHtml(path, {name: 'missing'}, 405, '405 Method POST not allowed');
     });
 
     describe('/components/:name/instances', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method POST not allowed' });
-      acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method POST not allowed' });
+      acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
+      acceptsJson(path, {name: 'valid'}, 200, expectDataPlusRef({}));
+      acceptsJson(path, {name: 'missing'}, 200, expectDataPlusRef({}));
 
-      acceptsHtml(path, {name: 'invalid'}, 404);
-      acceptsHtml(path, {name: 'valid'}, 406);
-      acceptsHtml(path, {name: 'missing'}, 406);
+      acceptsJsonBody(path, {name: 'invalid'}, {}, 404, { message: 'Not Found', code: 404 });
+      acceptsJsonBody(path, {name: 'valid'}, data, 200, expectDataPlusRef(data));
+      acceptsJsonBody(path, {name: 'missing'}, data, 200, expectDataPlusRef(data));
+
+      acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
     describe('/components/:name/instances/:id', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404);
+      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid', id: 'valid'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
       acceptsJson(path, {name: 'valid', id: 'missing'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
 
-      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
-      acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
+      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid', id: 'valid'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'valid', id: 'missing'}, 406, '406 text/html not acceptable');
     });
   });
 });
