@@ -34,7 +34,7 @@ describe(endpointName, function () {
     describe('/components/:name', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'invalid'}, 404, { message: "Not Found", code: 404 });
+      acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
       acceptsJson(path, {name: 'missing'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
 
