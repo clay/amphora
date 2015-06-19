@@ -4,7 +4,6 @@ var _ = require('lodash'),
   express = require('express'),
   request = require('supertest-as-promised'),
   files = require('../../lib/files'),
-  fs = require('fs'),
   components = require('../../lib/services/components'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
@@ -266,6 +265,19 @@ function cascades(method) {
   };
 }
 
+/**
+ * Expect the data, plus some reference.
+ * @param {object} data
+ * @returns {Function}
+ */
+function expectDataPlusRef(data) {
+  return function (res) {
+    expect(res.body._ref.length > 0).to.equal(true);
+    delete res.body._ref;
+    expect(res.body).to.deep.equal(data);
+  };
+}
+
 function setApp(value) {
   app = value;
 }
@@ -352,7 +364,7 @@ function beforeEachTest(options) {
   routes.addHost(app, options.hostname);
 
   return db.clear().then(function () {
-    return bluebird.all(_.map(options.pathsAndData, function(data, path) {
+    return bluebird.all(_.map(options.pathsAndData, function (data, path) {
 
       if (typeof data === 'object') {
         data = JSON.stringify(data);
@@ -468,7 +480,7 @@ module.exports.acceptsTextBody = acceptsTextBody;
 module.exports.updatesOther = updatesOther;
 module.exports.createsNewVersion = createsNewVersion;
 module.exports.cascades = cascades;
-module.exports.stubComponentPath = stubSchema;
+module.exports.expectDataPlusRef = expectDataPlusRef;
 module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
 module.exports.beforeEachPageTest = beforeEachPageTest;
