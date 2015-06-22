@@ -18,8 +18,15 @@ describe(endpointName, function () {
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
       cascadingTarget = '/components/validDeep',
-      cascadingData = {a: 'b', c: {_ref: cascadingTarget, d: 'e'}},
-      cascadingReturnData = {a: 'b', c: {_ref: cascadingTarget}},
+      cascadingVersionedTarget = function (version) {
+        return cascadingTarget + (version ? '@' + version : '');
+      },
+      cascadingData = function (version) {
+        return {a: 'b', c: {_ref: cascadingVersionedTarget(version), d: 'e'}};
+      },
+      cascadingReturnData = function (version) {
+        return {a: 'b', c: {_ref: cascadingVersionedTarget(version)}};
+      },
       cascadingDeepData = {d: 'e'};
 
     beforeEach(function () {
@@ -49,13 +56,13 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'invalid'}, {}, 404, { code: 404, message: 'Not Found' });
       acceptsJsonBody(path, {name: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'missing'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'valid'}, cascadingData, 200, cascadingReturnData);
+      acceptsJsonBody(path, {name: 'valid'}, cascadingData(), 200, cascadingReturnData());
 
       acceptsHtml(path, {name: 'invalid'}, 404);
       acceptsHtml(path, {name: 'valid'}, 406);
       acceptsHtml(path, {name: 'missing'}, 406);
 
-      cascades(path, {name: 'valid'}, cascadingData, cascadingTarget, cascadingDeepData);
+      cascades(path, {name: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
     });
 
     describe('/components/:name/schema', function () {
@@ -71,22 +78,23 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name@:version', function () {
-      var path = this.title;
+      var path = this.title,
+        version = 'def';
 
-      acceptsJson(path, {name: 'invalid', version: 'def'}, 404, { code: 404, message: 'Not Found' });
-      acceptsJson(path, {name: 'valid', version: 'def'}, 200, {});
-      acceptsJson(path, {name: 'missing', version: 'def'}, 200, {});
+      acceptsJson(path, {name: 'invalid', version: version}, 404, { code: 404, message: 'Not Found' });
+      acceptsJson(path, {name: 'valid', version: version}, 200, {});
+      acceptsJson(path, {name: 'missing', version: version}, 200, {});
 
-      acceptsJsonBody(path, {name: 'invalid', version: 'def'}, {}, 404, { code: 404, message: 'Not Found' });
-      acceptsJsonBody(path, {name: 'valid', version: 'def'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'missing', version: 'def'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'valid', version: 'def'}, cascadingData, 200, cascadingReturnData);
+      acceptsJsonBody(path, {name: 'invalid', version: version}, {}, 404, { code: 404, message: 'Not Found' });
+      acceptsJsonBody(path, {name: 'valid', version: version}, data, 200, data);
+      acceptsJsonBody(path, {name: 'missing', version: version}, data, 200, data);
+      acceptsJsonBody(path, {name: 'valid', version: version}, cascadingData(), 200, cascadingReturnData());
 
-      acceptsHtml(path, {name: 'invalid', version: 'def'}, 404);
-      acceptsHtml(path, {name: 'valid', version: 'def'}, 406);
-      acceptsHtml(path, {name: 'missing', version: 'def'}, 406);
+      acceptsHtml(path, {name: 'invalid', version: version}, 404);
+      acceptsHtml(path, {name: 'valid', version: version}, 406);
+      acceptsHtml(path, {name: 'missing', version: version}, 406);
 
-      cascades(path, {name: 'valid', version: 'def'}, cascadingData, cascadingTarget, cascadingDeepData);
+      cascades(path, {name: 'valid', version: version}, cascadingData(), cascadingTarget, cascadingDeepData);
     });
 
     describe('/components/:name/instances', function () {
@@ -115,13 +123,13 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'invalid', id: 'valid'}, {}, 404, { code: 404, message: 'Not Found' });
       acceptsJsonBody(path, {name: 'valid', id: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'missing', id: 'missing'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'valid'}, cascadingData, 200, cascadingReturnData);
+      acceptsJsonBody(path, {name: 'valid'}, cascadingData(), 200, cascadingReturnData());
 
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
 
-      cascades(path, {name: 'valid', id: 'valid'}, cascadingData, cascadingTarget, cascadingDeepData);
+      cascades(path, {name: 'valid', id: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
 
       updatesOther(path, path + '@latest', {name: 'valid', id: 'newId'}, data);
       updatesOther(path + '@latest', path, {name: 'valid', id: 'newId'}, data);
@@ -132,22 +140,35 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name/instances/:id@:version', function () {
-      var path = this.title;
+      var path = this.title,
+        version = 'def';
 
-      acceptsJson(path, {name: 'invalid', version: 'def', id: 'valid'}, 404, { code: 404, message: 'Not Found' });
-      acceptsJson(path, {name: 'valid', version: 'def', id: 'valid'}, 200, {});
-      acceptsJson(path, {name: 'valid', version: 'def', id: 'missing'}, 200, {});
+      acceptsJson(path, {name: 'invalid', version: version, id: 'valid'}, 404, { code: 404, message: 'Not Found' });
+      acceptsJson(path, {name: 'valid', version: version, id: 'valid'}, 200, {});
+      acceptsJson(path, {name: 'valid', version: version, id: 'missing'}, 200, {});
 
-      acceptsJsonBody(path, {name: 'invalid', version: 'def', id: 'valid'}, {}, 404, { code: 404, message: 'Not Found' });
-      acceptsJsonBody(path, {name: 'valid', version: 'def', id: 'valid'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'missing', version: 'def', id: 'missing'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'valid', version: 'def', id: 'valid'}, cascadingData, 200, cascadingReturnData);
+      acceptsJsonBody(path, {name: 'invalid', version: version, id: 'valid'}, {}, 404, { code: 404, message: 'Not Found' });
+      acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'missing', version: version, id: 'missing'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(), 200, cascadingReturnData());
 
-      acceptsHtml(path, {name: 'invalid', version: 'def', id: 'valid'}, 404);
-      acceptsHtml(path, {name: 'valid', version: 'def', id: 'valid'}, 406);
-      acceptsHtml(path, {name: 'valid', version: 'def', id: 'missing'}, 406);
+      acceptsHtml(path, {name: 'invalid', version: version, id: 'valid'}, 404);
+      acceptsHtml(path, {name: 'valid', version: version, id: 'valid'}, 406);
+      acceptsHtml(path, {name: 'valid', version: version, id: 'missing'}, 406);
 
-      cascades(path, {name: 'valid', version: 'def', id: 'valid'}, cascadingData, cascadingTarget, cascadingDeepData);
+      cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
+
+      //published version
+      version = 'published';
+      acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));
+      cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), cascadingVersionedTarget(version), cascadingDeepData);
+
+      //latest version
+      version = 'latest';
+      acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));
+      cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), cascadingVersionedTarget(version), cascadingDeepData);
     });
   });
 });
