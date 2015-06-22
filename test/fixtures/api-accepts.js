@@ -444,8 +444,11 @@ function beforeEachPageTest(sandbox, hostname, pageData, layoutData, componentDa
     pathsAndData: {
       '/components/layout': layoutData,
       '/components/layout@valid': layoutData,
+      '/components/layoutCascading': {deep: {_ref: '/components/validDeep'}},
       '/components/valid': {deep: {_ref: '/components/validDeep'}},
       '/components/valid@valid': {deep: {_ref: '/components/validDeep'}},
+      '/components/validCascading': {deep: {_ref: '/components/validDeep'}},
+      '/components/validCascading@valid': {deep: {_ref: '/components/validDeep'}},
       '/components/validDeep': componentData,
       '/components/validDeep@valid': componentData,
       '/pages/valid': pageData,
