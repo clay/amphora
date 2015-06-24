@@ -248,7 +248,7 @@ function cascades(method) {
   return function (path, replacements, data, cascadingTarget, cascadingDeepData) {
     var realPath = getRealPath(replacements, path);
 
-    it(realPath + ' cascades', function () {
+    it(realPath + ' cascades to ' + cascadingTarget, function () {
       return request(app)[method](realPath)
         .send(data)
         .type('application/json')
@@ -434,20 +434,24 @@ function beforeEachComponentTest(sandbox, hostname, data) {
  * @param hostname
  * @param pageData
  * @param layoutData
- * @param componentData
+ * @param firstLevelComponentData
+ * @param secondLevelComponentData
  * @returns {Promise}
  */
-function beforeEachPageTest(sandbox, hostname, pageData, layoutData, componentData) {
+function beforeEachPageTest(sandbox, hostname, pageData, layoutData, firstLevelComponentData, secondLevelComponentData) {
   return beforeEachTest({
     sandbox: sandbox,
     hostname: hostname,
     pathsAndData: {
       '/components/layout': layoutData,
       '/components/layout@valid': layoutData,
-      '/components/valid': {deep: {_ref: '/components/validDeep'}},
-      '/components/valid@valid': {deep: {_ref: '/components/validDeep'}},
-      '/components/validDeep': componentData,
-      '/components/validDeep@valid': componentData,
+      '/components/layoutCascading': firstLevelComponentData,
+      '/components/valid': firstLevelComponentData,
+      '/components/valid@valid': firstLevelComponentData,
+      '/components/validCascading': firstLevelComponentData,
+      '/components/validCascading@valid': firstLevelComponentData,
+      '/components/validDeep': secondLevelComponentData,
+      '/components/validDeep@valid': secondLevelComponentData,
       '/pages/valid': pageData,
       '/pages/valid@valid': pageData
     }

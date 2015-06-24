@@ -4,6 +4,7 @@ var _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
+  replaceVersion = require('../../../lib/services/references').replaceVersion,
   sinon = require('sinon');
 
 describe(endpointName, function () {
@@ -18,14 +19,12 @@ describe(endpointName, function () {
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
       cascadingTarget = '/components/validDeep',
-      cascadingVersionedTarget = function (version) {
-        return cascadingTarget + (version ? '@' + version : '');
-      },
+      addVersion = _.partial(replaceVersion, cascadingTarget),
       cascadingData = function (version) {
-        return {a: 'b', c: {_ref: cascadingVersionedTarget(version), d: 'e'}};
+        return {a: 'b', c: {_ref: addVersion(version), d: 'e'}};
       },
       cascadingReturnData = function (version) {
-        return {a: 'b', c: {_ref: cascadingVersionedTarget(version)}};
+        return {a: 'b', c: {_ref: addVersion(version)}};
       },
       cascadingDeepData = {d: 'e'};
 
@@ -162,13 +161,13 @@ describe(endpointName, function () {
       version = 'published';
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));
-      cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), cascadingVersionedTarget(version), cascadingDeepData);
+      cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), addVersion(version), cascadingDeepData);
 
       //latest version
       version = 'latest';
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));
-      cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), cascadingVersionedTarget(version), cascadingDeepData);
+      cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), addVersion(version), cascadingDeepData);
     });
   });
 });
