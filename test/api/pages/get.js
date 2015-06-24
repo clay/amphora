@@ -14,11 +14,12 @@ describe(endpointName, function () {
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       pageData = { layout: '/components/layout', center: '/components/valid' },
       layoutData = { someArea: ['center'] },
+      deepData = { deep: {_ref: '/components/validDeep'} },
       componentData = { name: 'Manny', species: 'cat' };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, componentData);
+      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, deepData, componentData);
     });
 
     afterEach(function () {

@@ -25,16 +25,19 @@ describe(endpointName, function () {
         center: '/components/validCascading',
         side: ['/components/validCascading@valid']
       },
+      deepData = { deep: {_ref: '/components/validDeep'} },
       layoutData = { someArea: ['center'] },
       componentData = { name: 'Manny', species: 'cat' },
       cascadingTarget = '/components/validDeep',
-      addVersion = _.partial(replaceVersion, cascadingTarget),
       versionedPageData = function (version) {
         return {
           layout: '/components/layout@' + version,
           center: '/components/valid@' + version,
           side: ['/components/valid@' + version]
         };
+      },
+      versionedDeepData = function (version) {
+        return { deep: {_ref: '/components/validDeep@' + version} };
       },
       cascadingReturnData = function (version) {
         return {
@@ -46,7 +49,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, componentData);
+      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, deepData, componentData);
     });
 
     afterEach(function () {
@@ -91,7 +94,9 @@ describe(endpointName, function () {
       version = 'published';
       acceptsJsonBody(path, {name: 'valid', version: version}, pageData, 200, versionedPageData(version));
       acceptsJsonBody(path, {name: 'valid', version: version}, cascadingPageData, 200, cascadingReturnData(version));
-      cascades(path, {name: 'valid', version: version}, cascadingPageData, addVersion(version), componentData);
+      cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.center, version), versionedDeepData(version));
+      cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.layout, version), versionedDeepData(version));
+      cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingTarget, version), componentData);
     });
   });
 });
