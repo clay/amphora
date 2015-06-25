@@ -3,7 +3,7 @@ Routes
 
 This is a technical document about how routing in Byline is performed.  It also informs any further technical decisions about the growth of the library, and contains any ideas that we're adhering to for consistency.
 
-For a broader and less specific overview of routing, please see the [project's   readme document](../.)
+For a broader and less specific overview of routing, please see the [project's   readme document](https://github.com/nymag/byline)
 
 ## Table of Contents
 
@@ -61,7 +61,7 @@ Example: `GET /components/text/instances`
 ### Modifying components
 `GET /components/:name[/instances/:id][@:version[.:extension]]` will return a component.  The form the data is based on the extension (.html, .json, .yaml), or the Accepts header of the request.  
 
-Requesting data without a version will return the latest saved version.  Some versions have special rules (see Propagating Versions), but any other version name can be used to specially tag any particular version.  Some versions are also created automatically to create an audit trail when saving to latest (see Timestamped Versions).
+Requesting data without a version will return the latest saved version.  Some versions have special rules (see [Propagating Versions](#propagating-versions)), but any other version name can be used to specially tag any particular version.  Some versions are also created automatically to create an audit trail when saving to latest (see [Timestamped Versions](#timestamped-versions)).
 
 `PUT /components/:name[/instances/:id][@version]` will save the data such that `GET`ing the same uri will return exactly what was put there.
 
@@ -124,6 +124,10 @@ Pages consist of a layout and a list of areas.  Each area defined in a page maps
 ```
 The layout component in this example has two areas: center and side.  When the page is displayed, the components listed here will be placed into the matching areas in the layout.
 
+### Publishing
+
+Publishing a page has a special convenience behavior where all components referenced by the page will also be published.  (Example: https://github.com/nymag/byline/pull/78)
+
 ### Schedule
 
 Whenever a page is published, an event is added to its schedule with the current time and version that was published.  `PUT`ing an event with a future time will schedule a publication of that particular version in the future.
@@ -134,7 +138,7 @@ Whenever a page is published, an event is added to its schedule with the current
 /uris/<base64(:path)>
 ```
 
-A URI represents a `redirect`.  They are used to redirect some slug or URI to another page or component.  They can also redirect to other uris, or several uris can point to the same resource.  URIs are stored as Base64, so:
+A URI is used to redirect some slug or URI to another page or component.  They can also redirect to other uris, or several uris can point to the same resource.  URIs are stored as Base64, so:
 
 - `example.com` is `/uris/ZXhhbXBsZS5jb20=` => `/pages/jdskla@published`
 - `example.com/other/` is `/uris/ZXhhbXBsZS5jb20vb3RoZXI=` => `/pages/4revd3s@published`
