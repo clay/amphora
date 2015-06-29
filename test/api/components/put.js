@@ -30,7 +30,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachComponentTest(sandbox,  hostname, data);
+      return apiAccepts.beforeEachComponentTest(sandbox, hostname, data);
     });
 
     afterEach(function () {
@@ -40,8 +40,8 @@ describe(endpointName, function () {
     describe('/components', function () {
       var path = this.title;
 
-      acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {}, 405, { allow: ['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {}, {}, 405, { allow: ['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsHtml(path, {}, 405);
     });
 
@@ -68,8 +68,8 @@ describe(endpointName, function () {
       var path = this.title;
 
       acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {name: 'valid'}, 405, { allow: ['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {name: 'missing'}, 405, { allow: ['get'], code: 405, message: 'Method PUT not allowed' });
 
       acceptsHtml(path, {name: 'invalid'}, 404);
       acceptsHtml(path, {name: 'valid'}, 405);
@@ -100,12 +100,12 @@ describe(endpointName, function () {
       var path = this.title;
 
       acceptsJson(path, {name: 'invalid'}, 404, { code: 404, message: 'Not Found' });
-      acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
-      acceptsJson(path, {name: 'missing'}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {name: 'valid'}, 405, { allow: ['get', 'post'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {name: 'missing'}, 405, { allow: ['get', 'post'], code: 405, message: 'Method PUT not allowed' });
 
       acceptsJsonBody(path, {name: 'invalid'}, {}, 404, { code: 404, message: 'Not Found' });
-      acceptsJsonBody(path, {name: 'valid'}, data, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
-      acceptsJsonBody(path, {name: 'missing'}, data, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {name: 'valid'}, data, 405, { allow: ['get', 'post'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {name: 'missing'}, data, 405, { allow: ['get', 'post'], code: 405, message: 'Method PUT not allowed' });
 
       acceptsHtml(path, {name: 'invalid'}, 404);
       acceptsHtml(path, {name: 'valid'}, 406);
@@ -157,13 +157,13 @@ describe(endpointName, function () {
 
       cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
 
-      //published version
+      // published version
       version = 'published';
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));
       cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), addVersion(version), cascadingDeepData);
 
-      //latest version
+      // latest version
       version = 'latest';
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));

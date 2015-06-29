@@ -8,6 +8,6 @@ module.exports = function () {
   return routes(app);
 };
 
-//services to outside
+// services to outside
 module.exports.db = require('./lib/services/db');
 module.exports.components = require('./lib/services/components');

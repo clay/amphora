@@ -17,7 +17,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachUriTest(sandbox,  hostname, data);
+      return apiAccepts.beforeEachUriTest(sandbox, hostname, data);
     });
 
     afterEach(function () {
@@ -26,6 +26,7 @@ describe(endpointName, function () {
 
     describe('/uris', function () {
       var path = this.title;
+
       acceptsJson(path, {}, 200, '["/uris/valid"]');
       acceptsHtml(path, {}, 406, '406 text/html not acceptable');
       acceptsText(path, {}, 406, 'Not Acceptable');

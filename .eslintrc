@@ -42,7 +42,7 @@
     "vars-on-top": 2,
     "wrap-iife": 2,
     // strict mode
-    "strict": [2, "never"],
+    "strict": [2, "global"],
     // variables
     "no-unused-vars": 2,
     // node.js

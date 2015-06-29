@@ -16,7 +16,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachComponentTest(sandbox,  hostname, data);
+      return apiAccepts.beforeEachComponentTest(sandbox, hostname, data);
     });
 
     afterEach(function () {
@@ -25,6 +25,7 @@ describe(endpointName, function () {
 
     describe('/components', function () {
       var path = this.title;
+
       acceptsJson(path, {}, 501);
       acceptsHtml(path, {}, 501);
     });
@@ -45,7 +46,7 @@ describe(endpointName, function () {
       var path = this.title;
 
       acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 200, {some:'schema', thatIs:'valid'});
+      acceptsJson(path, {name: 'valid'}, 200, {some: 'schema', thatIs: 'valid'});
       acceptsJson(path, {name: 'missing'}, 404);
 
       acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
