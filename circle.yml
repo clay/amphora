@@ -7,9 +7,8 @@ dependencies:
   pre:
     - npm install -g istanbul
     - npm install -g pangyp
+    - npm install -g eslint
 test:
   post:
     - cp -r ./coverage/* $CIRCLE_ARTIFACTS
     - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-
-

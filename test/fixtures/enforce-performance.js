@@ -27,6 +27,7 @@ function enforceFastTest(obj) {
 
 function enforceFastTestSuite(obj) {
   var messages = [];
+
   messages = messages.concat(_.filter(_.map(obj.tests, enforceFastTest), _.identity));
   messages = messages.concat(_.flattenDeep(_.map(obj.suites, enforceFastTestSuite)));
   return messages;

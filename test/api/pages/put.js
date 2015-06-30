@@ -49,7 +49,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, deepData, componentData);
+      return apiAccepts.beforeEachPageTest(sandbox, hostname, pageData, layoutData, deepData, componentData);
     });
 
     afterEach(function () {
@@ -59,8 +59,8 @@ describe(endpointName, function () {
     describe('/pages', function () {
       var path = this.title;
 
-      acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {}, 405, { allow: ['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {}, {}, 405, { allow: ['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
     });
 
@@ -90,7 +90,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', version: version}, 406, '406 text/html not acceptable');
       acceptsHtml(path, {name: 'missing', version: version}, 406, '406 text/html not acceptable');
 
-      //published
+      // published
       version = 'published';
       acceptsJsonBody(path, {name: 'valid', version: version}, pageData, 200, versionedPageData(version));
       acceptsJsonBody(path, {name: 'valid', version: version}, cascadingPageData, 200, cascadingReturnData(version));

@@ -17,7 +17,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachUriTest(sandbox,  hostname, data);
+      return apiAccepts.beforeEachUriTest(sandbox, hostname, data);
     });
 
     afterEach(function () {
@@ -27,14 +27,14 @@ describe(endpointName, function () {
     describe('/lists', function () {
       var path = this.title;
 
-      acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {}, 405, { allow: ['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {}, {}, 405, { allow: ['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsHtml(path, {}, 406);
     });
 
     describe('/lists/:name', function () {
       var path = this.title;
-      
+
       acceptsJson(path, {name: 'valid'}, 400, {message: 'Client Error: Only accepts lists.', code: 400});
       acceptsJson(path, {name: 'missing'}, 400, {message: 'Client Error: Only accepts lists.', code: 400});
 

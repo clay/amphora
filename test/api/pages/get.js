@@ -19,7 +19,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, deepData, componentData);
+      return apiAccepts.beforeEachPageTest(sandbox, hostname, pageData, layoutData, deepData, componentData);
     });
 
     afterEach(function () {
@@ -28,6 +28,7 @@ describe(endpointName, function () {
 
     describe('/pages', function () {
       var path = this.title;
+
       acceptsJson(path, {}, 200, '["/pages/valid"]');
       acceptsHtml(path, {}, 406);
     });

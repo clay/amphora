@@ -19,7 +19,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachUriTest(sandbox,  hostname, data);
+      return apiAccepts.beforeEachUriTest(sandbox, hostname, data);
     });
 
     afterEach(function () {
@@ -29,8 +29,8 @@ describe(endpointName, function () {
     describe('/uris', function () {
       var path = this.title;
 
-      acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {}, 405, { allow: ['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {}, {}, 405, { allow: ['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
       acceptsText(path, {}, 405, 'Method Not Allowed');
     });

@@ -19,6 +19,7 @@ var _ = require('lodash'),
 /**
  * @param {object} replacements
  * @param {string} path
+ * @returns {string}
  */
 function getRealPath(replacements, path) {
   return _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
@@ -27,13 +28,13 @@ function getRealPath(replacements, path) {
 /**
  * Create a generic API test.  (shortcut)
  * @param {object} options
- * @param options.path          The path to the route, e.g. `uri/:name`
- * @param options.replacements  Replace path with a value, e.g. `uri/:name` becomes `uri/something`
- * @param options.accept        E.g. 'application/json'
- * @param options.contentType   E.g. /json/
- * @param options.body          Data to send with the request (put, post)
- * @param options.status        Expected HTTP status to be returned
- * @param options.data          Expected data to be returned
+ * @param {string} options.path          The path to the route, e.g. `uri/:name`
+ * @param {string} options.replacements  Replace path with a value, e.g. `uri/:name` becomes `uri/something`
+ * @param {string} options.accept        E.g. 'application/json'
+ * @param {string} options.contentType   E.g. /json/
+ * @param {string} options.body          Data to send with the request (put, post)
+ * @param {number} options.status        Expected HTTP status to be returned
+ * @param {object} options.data          Expected data to be returned
  */
 function createTest(options) {
   var realPath = getRealPath(options.replacements, options.path);
@@ -58,7 +59,7 @@ function createTest(options) {
       promise = promise.expect(options.data);
     }
 
-    //if there is no extension to the url, then all endpoints should have a Vary header with Accept
+    // if there is no extension to the url, then all endpoints should have a Vary header with Accept
     if (!options.path.match(/.*\/.*\.(.*)/)) {
       promise.expect('Vary', /Accept/);
     }
@@ -69,7 +70,7 @@ function createTest(options) {
 
 /**
  * Create a generic test that accepts HTML
- * @param method
+ * @param {string} method
  * @returns {Function}
  */
 function acceptsHtml(method) {
@@ -89,11 +90,11 @@ function acceptsHtml(method) {
 
 /**
  * Create a generic test that accepts JSON with a BODY
- * @param method
+ * @param {string} method
  * @returns {Function}
  */
 function acceptsJsonBody(method) {
-  return function (path, replacements, body, status, data) {
+  return function (path, replacements, body, status, data) { // eslint-disable-line
     createTest({
       description: JSON.stringify(replacements) + ' accepts json with body ' + JSON.stringify(body),
       path: path,
@@ -130,11 +131,11 @@ function acceptsJson(method) {
 
 /**
  * Create a generic test that accepts JSON with a BODY
- * @param method
+ * @param {string} method
  * @returns {Function}
  */
 function acceptsTextBody(method) {
-  return function (path, replacements, body, status, data) {
+  return function (path, replacements, body, status, data) { // eslint-disable-line
     createTest({
       description: JSON.stringify(replacements) + ' accepts text with body ' + body,
       path: path,
@@ -195,8 +196,8 @@ function getVersions(ref) {
     deferred = bluebird.defer(),
     prefix = ref.split('@')[0];
 
-  db.list({prefix: prefix, values: false, transforms: [filter({wantStrings: true}, function (str) {
-    return str.indexOf('@') !== -1;
+  db.list({prefix: prefix, values: false, transforms: [filter({wantStrings: true}, function (possibleVersion) {
+    return possibleVersion.indexOf('@') !== -1;
   })]})
     .on('data', function (data) {
       str += data;
@@ -229,9 +230,9 @@ function createsNewVersion(method) {
           .then(function () {
             return getVersions(realPath);
           }).then(function (newVersions) {
-            //no versions are deleted
+            // no versions are deleted
             expect(newVersions).to.include.members(oldVersions);
-            //should have one new version, not counting realPath
+            // should have one new version, not counting realPath
             expect(_.without(newVersions, realPath).length - oldVersions.length).to.be.at.least(1);
           });
       });
@@ -241,11 +242,11 @@ function createsNewVersion(method) {
 
 /**
  * Expect deep data to exist after cascading operation
- * @param method
+ * @param {string} method
  * @returns {Function}
  */
 function cascades(method) {
-  return function (path, replacements, data, cascadingTarget, cascadingDeepData) {
+  return function (path, replacements, data, cascadingTarget, cascadingDeepData) { // eslint-disable-line
     var realPath = getRealPath(replacements, path);
 
     it(realPath + ' cascades to ' + cascadingTarget, function () {
@@ -256,7 +257,7 @@ function cascades(method) {
         .set('Host', host)
         .expect(200)
         .then(function () {
-          //expect deep data to now exist
+          // expect deep data to now exist
           return db.get(cascadingTarget).then(JSON.parse).then(function (result) {
             expect(result).to.deep.equal(cascadingDeepData);
           });
@@ -286,6 +287,7 @@ function expectAllRefsArePublished() {
   return function (res) {
     var data = res.body,
       refs = _.listDeepObjects(data, '_ref');
+
     _.each(refs, function (ref) {
       expect(ref.indexOf('@published') > -1).to.equal(true);
     });
@@ -300,6 +302,7 @@ function expectCleanReferences() {
   return function (res) {
     var data = res.body,
       refs = _.listDeepObjects(data, '_ref');
+
     _.each(refs, function (obj) {
       expect(_.size(obj)).to.equal(1);
     });
@@ -316,6 +319,7 @@ function setHost(value) {
 
 function stubFiles(sandbox) {
   var stubGetComponentPath = sandbox.stub(files, 'getComponentPath');
+
   stubGetComponentPath.withArgs('valid').returns('validThing');
   stubGetComponentPath.withArgs('missing').returns('missingThing');
   stubGetComponentPath.withArgs('invalid').returns(null);
@@ -323,6 +327,7 @@ function stubFiles(sandbox) {
 
 function stubSchema(sandbox) {
   var stubGet = sandbox.stub(schema, 'getSchema');
+
   stubGet.withArgs('validThing').returns({some: 'schema', thatIs: 'valid'});
   stubGet.withArgs('missingThing').throws(new Error('File not found.'));
   return sandbox;
@@ -330,6 +335,7 @@ function stubSchema(sandbox) {
 
 function stubGetTemplate(sandbox) {
   var stub = sandbox.stub(components, 'getTemplate');
+
   stub.withArgs('valid').returns('some/valid/template.nunjucks');
   stub.withArgs('layout').returns('some/valid/template.for.layout.nunjucks');
   return sandbox;
@@ -337,6 +343,7 @@ function stubGetTemplate(sandbox) {
 
 function stubMultiplexRender(sandbox) {
   var template = _.template('<valid><% print(JSON.stringify(obj)) %></valid>');
+
   sandbox.stub(multiplex, 'render', function (name, data) {
     return template(_.omit(data, 'state', 'getTemplate', 'locals', 'site'));
   });
@@ -353,7 +360,7 @@ function stubLogging(sandbox) {
  */
 
 function beforeTesting(suite, hostname, data) {
-  //extra time to prime the 'requires'
+  // extra time to prime the 'requires'
   suite.timeout(500);
 
   app = express();
@@ -372,7 +379,7 @@ function beforeTesting(suite, hostname, data) {
 
 /**
  * Generic before each test, make the DB and Host consistent, and get a _new_ version of express.
- * 
+ *
  * Yes, brand new, for every single test.
  *
  * @param {Object} options
@@ -408,9 +415,9 @@ function beforeEachTest(options) {
  *
  * Yes, brand new, for every single test.
  *
- * @param sandbox
- * @param hostname
- * @param data
+ * @param {string} sandbox
+ * @param {string} hostname
+ * @param {object} data
  * @returns {Promise}
  */
 function beforeEachComponentTest(sandbox, hostname, data) {
@@ -430,15 +437,15 @@ function beforeEachComponentTest(sandbox, hostname, data) {
  *
  * Yes, brand new, for every single test.
  *
- * @param sandbox
- * @param hostname
- * @param pageData
- * @param layoutData
- * @param firstLevelComponentData
- * @param secondLevelComponentData
+ * @param {string} sandbox
+ * @param {string} hostname
+ * @param {object} pageData
+ * @param {object} layoutData
+ * @param {object} firstLevelComponentData
+ * @param {object} secondLevelComponentData
  * @returns {Promise}
  */
-function beforeEachPageTest(sandbox, hostname, pageData, layoutData, firstLevelComponentData, secondLevelComponentData) {
+function beforeEachPageTest(sandbox, hostname, pageData, layoutData, firstLevelComponentData, secondLevelComponentData) { // eslint-disable-line
   return beforeEachTest({
     sandbox: sandbox,
     hostname: hostname,
@@ -463,9 +470,9 @@ function beforeEachPageTest(sandbox, hostname, pageData, layoutData, firstLevelC
  *
  * Yes, brand new, for every single test.
  *
- * @param sandbox
- * @param hostname
- * @param data
+ * @param {string} sandbox
+ * @param {string} hostname
+ * @param {object} data
  * @returns {Promise}
  */
 function beforeEachUriTest(sandbox, hostname, data) {
@@ -488,9 +495,9 @@ function beforeEachUriTest(sandbox, hostname, data) {
  *
  * Yes, brand new, for every single test.
  *
- * @param sandbox
- * @param hostname
- * @param data
+ * @param {string} sandbox
+ * @param {string} hostname
+ * @param {object} data
  * @returns {Promise}
  */
 function beforeEachListTest(sandbox, hostname, data) {
