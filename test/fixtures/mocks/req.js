@@ -5,5 +5,6 @@ module.exports = function () {
   req.baseUrl = '';
   req.url = '/someUrl';
   req.vhost = {hostname: ''};
+  req.query = {};
   return req;
 };

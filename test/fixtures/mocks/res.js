@@ -1,6 +1,7 @@
 'use strict';
 
 var _ = require('lodash'),
+  req = require('./req'),
   Transform = require('stream').Transform;
 
 module.exports = function (options) {
