@@ -1,7 +1,9 @@
-Technical Documentation
+For Developers and Designers
 =======================
 
 This document is for developers or designers who are creating new components.
+
+Any conversation that is deeper than editing components that already exist should start here.  This document describes the basic vocabulary about how pages are put together.  Designing or developing something that does not fit into the ideas on this page is a great way to create something slow and unmaintainable, in which case there are other solutions available that [might](http://www.adobe.com/marketing-cloud.html) [suit](http://www.wordpress.org) [your](http://www.joomla.org/) [needs](https://www.drupal.org/).
 
 # Byline is divided into components.
 
@@ -107,7 +109,7 @@ Any components referenced in this layout are said to be _layout-level_, and head
 and content are said to be _page-level_.  That is, pages can place their components
 into the spaces defined by "head" and "content".
 
-### But I want to have a special layout for a specific page!
+### Can I have a special layout for a specific page?
 
 If you're changing the structure of a layout, create a new layout.
 
