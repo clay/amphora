@@ -80,9 +80,7 @@ needs to be different, then you should create a new layout.
 </html>
 ```
 
-Layouts are components, so they can have data.  If the structure of a layout is
-the same but the list of components are changing, then you should create multiple
-instances of the same layout.
+If the structure of a layout is the same but the list of components are changing, then you should create multiple instances of the same layout.
 
 ### Example of an instance of a layout component:
 ```json
