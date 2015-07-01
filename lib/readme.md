@@ -90,12 +90,12 @@ If the structure of a layout is the same but the list of components are changing
   "areaA": [
     { "_ref": "/components/global-site" },
     "head",
-    { "_ref": "/components/global-meta" },
+    { "_ref": "/components/global-meta/instances/special-layout" },
     { "_ref": "/components/global-icons" }
   ],
   "areaB": [
     "content",
-    { "_ref": "/components/comments" },
+    { "_ref": "/components/comments/instances/long-articles" },
     { "_ref": "/components/related-stories" }
   ],
   "areaC": [
