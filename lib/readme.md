@@ -50,7 +50,7 @@ Then put it in a component, and reference it.
 ### Example page:
 ```json
 {
-  "layout": "/components/article",
+  "layout": "/components/my-layout/instances/article",
   "head": [
     "/components/title/instances/my-first-article",
     "/components/social/instances/my-first-article"
@@ -104,12 +104,14 @@ If the structure of a layout is the same but the list of components are changing
 }
 ```
 
-In this example, the data from the page is placed into "head" and "content".
-Any components referenced in this layout are said to be _layout-level_, and head
-and content are said to be _page-level_.  That is, pages can place their components
-into the spaces defined by "head" and "content".
+In this example, the data from the page is placed into **head** and **content**.
+Any components referenced in this layout are said to be layout-level, and **head**
+and **content** are said to be page-level.  That is, pages can place their components
+into the spaces defined by **head** and **content**.
 
 ### Can I have a special layout for a specific page?
+
+Yes.
 
 If you're changing the structure of a layout, create a new layout.
 
