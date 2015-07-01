@@ -89,7 +89,7 @@ If the structure of a layout is the same but the list of components are changing
 {
   "areaA": [
     { "_ref": "/components/global-site" },
-    "head"
+    "head",
     { "_ref": "/components/global-meta" },
     { "_ref": "/components/global-icons" }
   ],
