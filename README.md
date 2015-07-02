@@ -1,21 +1,21 @@
-Codename: New York Byline
+Byline
 =========================
 
-📰 _"Catchy super fun slogan here!"_
+📰 _"Catchy slogan here"_
 
 [![Coverage Status](https://coveralls.io/repos/nymag/byline/badge.svg?branch=master&t=cQ880T)](https://coveralls.io/r/nymag/byline?branch=master)
 
-A full-stack framework for creating the web.  
-The tools to bring devs, designers and creators together to make great things online.
+A framework to create the web, one component at a time.
+A framework to organize, edit, and deliver the web, one component at a time.
+A new way to organize, edit, and deliver the web, one component at a time.
 
 Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://thecut.com/), [Grub Street](http://www.grubstreet.com/), and [The Science of Us](http://www.scienceofus.com/).  
 Created by New York Media.
 
 ## Installation
 ```
-npm install --save ny-byline
+npm install --save byline
 ```
-TK: Yeoman for init options.
 
 ## Table of Contents
 * [Introduction]()
@@ -23,68 +23,64 @@ TK: Yeoman for init options.
   * [Components]()
   * [Layouts]()
   * [Sites]()
-  * [Global]()
-* [Tooling]()
+* [Tools]()
 * [Compilation]()
 * [Configuration]()
 * [Advanced Topics]()
 
 ## Introduction
-Byline is a new way to organize and ship your web creations, guided by two principles:
+Byline is guided by three principles:
 
-1. [Organize](##organization) in a maintainable way – to preserve developer sanity.
-2. [Compile](##compilation) in a performant way – to make the web a better place.
+1. [Organize your code](##organize) in a maintainable way – to keep Developers sane.
+// Developers...
+2. [Edit your content](##edit) with friendly tools - so Creators are a button away from publishing.
+// Creators...
+// Users...
+3. [Compile your website](##compile) for performance – so Users have a fast and happy experience.
 
-By separating how we organize our work from how we deliver it, we can let each priority have a clear focus. As web performance best practices change (as they inevitably will), your organizational structure does not.
+Byline is a set of guidelines and tools that optimizes to the needs of each scope.
 
-Finally, by having a clear standard for organizing and compiling our work, we can create [Tooling](##tooling) that makes our goals easier to achieve. Tooling is optional, so use what's useful to you and ignore the rest.
+Most of Byline is optional. Use what's useful to you. Ignore the rest.
 
+## Organizing with Byline
+Byline helps you organize your website's code and assets with a focus on long-term maintainability through components. We start by discarding the typical MVC folder structure, and instead separate concerns into three areas that better map to the needs of web development.
 
-## Organization
-Byline eschews the typical MVC folder structure, separating concerns into four areas.
-
-### The Four Scopes of Byline
+### A Map of Byline
 ```
-/components  (web components)
-/layouts     (the grids on which components live)
-/sites       (site-level routing, settings, and assets)
-/global      (global settings and assets)
+/components  (Web Components)
+/layouts     (the layouts on which components are arranged)
+/sites       (site-level settings, routes, and assets)
 ```
 
 TK: Illustration of scopes.
 
-Each scope has a clear purpose, allowing us to smartly organize around their specific needs. Let's jump into what each scope is capable of.
+### Web Components in Byline
+#### What are Web Components?
+Web Components are reusable, configurable, self-contained pieces of the web. An official standard is still evolving, but Web Components aim to make development dramatically more maintainable.
 
-### Components
-Web Components are reusable, configurable, and self-contained, but the open standard around them is still evolving.
+#### How does Byline Support Web Components?
+Byline offers a way to embrace tomorrow's Web Components today, by combining today's Web Standards with tomorrow's philosophy of Web Components. No need to wait for browsers to implement a new common standard. Nor do you need to shim on the client-side, to the detriment of performance.
 
-TK: Illustration of component scope.
+#### Byline Components are Present and Future Compatible
+As the official standard for Web Components emerges, Byline will evolve to support it, giving creations in Byline an upgrade path as browsers evolve.
 
-Byline offers a way to embrace the philosophy of tomorrow's web components with the tools of today. No need to wait for browsers to implement a common standard or to endlessly shim on the client-side, to the detriment of performance.
-
-#### Byline Components are Future Compatible.
-As the open standard for web components emerges, Byline will evolve to support them, giving creations in Byline an upgrade path in the years ahead.
-
-#### Creating a Web Component in Byline
-The pillars of a webpage are HTML, CSS, and Javascript. We let each language perform the job it was built for, and we've structured Byline to exercise the strengths of each.
-
-How components are organized:
+#### Create a Web Component in Byline
+1. Create a directory in ```/components``` that bears your component's name.
+2. Populate your component using the following structure:
 ```
-/components
-  /component-name   (unique name of your web component)
-    /media          (JPG, PNG, GIF, and SVG assets)
-    template.html   (HTML, preferably semantic)
-    all.css         (CSS, w/support for Responsive Design via filename-breakpoints)
-    client.js       (javascript delivered to the client)
-    schema.yml     (data and settings)
+/component-name   (unique name of your web component)
+      /media          (JPG, PNG, GIF, and SVG assets)
+      template.html   (HTML, preferably semantic)
+      all.css         (CSS specific to your component)
+      client.js       (client-side javascript)
+      schema.yml      (describes the data specific to your component)
 ```
 
-All files shown here are optional. Use what's useful. Ignore the rest.
+All files are optional. Use what's useful. Ignore the rest.
 
 #### HTML in Web Components (template.html)
 Components in Byline have one requirement:
-
-1. Wrap your markup in a semantically appropriate tag.  
+1. Wrap your markup in a semantically appropriate tag.
 
 Example:
 ```HTML
@@ -94,12 +90,13 @@ Example:
 ```
 
 #### Template Language Support
-Byline supports numorous templating languages. Simply end your template file with the appropriate extension.
-
-- template.html (no templating)
-- [nunjucks](https://github.com/mozilla/nunjucks)
-- [jade](https://github.com/jadejs/jade)
-- [mustache](https://github.com/mustache/mustache.github.com)
+Use your templating engine of choice.
+Byline Components can be made with over 30+ templating languages, including [jade](https://github.com/jadejs/jade), [mustache](https://github.com/mustache/mustache.github.com),
+[handlebars](https://github.com/wycats/handlebars.js/),
+[nunjucks](https://github.com/mozilla/nunjucks),
+[react](https://github.com/facebook/react).
+Simply end your template file with an identifying extension and Byline will process it in the appropriate engine.
+If you'd like to simply output unprocessed html, name your file ```template.html```.
 
 #### CSS in Web Components (all.css)
 Styles written in a component's CSS file will be scoped to that component on compilation.
@@ -270,16 +267,10 @@ TK: Component Namespacing
 byline-* for default packages
 yourname-* for your install?
 
-### Sites in Byline
-TK
-
 ### Layouts in Byline
 TK
 
-### Global in Byline
-TK
-
-## Tooling in Byline
+### Sites in Byline
 TK
 
 ## Compilation
@@ -290,6 +281,7 @@ TK
 
 ## Advanced Topics
 TK
+
 ### Advanced Component Options
 ```
 /your-component
@@ -300,8 +292,13 @@ TK
 #### server.js
 #### import.js
 #### TK: Cross Component Communication
-#### TK: Reaching out to other parts of the document. (dns pre-fetch as example)
+#### TK: Reaching out to other parts of the document. (special top-level stuff?)
 
 ## The Modules of Byline
+What follows is a list of open source modules available on npm and github that help Byline do it's job.
 - [dollar-slice](https://www.npmjs.com/package/dollar-slice): 🍕 *"Cheap and easy."* Client-side micro-framework with heavy inspiration from Angular and Backbone.
-- filename-breakpoints: 📄📲💻📺 *"Sugar for Media Queries."*
+- [responsive-filenames](https://www.npmjs.com/package/responsive-filenames): Easy CSS Breakpoints
+- [byline-nunjucks](https://www.npmjs.com/package/byline-nunjucks): Byline-specific nunjucks environment
+- [gulp-folder-changed](https://www.npmjs.com/package/gulp-folder-changed): Gulp plugin to pass through files if they've changed
+- [lodash-ny-util](https://www.npmjs.com/package/lodash-ny-util): Lodash mixin for generic list, map, string functionality
+- [multiplex-templates](https://www.npmjs.com/package/multiplex-templates): Easy embedding for multiple template languages
