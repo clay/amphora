@@ -18,15 +18,14 @@ npm install --save byline
 ```
 
 ## Table of Contents
-* [Introduction]()
-* [Organization]()
-  * [Components]()
-  * [Layouts]()
-  * [Sites]()
-* [Tools]()
-* [Compilation]()
-* [Configuration]()
-* [Advanced Topics]()
+* [Introduction](#introduction)
+* [Organization](#organization)
+  * [Components](#components)
+  * [Sites](#sites)
+* [Tools](#tools)
+* [Compilation](#compilation)
+* [Configuration](#configuration)
+* [Advanced Topics](#advanced-topics)
 
 ## Introduction
 Byline is guided by three principles:
@@ -48,11 +47,8 @@ Byline helps you organize your website's code and assets with a focus on long-te
 ### A Map of Byline
 ```
 /components  (Web Components)
-/layouts     (the layouts on which components are arranged)
 /sites       (site-level settings, routes, and assets)
 ```
-
-TK: Illustration of scopes.
 
 ### Web Components in Byline
 #### What are Web Components?
@@ -101,7 +97,7 @@ If you'd like to simply output unprocessed html, name your file ```template.html
 #### CSS in Web Components (all.css)
 Styles written in a component's CSS file will be scoped to that component on compilation.
 
-For example, to style the anchors of your component, simply write:
+To style the anchors of your component, simply write:
 ```CSS
 a {
   /* anchor styles */
@@ -109,12 +105,12 @@ a {
 ```
 
 #### Using CSS Preprocessors
-TK
+Using our yeoman generator, gulp compilation will compile your CSS using SASS.
 
-#### Responsive Components Made Easy with filename-breakpoints
-Byline uses [filename-breakpoints]() so that every component can have its own set of responsive breakpoints. Put simply, filename-breakpoints wrap a file's CSS in a mediaquery derived from its filename.
+#### Responsive Components Made Easy
+Byline uses [filename-breakpoints](https://github.com/nymag/responsive-filenames) so that every component can have its own set of responsive breakpoints. It wraps a file's CSS in a `@media` block derived from its filename.
 
-Breakpoints can be defined as number ranges, as well as by keywords, like print TK
+Breakpoints can be defined as number ranges as well as by keywords.  For example:
 ```
 all.css        -> no media query
 0-600.css      -> @media (min-width: 599.9px) { ... }
@@ -130,16 +126,10 @@ By default, all components get the following print style unless you specify diff
   }
 ```
 
-TK: Should we support other media queries? combo queries? (tv, resolution, device-aspect-ratio, others? http://www.w3.org/TR/css3-mediaqueries/
+#### Media Folder (/media)
+Place image assets for your component in this folder.  Using our yeoman generator, gulp compilation will optimize and copy JPG, PNG, GIF and SVG assets to `/publish/media/<component-name>/` by default.
 
-#### The Media Folder
-Place image assets for your component in this folder.  
-On compilation, JPG, PNG, GIF and SVG assets will be optimized and copied to:
-```
-/publish/media/component-name/
-```
-
-And are available at:
+For example:
 ```
 //localhost/media/component-name/file.jpg
 ```
@@ -149,12 +139,10 @@ You can include these assets in your HTML like so:
 <img src="/media/component-name/file.jpg" alt="">
 ```
 
-#### Client-Side Javascript (client.js)
+#### Client-side Javascript (client.js)
 Any javascript you write in client.js gets minified and delivered with any page that has that component. How you write your javascript is up to you.
 
-TK: Illustrate typical choices as well as dollar-slice.
-
-[Dollar Slice](https://github.com/nymag/dollar-slice)
+We recommend using [dollar slice](https://github.com/nymag/dollar-slice) for client-side JavaScript management.
 
 #### Defining Data for Your Component (schema.yml)
 To take advatage of Byline's built-in CMS, describe the data your component expects with a schema.yml.
@@ -167,7 +155,7 @@ Given this simple component template:
 </article>
 ```
 
-Define the expected values, in this case ```{{ title }}``` and ```{{ story }}```, with schema.yml:
+Define the expected values, in this case `{{ title }}` and `{{ story }}`, with schema.yml:
 ```yaml
 title:
   _type: text
@@ -181,124 +169,9 @@ story:
 
 All values are optional. If you don't define a ```_type```, if will default to ```_type: text```.
 
-##### General Attributes
-```yaml
-  _value: default value   #-> <input value="default value"...
-  _label: First Name      #-> <label>First Name <input...
-  _placeholder: Jane Doe  #-> <input placeholder="Jane Doe"...
-  _required: true         #-> <input required...
-  _pattern: [a-zA-Z0-9]+  #-> <input pattern="[a-zA-Z0-9]+"...
-```
+More details about schema.yml are available in the [byline-editor](https://github.com/nymag/byline-editor) component.
 
-##### Strings
-```yaml
-  # Text Types
-  _type: text     #-> <input type="text"...
-  _type: textarea #-> <textarea...
-  _type: url      #-> <input type="url"...
-  _type: email    #-> <input type="email"...
-  _type: tel      #-> <input type="tel"...
-  _type: color    #-> <input type="color"...
+### Advanced Topics
 
-  # Text Attributes (optional)
-  _minlength: 1   #-> <input minLength="1"...
-  _maxlength: 10  #-> <input maxLength="1"...
-```
-
-##### Numbers
-```yaml
-  # Number Types
-  _type: number   #-> <input type="number"...
-  _type: range    #-> <input type="range"...
-
-  # Number Attributes (optional)
-  _min: 1     #-> <input min="1"...
-  _max: 100   #-> <input min="100"...
-  _step: 10   #-> <input min="10"...
-```
-
-##### Boolean
-```yaml
-  # Boolean Type
-  _type: bool   #-> <input type="checkbox"...
-
-  # Boolean Attribute (optional)
-  _checked: true   #-> <input checked...
-```
-
-##### Dates
-```yaml
-  # Date Types
-  _type: date           #-> <input type="date"...
-  _type: datetime       #-> <input type="datetime"...
-  _type: datetime-local #-> <input type="datetime-local"...
-  _type: time           #-> <input type="time"...
-  _type: month          #-> <input type="month"...
-  _type: week           #-> <input type="week"...
-
-  # Date Attributes (optional)
-  _min: 1     #-> <input min="1"...
-  _max: 100   #-> <input max="100"...
-  _step: 10   #-> <input step="10"...
-```
-
-##### Files and Binary Data
-```yaml
-_type: file   #-> <input type="file"...
-```
-
-TK:
-- lists
-- autocomplete?
-- autosave?
-- disabled?
-- spellcheck toggle?
-- custom _type: image, video, etc?
-- list -> datalist?
-
-#### Viewing and Testing Your Component
-- TK: easy component view
-- TK: easy json view
-- TK: sandbox
-- TK: styleguide
-- TK: per-component linting/tests
-
-TK: Component Namespacing
-byline-* for default packages
-yourname-* for your install?
-
-### Layouts in Byline
-TK
-
-### Sites in Byline
-TK
-
-## Compilation
-TK
-
-## Configuration
-TK
-
-## Advanced Topics
-TK
-
-### Advanced Component Options
-```
-/your-component
-  server.js (server-side javascript. Perfect for grabbing data from outside APIs.)
-  import.js (one-time import and data normalization)
-  /sites    (site-specific settings and styles, if you have more than one site.)
-```
-#### server.js
-#### import.js
-#### TK: Cross Component Communication
-#### TK: Reaching out to other parts of the document. (special top-level stuff?)
-
-## The Modules of Byline
-What follows is a list of open source modules available on npm and github that help Byline do it's job.
-- [dollar-slice](https://www.npmjs.com/package/dollar-slice): 🍕 *"Cheap and easy."* Client-side micro-framework with heavy inspiration from Angular and Backbone.
-- [responsive-filenames](https://www.npmjs.com/package/responsive-filenames): Easy CSS Breakpoints
-- [byline-nunjucks](https://www.npmjs.com/package/byline-nunjucks): Byline-specific nunjucks environment
-- [gulp-folder-changed](https://www.npmjs.com/package/gulp-folder-changed): Gulp plugin to pass through files if they've changed
-- [lodash-ny-util](https://www.npmjs.com/package/lodash-ny-util): Lodash mixin for generic list, map, string functionality
-- [multiplex-templates](https://www.npmjs.com/package/multiplex-templates): Easy embedding for multiple template languages
+- [For Developers and Designers](https://github.com/nymag/byline/tree/master/lib)
+- [Routing](https://github.com/nymag/byline/tree/master/lib/routes)
