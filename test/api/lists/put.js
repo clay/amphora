@@ -35,8 +35,8 @@ describe(endpointName, function () {
     describe('/lists/:name', function () {
       var path = this.title;
       
-      acceptsJson(path, {name: 'valid'}, 400, {message: 'Client Error: Only accepts lists.', code: 400});
-      acceptsJson(path, {name: 'missing'}, 400, {message: 'Client Error: Only accepts lists.', code: 400});
+      acceptsJson(path, {name: 'valid'}, 400, {message: 'Only accepts lists.', code: 400});
+      acceptsJson(path, {name: 'missing'}, 400, {message: 'Only accepts lists.', code: 400});
 
       acceptsJsonBody(path, {name: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'missing'}, data, 200, data);

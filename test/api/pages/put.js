@@ -59,8 +59,8 @@ describe(endpointName, function () {
     describe('/pages', function () {
       var path = this.title;
 
-      acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJson(path, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {}, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
       acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
     });
 
