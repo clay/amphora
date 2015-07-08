@@ -6,6 +6,7 @@ machine:
 dependencies:
   pre:
     - npm install -g istanbul
+    - npm install -g node-gyp
 test:
   post:
     - cp -r ./coverage/* $CIRCLE_ARTIFACTS
