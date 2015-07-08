@@ -45,5 +45,5 @@
   "engines": {
     "iojs": "2.3.1"
   },
-  "engineStrict": true
+  "engine-strict": true
 }
