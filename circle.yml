@@ -2,14 +2,11 @@ machine:
   timezone:
     America/New_York
   node:
-    version: iojs-v1.2.0
+    version: iojs-v2.3.1
 dependencies:
   pre:
     - npm install -g istanbul
-    - npm install -g pangyp
 test:
   post:
     - cp -r ./coverage/* $CIRCLE_ARTIFACTS
     - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-
-
