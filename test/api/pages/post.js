@@ -40,7 +40,6 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {}, {}, 400, { message: 'Data missing layout reference.', code: 400 });
       acceptsJsonBody(path, {}, pageData, 201, function (result) {
         var body = result.body;
-        console.log('test result!', result.body);
         expect(body.center).to.match(/^\/components\/valid\/instances\/.+/);
         expect(body.side[0]).to.match(/^\/components\/valid\/instances\/.+/);
         expect(body.layout).to.equal(pageData.layout);

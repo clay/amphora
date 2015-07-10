@@ -74,7 +74,7 @@ describe(endpointName, function () {
 
       acceptsHtml(path, {name: 'valid', version: 'missing'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'missing', version: 'missing'}, 404, '404 Not Found');
-      acceptsHtml(path, {name: 'valid', version: 'valid'}, 200, '<valid>{"someArea":[{"_ref":"/components/valid@valid","deep":{"_ref":"/components/validDeep@valid","name":"Manny","species":"cat"}}],"template":"layout"}</valid>');
+      acceptsHtml(path, {name: 'valid', version: 'valid'}, 200, '<valid>{"someArea":[{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}}],"template":"layout"}</valid>');
       acceptsHtml(path, {name: 'missing', version: 'valid'}, 404, '404 Not Found');
     });
   });
