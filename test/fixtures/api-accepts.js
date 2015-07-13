@@ -344,7 +344,7 @@ function stubMultiplexRender(sandbox) {
 }
 
 function stubLogging(sandbox) {
-  //sandbox.stub(log);
+  sandbox.stub(log);
   return sandbox;
 }
 
