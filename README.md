@@ -114,7 +114,7 @@ story:
   _placeholder: Type your life story here
 ```
 
-Of course, all of these values are optional. More details about schema.yml are available in the [byline-editor](https://github.com/nymag/byline-editor) project.
+The schema.yml file also works without these values; everything is optional. More details about schema.yml are available in the [byline-editor](https://github.com/nymag/byline-editor) project.
 
 ### Advanced Topics
 
