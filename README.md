@@ -51,7 +51,7 @@ As the official standard for Web Components emerges, Byline will evolve to suppo
 ### How to create a component in Byline
 Components in Byline usually have the following structure:
 ```
-/component-name     name of your web component
+/component-name     unique name of your web component
     /media          JPG, PNG, GIF, SVG, etc.
     template.html   your template, preferably semantic
     all.css         component-scoped css
