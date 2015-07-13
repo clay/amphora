@@ -26,49 +26,40 @@ npm install --save byline
 ## Introduction
 Byline is guided by three principles:
 
-1. [Organize your code](##organize) in a maintainable way – to keep Developers sane.
-// Developers...
-2. [Edit your content](##edit) with friendly tools - so Creators are a button away from publishing.
-// Creators...
-// Users...
-3. [Compile your website](##compile) for performance – so Users have a fast and happy experience.
-
-Byline is a set of guidelines and tools that optimizes to the needs of each scope.
+1. Everything is a component
+2. Ease of editing
+3. Performance
 
 Most of Byline is optional. Use what's useful to you. Ignore the rest.
 
 ## Organizing with Byline
 Byline helps you organize your website's code and assets with a focus on long-term maintainability through components. We start by discarding the typical MVC folder structure, and instead separate concerns into two areas that better map to the needs of web development: components and sites.
 
-A typical folder structure of a Byline instance might look like this:
+Therefore, a typical folder structure of a Byline instance might look like this:
 ```
 /components  (Web Components)
 /sites       (site-level settings, routes, and assets)
 ```
 
-## Web Components in Byline
-### What are Web Components?
+### How does Byline Support Web Components?
 Web Components are reusable, configurable, self-contained pieces of the web. An official standard is still evolving, but Web Components aim to make development dramatically more maintainable.
 
-### How does Byline Support Web Components?
 Byline offers a way to embrace tomorrow's Web Components today, by combining today's Web Standards with tomorrow's philosophy of Web Components. No need to wait for browsers to implement a new common standard. Nor do you need to shim on the client-side, to the detriment of performance.
 
-### Byline Components are Present and Future Compatible
 As the official standard for Web Components emerges, Byline will evolve to support it, giving creations in Byline an upgrade path as browsers evolve.
 
 ### How to create a component in Byline
-1. Make a new directory in `/components`.
-2. Create the following structure:
+Components in Byline usually have the following structure:
 ```
-/component-name   (unique name of your web component)
-      /media          (JPG, PNG, GIF, and SVG assets)
-      template.html   (HTML, preferably semantic)
-      all.css         (CSS specific to your component)
-      client.js       (client-side javascript)
-      schema.yml      (describes the data specific to your component)
+/component-name     name of your web component
+    /media          JPG, PNG, GIF, SVG, etc.
+    template.html   your template, preferably semantic
+    all.css         component-scoped css
+    client.js       your client-side javascript
+    schema.yml      describes how the component's data is edited
 ```
 
-All files are optional. Use what's useful. Ignore the rest.
+All of these files are optional.
 
 ### Template Language Support
 Byline Components can be made with over 30+ templating languages using [multiplex-templates](https://github.com/nymag/multiplex-templates), such as [jade](https://github.com/jadejs/jade), [mustache](https://github.com/mustache/mustache.github.com),
@@ -100,21 +91,19 @@ all.css        -> no media query
 print.css      -> @media print { ... }
 ```
 
-#### Client-side Javascript (client.js)
-Any javascript you write in client.js gets minified and delivered with any page that has that component. How you write your javascript is up to you. We recommend using [dollar slice](https://github.com/nymag/dollar-slice) for client-side JavaScript management.
+### Client-side Javascript (client.js)
+We recommend using [dollar slice](https://github.com/nymag/dollar-slice) for client-side JavaScript management. Any javascript you write in client.js gets minified and delivered with any page that has that component. How you write your javascript is up to you.  (Again, reference [yo byline]())
 
-#### Defining Data for Your Component (schema.yml)
-To take advatage of Byline's built-in CMS, describe the data your component expects with a schema.yml.
+### Defining Data for Your Component (schema.yml)
 
-Given this simple component template:
+The [byline-editor](https://github.com/nymag/byline-editor) uses a component's schema.yml to determine how a component is edited. For example, if you want to edit the data in this template:
 ```html
 <article>
   <h1>{{ title }}</h1>
   <p>{{ story }}</p>
 </article>
 ```
-
-Define the expected values, in this case `{{ title }}` and `{{ story }}`, with schema.yml:
+you could create a schema.yml file that would describe how that data is edited:
 ```yaml
 title:
   _type: text
@@ -122,13 +111,10 @@ title:
   _placeholder: Type your title here
 story:
   _type: textarea
-  _required: true
   _placeholder: Type your life story here
 ```
 
-All values are optional. If you don't define a ```_type```, if will default to ```_type: text```.
-
-More details about schema.yml are available in the [byline-editor](https://github.com/nymag/byline-editor) component.
+Of course, all of these values are optional. More details about schema.yml are available in the [byline-editor](https://github.com/nymag/byline-editor) project.
 
 ### Advanced Topics
 
