@@ -15,24 +15,18 @@ Created by New York Media.
 * [Advanced Topics](#advanced-topics)
 
 ## Introduction
-Byline is guided by three principles:
-
-1. Everything is a component
-2. Ease of editing
-3. Performance
-
-Most of Byline is optional. Use what's useful to you. Ignore the rest.
+Byline-core is a partial-API that saves, publishes and composes data from a key-value store.  It is part of the larger Byline project, which is an open-source content management system for publications.
 
 ## Installation
 ```
 npm install --save byline
 ```
 
-Byline separate's concerns into two areas that better map to the needs of web development: components and sites.  Create two new directories:
+Byline separates concerns into two main areas: components and sites.  Create two new directories in your project:
 
 ```
-/components  (for your components)
-/sites       (for site-level settings, routes, and assets)
+/components  (where your custom components live)
+/sites       (for site-level settings, routes, and site-specific assets)
 ```
 
 ### How to create a component
