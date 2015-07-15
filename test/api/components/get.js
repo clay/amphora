@@ -12,7 +12,9 @@ describe(endpointName, function () {
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      data = { name: 'Manny', species: 'cat' };
+      data = { name: 'Manny', species: 'cat' },
+      componentList = [ 'byline-editor', 'byline-c3', 'byline-c4' ],
+      message406 = '406 text/html not acceptable';
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
@@ -25,8 +27,8 @@ describe(endpointName, function () {
 
     describe('/components', function () {
       var path = this.title;
-      acceptsJson(path, {}, 501);
-      acceptsHtml(path, {}, 501);
+      acceptsJson(path, {}, 200, componentList);
+      acceptsHtml(path, {}, 406, message406);
     });
 
     describe('/components/:name', function () {
@@ -37,8 +39,8 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'missing'}, 404);
 
       acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
-      acceptsHtml(path, {name: 'valid'}, 406);
-      acceptsHtml(path, {name: 'missing'}, 406);
+      acceptsHtml(path, {name: 'valid'}, 406, message406);
+      acceptsHtml(path, {name: 'missing'}, 406, message406);
     });
 
     describe('/components/:name/schema', function () {
@@ -49,8 +51,8 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'missing'}, 404);
 
       acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
-      acceptsHtml(path, {name: 'valid'}, 406);
-      acceptsHtml(path, {name: 'missing'}, 406);
+      acceptsHtml(path, {name: 'valid'}, 406, message406);
+      acceptsHtml(path, {name: 'missing'}, 406, message406);
     });
 
     describe('/components/:name.html', function () {
