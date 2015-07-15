@@ -13,7 +13,7 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
-      componentList = [ 'byline-editor', 'byline-c3', 'byline-c4' ],
+      componentList = [ 'byline-c5', 'byline-c3', 'byline-c4' ],
       message406 = '406 text/html not acceptable';
 
     beforeEach(function () {

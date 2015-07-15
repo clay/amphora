@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@nymdev/byline-editor": "v1.1.1",
+    "@a/byline-c5": "v1.1.1",
     "byline-c3": "v1.1.1",
     "byline-c4": "v1.1.1"
   }
