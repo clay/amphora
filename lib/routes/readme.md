@@ -69,7 +69,7 @@ Requesting data without a version will return the latest saved version.  Some ve
 Some components want special server-side logic.  This can be done by creating a `server.js` or `index.js` file in their component's folder.
 
 ```js
-module.exports = function () {
+module.exports = function (ref, locals) {
   //return a Promise with whatever data should be returned on a GET
 };
 ```
@@ -77,11 +77,11 @@ module.exports = function () {
 Other server-side logic can be overridden as well.  This is especially useful for performing logic on a `PUT` instead of a `GET`.
 
 ```js
-module.exports = function () {
+module.exports = function (ref, locals) {
   //return Promise with data
   return Promise.resolve({"hey": "hey"});
 };
-module.exports.put = function () {
+module.exports.put = function (ref, data) {
   //return Promise with operations to be performed in a batch
   return Promise.resolve([{
     type: 'put',
@@ -89,13 +89,9 @@ module.exports.put = function () {
     value:'{"hey": "hey"}'}
   ]);
 };
-module.exports.del = function () {
+module.exports.del = function (ref) {
   //return Promise with data;
   return Promise.resolve({"hey": "hey"});
-};
-module.exports.list = function() {
-  //return Promise or pipeable Stream
-  return fs.createReadStream('some file');
 };
 ```
 
@@ -180,7 +176,7 @@ it has enough information to modify the resource._  Any random ordering of `GET`
 4.  _HATEOAS: no assumptions about additional actions are made without being described in the resource itself._  Excluding the basic HTTP method calls, we tell the client about additional resources available related to the current resource.  
 
     Currently, we link to child resources with `{ _ref: '/full/resource/uri' }`. There is no assumption that the client knows about these child resources implicitly.  More importantly, we don't expect the client to know about where resources are, their types, or that they should be linked together in any particular way, so we always reference to linked resources with an absolute uri.
-    
+
     For more information about the design decisions of `_ref`, see https://github.com/nymag/byline/issues/108
 
 ### Namespacing
