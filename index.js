@@ -49,7 +49,9 @@ function bootstrapSites() {
   var sites = siteService.sites();
 
   return bluebird.all(_.map(sites, function (site) {
-    return bootstrap(site.dirPath, {uriPrefix: site.host + site.path}).catch(function () {
+    var prefix = site.path.length > 1 ? site.host + site.path : site.host;
+
+    return bootstrap(site.dirPath, {uriPrefix: prefix}).catch(function () {
       logLess('No bootstrap found for ' + site.slug);
     });
   }));
