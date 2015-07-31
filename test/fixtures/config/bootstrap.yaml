@@ -4,6 +4,9 @@ components:
       -
         src: http://placekitten.com/400/600
         alt: adorable kittens
+  image2:
+    src: http://placekitten.com/400/600
+    alt: adorable kittens
 pages:
   -
     layout: /a/b
