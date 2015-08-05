@@ -10,11 +10,11 @@ chai.config.showDiff = true;
 chai.config.truncateThreshold = 0;
 
 
-_.map(tests, function (test) {
+_.each(tests, function (test) {
   require(test);
 });
 
-_.map(apiTests, function (test) {
+_.each(apiTests, function (test) {
   require(test);
 });
 
