@@ -65,11 +65,12 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid'}, 200,
         '<valid>{' +
-        '"refs":{"/components/valid":{"name":"Manny","species":"cat","template":"valid"}},' +
+        '"refs":{"/components/valid":{"name":"Manny","species":"cat","template":"valid","_self":"/components/valid"}},' +
         '"components":["valid"],' +
         '"name":"Manny",' +
         '"species":"cat",' +
-        '"template":"valid"' +
+        '"template":"valid",' +
+        '"_self":"/components/valid"' +
         '}</valid>');
       acceptsHtml(path, {name: 'missing'}, 404, '404 Not Found');
     });
@@ -119,11 +120,12 @@ describe(endpointName, function () {
 
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 200, '<valid>{' +
-        '"refs":{"/components/valid/instances/valid":{"name":"Manny","species":"cat","template":"valid"}},' +
+        '"refs":{"/components/valid/instances/valid":{"name":"Manny","species":"cat","template":"valid","_self":"/components/valid/instances/valid"}},' +
         '"components":["valid"],' +
         '"name":"Manny",' +
         '"species":"cat",' +
-        '"template":"valid"' +
+        '"template":"valid",' +
+        '"_self":"/components/valid/instances/valid"' +
         '}</valid>');
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 404, '404 Not Found');
     });

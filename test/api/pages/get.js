@@ -47,10 +47,13 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
       acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
       acceptsHtml(path, {name: 'valid'}, 200, '<valid>{' +
-        '"refs":{"/components/valid":{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}},"/components/validDeep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"},"/components/layout":{"someArea":[{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}}],"template":"layout"}},' +
-        '"components":["valid","validDeep","layout"],' +
+        '"refs":{"/components/valid":{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}},"/components/validDeep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"},"/pages/valid":{"someArea":[{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}}],"template":"layout","_self":"/pages/valid","_pageData":{"center":"/components/valid"}}},' +
+        '"components":["valid","validDeep"],' +
         '"someArea":[{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}}],' +
-        '"template":"layout"}</valid>');
+        '"template":"layout",' +
+        '"_self":"/pages/valid",' +
+        '"_pageData":{"center":"/components/valid"}' +
+        '}</valid>');
       acceptsHtml(path, {name: 'missing'}, 404, '404 Not Found');
     });
 
@@ -79,11 +82,17 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', version: 'missing'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'missing', version: 'missing'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid', version: 'valid'}, 200, '<valid>{' +
-        '"refs":{"/components/valid":{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}},"/components/validDeep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"},"/components/layout":{"someArea":[{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}}],"template":"layout"}},' +
-        '"components":["valid","validDeep","layout"],' +
+        '"refs":{"/components/valid":{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}},"/components/validDeep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"},"/pages/valid@valid":{"someArea":[{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}}],' +
+        '"template":"layout",' +
+        '"_self":"/pages/valid@valid",' +
+        '"_pageData":{"center":"/components/valid"},' +
+        '"_version":"valid"}},' +
+        '"components":["valid","validDeep"],' +
         '"someArea":[{"_ref":"/components/valid","deep":{"_ref":"/components/validDeep","name":"Manny","species":"cat"}}],' +
-        '"template":"layout"' +
-        '}</valid>');
+        '"template":"layout",' +
+        '"_self":"/pages/valid@valid",' +
+        '"_pageData":{"center":"/components/valid"},' +
+        '"_version":"valid"}</valid>');
       acceptsHtml(path, {name: 'missing', version: 'valid'}, 404, '404 Not Found');
     });
   });
