@@ -4,6 +4,10 @@ components:
       -
         src: http://placekitten.com/400/600
         alt: adorable kittens
+      -
+        _ref: /components/image2
+      -
+        _ref: localhost/components/what
   image2:
     src: http://placekitten.com/400/600
     alt: adorable kittens
@@ -13,3 +17,6 @@ pages:
     head: /c/d
 uris:
   a: b
+  c: /d
+  /e: f
+  /g: /h
