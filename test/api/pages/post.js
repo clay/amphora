@@ -16,11 +16,11 @@ describe(endpointName, function () {
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       pageData = {
-        layout: '/components/layout',
-        center: '/components/valid',
-        side: ['/components/valid@valid']
+        layout: 'localhost.example.com/components/layout',
+        center: 'localhost.example.com/components/valid',
+        side: ['localhost.example.com/components/valid@valid']
       },
-      deepData = { deep: {_ref: '/components/validDeep'} },
+      deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
       layoutData = { someArea: ['center'] },
       componentData = { name: 'Manny', species: 'cat' };
 
@@ -40,10 +40,10 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {}, {}, 400, { message: 'Data missing layout reference.', code: 400 });
       acceptsJsonBody(path, {}, pageData, 201, function (result) {
         var body = result.body;
-        expect(body.center).to.match(/^\/components\/valid\/instances\/.+/);
-        expect(body.side[0]).to.match(/^\/components\/valid\/instances\/.+/);
+        expect(body.center).to.match(/^localhost.example.com\/components\/valid\/instances\/.+/);
+        expect(body.side[0]).to.match(/^localhost.example.com\/components\/valid\/instances\/.+/);
         expect(body.layout).to.equal(pageData.layout);
-        expect(body._ref).to.match(/^\/pages\/.+/);
+        expect(body._ref).to.match(/^localhost.example.com\/pages\/.+/);
       });
       acceptsHtml(path, {}, 406, '406 text/html not acceptable');
     });

@@ -25,7 +25,7 @@ describe(endpointName, function () {
 
     describe('/lists', function () {
       var path = this.title;
-      acceptsJson(path, {}, 200, '["/lists/valid"]');
+      acceptsJson(path, {}, 200, '["localhost.example.com/lists/valid"]');
       acceptsHtml(path, {}, 406);
     });
 

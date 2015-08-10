@@ -29,15 +29,16 @@ function bootstrapCurrentProject() {
 }
 
 /**
+ * @param {string} [prefix]
  * @returns {Promise}
  */
-function bootstrapComponents() {
+function bootstrapComponents(prefix) {
   var components = files.getComponents();
 
   return bluebird.all(_.map(components, function (component) {
     var componentPath = files.getComponentPath(component);
-    return bootstrap(componentPath).catch(function () {
-      logLess('No bootstrap found for ' + component);
+    return bootstrap(componentPath, prefix).catch(function () {
+      logLess('No bootstrap found for ' + component + (prefix ? ' at ' + prefix : ''));
     });
   }));
 }
@@ -51,8 +52,10 @@ function bootstrapSites() {
   return bluebird.all(_.map(sites, function (site) {
     var prefix = site.path.length > 1 ? site.host + site.path : site.host;
 
-    return bootstrap(site.dirPath, {uriPrefix: prefix}).catch(function () {
-      logLess('No bootstrap found for ' + site.slug);
+    return bootstrapComponents(prefix).then(function () {
+      return bootstrap(site.dirPath, prefix).catch(function () {
+        logLess('No bootstrap found for ' + site.slug);
+      });
     });
   }));
 }
@@ -64,9 +67,7 @@ module.exports = function () {
   var router = routes(app);
 
   //look for bootstraps in components
-  return bootstrapComponents().then(function () {
-    return bootstrapSites();
-  }).then(function () {
+  return bootstrapSites().then(function () {
     return bootstrapCurrentProject();
   }).then(function () {
     return router;
