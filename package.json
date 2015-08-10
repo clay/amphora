@@ -1,6 +1,6 @@
 {
   "name": "@nymdev/byline",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "A full-stack framework for creating the web.",
   "main": "index.js",
   "scripts": {
