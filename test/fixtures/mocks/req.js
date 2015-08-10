@@ -22,7 +22,7 @@ function defineWritable(definition) {
 }
 
 module.exports = function () {
-  var host, url, baseUrl, query,
+  var host, url, path, baseUrl, query,
     req = {};
   req.baseUrl = '';
   req.host = 'example.com';
@@ -61,6 +61,11 @@ module.exports = function () {
     set: function (value) { url = value; }
   }));
 
+  Object.defineProperty(req, 'path', defineWritable({
+    get: function () { return path; },
+    set: function (value) { path = value; }
+  }));
+
   Object.defineProperty(req, 'baseUrl', defineWritable({
     get: function () { return baseUrl; },
     set: function (value) { baseUrl = value; }
@@ -73,6 +78,7 @@ module.exports = function () {
 
   // defaults
   req.url = '/someUrl';
+  req.path = '/someUrl';
   req.baseUrl = '';
   req.host = 'example.com';
   req.query = {};
