@@ -12,9 +12,9 @@ describe(endpointName, function () {
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      pageData = { layout: '/components/layout', center: '/components/valid' },
+      pageData = { layout: 'localhost.example.com/components/layout', center: 'localhost.example.com/components/valid' },
       layoutData = { someArea: ['center'] },
-      deepData = { deep: {_ref: '/components/validDeep'} },
+      deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
       componentData = { name: 'Manny', species: 'cat' };
 
     beforeEach(function () {
@@ -28,7 +28,7 @@ describe(endpointName, function () {
 
     describe('/pages', function () {
       var path = this.title;
-      acceptsJson(path, {}, 200, '["/pages/valid"]');
+      acceptsJson(path, {}, 200, '["localhost.example.com/pages/valid"]');
       acceptsHtml(path, {}, 406);
     });
 

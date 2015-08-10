@@ -41,7 +41,6 @@ function createTest(options) {
   it(options.description, function () {
     var promise = request(app)[options.method](realPath);
 
-
     if (options.body !== undefined) {
       promise = promise.send(options.body);
     }
@@ -181,7 +180,7 @@ function updatesOther(method) {
         .set('Accept', 'application/json')
         .set('Host', host)
         .then(function () {
-          return db.get(realOtherPath).then(JSON.parse).then(function (result) {
+          return db.get(host + realOtherPath).then(JSON.parse).then(function (result) {
             expect(result).to.deep.equal(data);
           });
         });
@@ -189,6 +188,10 @@ function updatesOther(method) {
   };
 }
 
+/**
+ * @param {string} ref
+ * @returns {Promise}
+ */
 function getVersions(ref) {
   var str = '',
     errors = [],
@@ -218,7 +221,7 @@ function createsNewVersion(method) {
     var realPath = getRealPath(replacements, path);
 
     it(realPath + ' creates new version', function () {
-      return getVersions(realPath).then(function (oldVersions) {
+      return getVersions(host + realPath).then(function (oldVersions) {
         return request(app)[method](realPath)
           .send(data)
           .type('application/json')
@@ -227,7 +230,7 @@ function createsNewVersion(method) {
           .expect(200)
           .expect(data)
           .then(function () {
-            return getVersions(realPath);
+            return getVersions(host + realPath);
           }).then(function (newVersions) {
             //no versions are deleted
             expect(newVersions).to.include.members(oldVersions);
@@ -398,7 +401,7 @@ function beforeEachTest(options) {
         data = JSON.stringify(data);
       }
 
-      return db.put(path, data);
+      return db.put(host + path, data);
     }));
   });
 }

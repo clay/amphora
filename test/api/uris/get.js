@@ -26,7 +26,7 @@ describe(endpointName, function () {
 
     describe('/uris', function () {
       var path = this.title;
-      acceptsJson(path, {}, 200, '["/uris/valid"]');
+      acceptsJson(path, {}, 200, '["localhost.example.com/uris/valid"]');
       acceptsHtml(path, {}, 406, '406 text/html not acceptable');
       acceptsText(path, {}, 406, 'Not Acceptable');
     });

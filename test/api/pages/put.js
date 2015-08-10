@@ -16,34 +16,34 @@ describe(endpointName, function () {
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       pageData = {
-        layout: '/components/layout',
-        center: '/components/valid',
-        side: ['/components/valid@valid']
+        layout: 'localhost.example.com/components/layout',
+        center: 'localhost.example.com/components/valid',
+        side: ['localhost.example.com/components/valid@valid']
       },
       cascadingPageData = {
-        layout: '/components/layoutCascading',
-        center: '/components/validCascading',
-        side: ['/components/validCascading@valid']
+        layout: 'localhost.example.com/components/layoutCascading',
+        center: 'localhost.example.com/components/validCascading',
+        side: ['localhost.example.com/components/validCascading@valid']
       },
-      deepData = { deep: {_ref: '/components/validDeep'} },
+      deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
       layoutData = { someArea: ['center'] },
       componentData = { name: 'Manny', species: 'cat' },
-      cascadingTarget = '/components/validDeep',
+      cascadingTarget = 'localhost.example.com/components/validDeep',
       versionedPageData = function (version) {
         return {
-          layout: '/components/layout@' + version,
-          center: '/components/valid@' + version,
-          side: ['/components/valid@' + version]
+          layout: 'localhost.example.com/components/layout@' + version,
+          center: 'localhost.example.com/components/valid@' + version,
+          side: ['localhost.example.com/components/valid@' + version]
         };
       },
       versionedDeepData = function (version) {
-        return { deep: {_ref: '/components/validDeep@' + version} };
+        return { deep: {_ref: 'localhost.example.com/components/validDeep@' + version} };
       },
       cascadingReturnData = function (version) {
         return {
-          layout: '/components/layoutCascading@' + version,
-          center: '/components/validCascading@' + version,
-          side: ['/components/validCascading@' + version]
+          layout: 'localhost.example.com/components/layoutCascading@' + version,
+          center: 'localhost.example.com/components/validCascading@' + version,
+          side: ['localhost.example.com/components/validCascading@' + version]
         };
       };
 

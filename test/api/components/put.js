@@ -18,7 +18,7 @@ describe(endpointName, function () {
       createsNewVersion = apiAccepts.createsNewVersion(_.camelCase(filename)),
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
-      cascadingTarget = '/components/validDeep',
+      cascadingTarget = 'localhost.example.com/components/validDeep',
       addVersion = _.partial(replaceVersion, cascadingTarget),
       cascadingData = function (version) {
         return {a: 'b', c: {_ref: addVersion(version), d: 'e'}};

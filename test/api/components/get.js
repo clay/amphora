@@ -91,7 +91,7 @@ describe(endpointName, function () {
       var path = this.title;
 
       acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 200, '["/components/valid/instances/valid"]');
+      acceptsJson(path, {name: 'valid'}, 200, '["localhost.example.com/components/valid/instances/valid"]');
       acceptsJson(path, {name: 'missing'}, 200, '[]');
 
       acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
