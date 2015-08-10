@@ -46,14 +46,12 @@ describe(endpointName, function () {
 
       acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
       acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
-      acceptsHtml(path, {name: 'valid'}, 200, '<valid>{' +
-        '"refs":{"localhost.example.com/pages/valid":{"someArea":[{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}}],"template":"layout","_self":"localhost.example.com/pages/valid","_pageData":{"center":"localhost.example.com/components/valid"}},"localhost.example.com/components/valid":{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}},"localhost.example.com/components/validDeep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}},' +
-        '"components":["valid","validDeep"],' +
+      acceptsHtml(path, {name: 'valid'}, 200, '<valid>{"refs":{"localhost.example.com/components/layout":{"someArea":[{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}}],"template":"layout","_self":"localhost.example.com/pages/valid","_pageData":{"center":"localhost.example.com/components/valid"}},"localhost.example.com/components/valid":{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}},"localhost.example.com/components/validDeep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}},' +
+        '"components":["layout","valid","validDeep"],' +
         '"someArea":[{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}}],' +
         '"template":"layout",' +
         '"_self":"localhost.example.com/pages/valid",' +
-        '"_pageData":{"center":"localhost.example.com/components/valid"}' +
-        '}</valid>');
+        '"_pageData":{"center":"localhost.example.com/components/valid"}}</valid>');
       acceptsHtml(path, {name: 'missing'}, 404, '404 Not Found');
     });
 
@@ -82,13 +80,14 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', version: 'missing'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'missing', version: 'missing'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid', version: 'valid'}, 200, '<valid>{' +
-        '"refs":{"localhost.example.com/pages/valid@valid":{"someArea":[{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}}],"template":"layout","_self":"localhost.example.com/pages/valid@valid","_pageData":{"center":"localhost.example.com/components/valid"},"_version":"valid"},"localhost.example.com/components/valid":{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}},"localhost.example.com/components/validDeep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}},' +
-        '"components":["valid","validDeep"],' +
+        '"refs":{"localhost.example.com/components/layout":{"someArea":[{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}}],"template":"layout","_self":"localhost.example.com/pages/valid@valid","_pageData":{"center":"localhost.example.com/components/valid"},"_version":"valid"},"localhost.example.com/components/valid":{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}},"localhost.example.com/components/validDeep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}},' +
+        '"components":["layout","valid","validDeep"],' +
         '"someArea":[{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}}],' +
         '"template":"layout",' +
         '"_self":"localhost.example.com/pages/valid@valid",' +
         '"_pageData":{"center":"localhost.example.com/components/valid"},' +
-        '"_version":"valid"}</valid>');
+        '"_version":"valid"' +
+        '}</valid>');
       acceptsHtml(path, {name: 'missing', version: 'valid'}, 404, '404 Not Found');
     });
   });
