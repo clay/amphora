@@ -22,19 +22,19 @@ function defineWritable(definition) {
 }
 
 module.exports = function () {
-  var host, url, path, baseUrl, query,
+  var hostname, url, path, baseUrl, query,
     req = {};
   req.baseUrl = '';
-  req.host = 'example.com';
+  req.hostname = 'example.com';
   req.vhost = {hostname: 'example.com'};
   req.query = {};
 
   Object.defineProperty(req, 'uri', defineReadOnly({
-    get: function () { return host + baseUrl + url; }
+    get: function () { return hostname + baseUrl + url; }
   }));
 
   Object.defineProperty(req, 'vhost', defineReadOnly({
-    get: function () { return {hostname: host}; }
+    get: function () { return {hostname: hostname}; }
   }));
 
   Object.defineProperty(req, 'originalUrl', defineReadOnly({
@@ -71,16 +71,16 @@ module.exports = function () {
     set: function (value) { baseUrl = value; }
   }));
 
-  Object.defineProperty(req, 'host', defineWritable({
-    get: function () { return host; },
-    set: function (value) { host = value; }
+  Object.defineProperty(req, 'hostname', defineWritable({
+    get: function () { return hostname; },
+    set: function (value) { hostname = value; }
   }));
 
   // defaults
   req.url = '/someUrl';
   req.path = '/someUrl';
   req.baseUrl = '';
-  req.host = 'example.com';
+  req.hostname = 'example.com';
   req.query = {};
 
   return req;
