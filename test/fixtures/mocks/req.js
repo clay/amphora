@@ -21,16 +21,35 @@ function defineWritable(definition) {
   return definition;
 }
 
+/**
+ *
+ * @param query
+ * @returns {string}
+ */
+function queryToString(query) {
+  return _.map(query, function (value, key) {
+    return key + '=' + value;
+  }).join('&');
+}
+
 module.exports = function () {
-  var hostname, url, path, baseUrl, query,
+  var hostname, path, baseUrl, query,
     req = {};
-  req.baseUrl = '';
-  req.hostname = 'example.com';
-  req.vhost = {hostname: 'example.com'};
-  req.query = {};
+
+  Object.defineProperty(req, 'url', defineReadOnly({
+    get: function () {
+      var result = path;
+
+      if (query && _.size(query) > 0) {
+        result += '?' + queryToString(query);
+      }
+
+      return result;
+    }
+  }));
 
   Object.defineProperty(req, 'uri', defineReadOnly({
-    get: function () { return hostname + baseUrl + url; }
+    get: function () { return hostname + baseUrl + path; }
   }));
 
   Object.defineProperty(req, 'vhost', defineReadOnly({
@@ -39,26 +58,19 @@ module.exports = function () {
 
   Object.defineProperty(req, 'originalUrl', defineReadOnly({
     get: function () {
-      var path = baseUrl + url;
+      var result = baseUrl + path;
 
       if (query && _.size(query) > 0) {
-        path += '?' + _.map(query, function (value, key) {
-          return key + '=' + value;
-        }).join('&');
+        result += '?' + queryToString(query);
       }
 
-      return path;
+      return result;
     }
   }));
 
   Object.defineProperty(req, 'query', defineWritable({
     get: function () { return query; },
     set: function (value) { query = value; }
-  }));
-
-  Object.defineProperty(req, 'url', defineWritable({
-    get: function () { return url; },
-    set: function (value) { url = value; }
   }));
 
   Object.defineProperty(req, 'path', defineWritable({
@@ -77,7 +89,6 @@ module.exports = function () {
   }));
 
   // defaults
-  req.url = '/someUrl';
   req.path = '/someUrl';
   req.baseUrl = '';
   req.hostname = 'example.com';
