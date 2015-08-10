@@ -2,7 +2,7 @@
 'use strict';
 
 var _ = require('lodash'),
-  app = require('express')(),
+  express = require('express'),
   siteService = require('./lib/sites'),
   files = require('./lib/files'),
   routes = require('./lib/routes'),
@@ -61,10 +61,11 @@ function bootstrapSites() {
 }
 
 /**
+ * @param {express.Router} [router=express()]
  * @returns {Promise}
  */
-module.exports = function () {
-  var router = routes(app);
+module.exports = function (router) {
+  router = routes(router || express());
 
   //look for bootstraps in components
   return bootstrapSites().then(function () {
