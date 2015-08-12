@@ -1,9 +1,9 @@
 Routes
 ======
 
-This is a technical document about how routing in Byline is performed.  It also informs any further technical decisions about the growth of the library, and contains any ideas that we're adhering to for consistency.
+This is a technical document about how routing in Amphora is performed.  It also informs any further technical decisions about the growth of the library, and contains any ideas that we're adhering to for consistency.
 
-For a broader and less specific overview of routing, please see the [project's   readme document](https://github.com/nymag/byline)
+For a broader and less specific overview of routing, please see the [project's readme document](https://github.com/nymag/amphora)
 
 ## Table of Contents
 
@@ -42,7 +42,7 @@ Example: `GET /components`
   "text",
   "image",
   "paragraph",
-  "story"
+  "article"
 ]
 ```
 
@@ -110,8 +110,8 @@ module.exports.del = function (ref) {
 Pages consist of a layout and a list of areas.  Each area defined in a page maps to a area in the layout template.  For example:
 ```json
 {
-  "layout": "/components/vulture-layout-2015",
-  "center": ["/components/story/instances/3vf3"],
+  "layout": "/components/feature-layout",
+  "center": ["/components/article/instances/3vf3"],
   "side": [
     "/components/share",
     "/components/newsletter"
@@ -122,7 +122,7 @@ The layout component in this example has two areas: center and side.  When the p
 
 ### Publishing
 
-Publishing a page has a special convenience behavior where all components referenced by the page will also be published.  (Example: https://github.com/nymag/byline/pull/78)
+Publishing a page has a special convenience behavior where all components referenced by the page will also be published.  (Example: https://github.com/nymag/amphora/pull/78)
 
 ### Schedule
 
@@ -168,20 +168,19 @@ We try to follow the [REST](https://en.wikipedia.org/wiki/Representational_state
 
 1.  _Individual resources are identified by URI._  Therefore, there is no need to return an id as part of the data of a request if that id was used to fetch the data.  In many environments (production, development, staging) hostnames can be dynamic, so we can optionally omit the hostname and assume that the resource is available at the same host as a referring resource.
 
-2.  _When a client holds a representation of a resource,
-it has enough information to modify the resource._  Any random ordering of `GET` and `PUT` requests to the same uri with the returned data will not result in any change of state (beyond the separate audit trail that such operations took place).
+2.  _When a client holds a representation of a resource, it has enough information to modify the resource._  Any random ordering of `GET` and `PUT` requests to the same uri with the returned data will not result in any change of state (beyond the separate audit trail that such operations took place).
 
 3.  _Messages always include enough information to process a resource, including MIME type and cacheability._  All resources are returned with appropriate Content-Type, Cache, and Vary headers.  That means resources that should be cached, like published content, are marked appropriately as cacheable.
 
 4.  _HATEOAS: no assumptions about additional actions are made without being described in the resource itself._  Excluding the basic HTTP method calls, we tell the client about additional resources available related to the current resource.  
 
-    Currently, we link to child resources with `{ _ref: '/full/resource/uri' }`. There is no assumption that the client knows about these child resources implicitly.  More importantly, we don't expect the client to know about where resources are, their types, or that they should be linked together in any particular way, so we always reference to linked resources with an absolute uri.
+    Currently, we link to child resources with `{ _ref: 'domain.com/full/resource/uri' }`. There is no assumption that the client knows about these child resources implicitly.  More importantly, we don't expect the client to know about where resources are, their types, or that they should be linked together in any particular way, so we always reference to linked resources with a full uri.
 
-    For more information about the design decisions of `_ref`, see https://github.com/nymag/byline/issues/108
+    For more information about the design decisions of `_ref`, see https://github.com/nymag/amphora/issues/108
 
 ### Namespacing
 
-It might be a good idea to namespace this API behind versions, such as `/v1/` or `/v2/`, or `/services/`, or even `/byline/`.  This can be done by adjusting the hostname, or through a reverse proxy like Varnish.  Putting different versions behind Varnish might be particularly useful so that previous versions of an application can be run at the same time as newer versions to service old and new clients until previous versions can be deprecated.
+It might be a good idea to namespace this API behind versions, such as `/v1/` or `/v2/`, or `/services/`, or even `/clay/`.  This can be done by adjusting the hostname, or through a reverse proxy like Varnish.  Putting different versions behind Varnish might be particularly useful so that previous versions of an application can be run at the same time as newer versions to service old and new clients until previous versions can be deprecated.
 
 ## Errors
 

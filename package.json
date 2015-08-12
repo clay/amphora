@@ -1,5 +1,5 @@
 {
-  "name": "@nymdev/byline",
+  "name": "@nymdev/amphora",
   "version": "0.9.4",
   "description": "A full-stack framework for creating the web.",
   "main": "index.js",
@@ -8,9 +8,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nymag/byline.git"
+    "url": "https://github.com/nymag/amphora.git"
   },
-  "homepage": "https://github.com/nymag/byline",
+  "homepage": "https://github.com/nymag/amphora",
   "author": "New York Media",
   "license": "MIT",
   "dependencies": {
