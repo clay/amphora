@@ -1,6 +1,6 @@
 {
   "name": "@nymdev/amphora",
-  "version": "0.9.4",
+  "version": "0.10.0",
   "description": "A full-stack framework for creating the web.",
   "main": "index.js",
   "scripts": {
