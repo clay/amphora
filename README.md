@@ -53,7 +53,7 @@ Simply end your template file with an identifying extension and Clay will proces
 
 ### How to create a schema
 
-The [Kiln](https://github.com/nymag/kiln) uses a component's schema.yml to determine how a component is edited. For example, if you want to edit the data in this template:
+The [Kiln](https://github.com/nymag/clay-kiln) project uses a component's schema.yml to determine how a component is edited. For example, if you want to edit the data in this template:
 
 ```html
 <article>
@@ -73,7 +73,7 @@ story:
   _placeholder: Type your life story here
 ```
 
-The schema.yml file also works without these values; everything is optional. More details about schema.yml are available in the [Kiln](https://github.com/nymag/kiln) project.
+The schema.yml file also works without these values; everything is optional. More details about schema.yml are available in the [Kiln](https://github.com/nymag/clay-kiln) project.
 
 ## Contribution
 
