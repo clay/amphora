@@ -65,8 +65,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid'}, 200,
         '<valid>{' +
-        '"refs":{"localhost.example.com/components/valid":{"name":"Manny","species":"cat","template":"valid","_self":"localhost.example.com/components/valid"}},' +
-        '"components":["valid"],' +
+        '"_components":["valid"],' +
         '"name":"Manny",' +
         '"species":"cat",' +
         '"template":"valid",' +
@@ -120,8 +119,7 @@ describe(endpointName, function () {
 
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 200, '<valid>{' +
-        '"refs":{"localhost.example.com/components/valid/instances/valid":{"name":"Manny","species":"cat","template":"valid","_self":"localhost.example.com/components/valid/instances/valid"}},' +
-        '"components":["valid"],' +
+        '"_components":["valid"],' +
         '"name":"Manny",' +
         '"species":"cat",' +
         '"template":"valid",' +

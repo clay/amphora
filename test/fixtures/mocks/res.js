@@ -29,7 +29,7 @@ module.exports = function (options) {
   res.type = _.constant(res);
   res.set = _.constant(res);
   res.pipe = _.constant(res);
-  res.locals = {site: 'someSite'};
+  res.locals = {};
 
   //send status is a shortcut of express, pretend they're sending for testing ease
   res.sendStatus = function (code) {

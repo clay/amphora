@@ -11,6 +11,7 @@ var _ = require('lodash'),
   multiplex = require('multiplex-templates'),
   log = require('../../lib/log'),
   schema = require('../../lib/schema'),
+  siteService = require('../../lib/sites'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
   app,
@@ -317,6 +318,17 @@ function setHost(value) {
   host = value;
 }
 
+function stubSiteConfig(sandbox) {
+  sandbox.stub(siteService, 'sites').returns({
+    example: {
+      host: host,
+      path: '/',
+      slug: 'example'
+    }
+  });
+  sandbox.stub(siteService, 'hosts').returns([host]);
+}
+
 function stubFiles(sandbox) {
   var stubGetComponentPath = sandbox.stub(files, 'getComponentPath');
   stubGetComponentPath.withArgs('valid').returns('validThing');
@@ -387,6 +399,7 @@ function beforeTesting(suite, hostname, data) {
 function beforeEachTest(options) {
   app = express();
   host = options.hostname;
+  stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
   stubGetTemplate(options.sandbox);
