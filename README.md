@@ -49,7 +49,7 @@ Clay Components can be made with over 30+ templating languages using [multiplex-
 [handlebars](https://github.com/wycats/handlebars.js/),
 [nunjucks](https://github.com/mozilla/nunjucks),
 [react](https://github.com/facebook/react).
-Simply end your template file with an identifying extension and Byline will process it in the appropriate engine. For example, `template.jade` will compile from Jade, and `template.html` will simply output unprocessed html.
+Simply end your template file with an identifying extension and Clay will process it in the appropriate engine. For example, `template.jade` will compile from Jade, and `template.html` will simply output unprocessed html.
 
 ### How to create a schema
 
