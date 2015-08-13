@@ -53,7 +53,7 @@ function bootstrapSites() {
     var prefix = site.path.length > 1 ? site.host + site.path : site.host;
 
     return bootstrapComponents(prefix).then(function () {
-      return bootstrap(site.dirPath, prefix).catch(function () {
+      return bootstrap(site.dir, prefix).catch(function () {
         logLess('No bootstrap found for ' + site.slug);
       });
     });

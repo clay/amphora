@@ -323,17 +323,23 @@ function stubSiteConfig(sandbox) {
     example: {
       host: host,
       path: '/',
-      slug: 'example'
+      slug: 'example',
+      assetDir: 'public',
+      assetPath: '/'
     }
   });
   sandbox.stub(siteService, 'hosts').returns([host]);
 }
 
 function stubFiles(sandbox) {
-  var stubGetComponentPath = sandbox.stub(files, 'getComponentPath');
-  stubGetComponentPath.withArgs('valid').returns('validThing');
-  stubGetComponentPath.withArgs('missing').returns('missingThing');
-  stubGetComponentPath.withArgs('invalid').returns(null);
+  sandbox.stub(files, 'getComponentPath');
+
+  files.getComponentPath.withArgs('valid').returns('validThing');
+  files.getComponentPath.withArgs('missing').returns('missingThing');
+  files.getComponentPath.withArgs('invalid').returns(null);
+
+  sandbox.stub(files, 'fileExists');
+  files.fileExists.withArgs('public').returns(true);
 }
 
 function stubSchema(sandbox) {
@@ -367,18 +373,25 @@ function stubLogging(sandbox) {
  * Before starting testing at all, prepare certain things to make sure our performance testing is accurate.
  */
 
-function beforeTesting(suite, hostname, data) {
+function beforeTesting(suite, options) {
   //extra time to prime the 'requires'
   suite.timeout(500);
 
   app = express();
-  routes.addHost(app, hostname);
+  host = options.hostname;
+  stubSiteConfig(options.sandbox);
+  stubFiles(options.sandbox);
+  stubSchema(options.sandbox);
+  stubGetTemplate(options.sandbox);
+  stubMultiplexRender(options.sandbox);
+  stubLogging(options.sandbox);
+  routes.addHost(app, options.hostname);
 
   return db.clear().then(function () {
     return bluebird.all([
-      request(app).put('/components/valid', JSON.stringify(data)),
+      request(app).put('/components/valid', JSON.stringify(options.data)),
       request(app).get('/components/valid'),
-      request(app).post('/components/valid', JSON.stringify(data)),
+      request(app).post('/components/valid', JSON.stringify(options.data)),
       request(app).delete('/components/valid')
     ]);
   });
