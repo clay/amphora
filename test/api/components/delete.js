@@ -15,8 +15,15 @@ describe(endpointName, function () {
       data = { name: 'Manny', species: 'cat' };
 
     before(function () {
+      sandbox = sinon.sandbox.create();
       this.timeout(500);
-      return apiAccepts.beforeTesting(this, hostname, data);
+      return apiAccepts.beforeTesting(this, {
+        hostname: hostname,
+        data: data,
+        sandbox: sandbox
+      }).then(function () {
+        sandbox.restore();
+      });
     });
 
     beforeEach(function () {
