@@ -15,9 +15,7 @@ var _ = require('lodash'),
  * @returns {Promise}
  */
 function bootstrapCurrentProject() {
-  return bootstrap('.').catch(function () {
-    log.logLess('No bootstrap found at root of project.');
-  });
+  return bootstrap('.').catch(function () {});
 }
 
 /**
