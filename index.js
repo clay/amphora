@@ -8,23 +8,15 @@ var _ = require('lodash'),
   routes = require('./lib/routes'),
   bootstrap = require('./lib/bootstrap'),
   bluebird = require('bluebird'),
-  log = require('./lib/log'),
-  chalk = require('chalk');
+  log = require('./lib/log');
 
-/**
- * Dims the log slightly.
- * @param {string} msg
- */
-function logLess(msg) {
-  log.info(chalk.dim(msg));
-}
 
 /**
  * @returns {Promise}
  */
 function bootstrapCurrentProject() {
   return bootstrap('.').catch(function () {
-    logLess('No bootstrap found at root of project.');
+    log.logLess('No bootstrap found at root of project.');
   });
 }
 
@@ -37,9 +29,7 @@ function bootstrapComponents(prefix) {
 
   return bluebird.all(_.map(components, function (component) {
     var componentPath = files.getComponentPath(component);
-    return bootstrap(componentPath, prefix).catch(function () {
-      logLess('No bootstrap found for ' + component + (prefix ? ' at ' + prefix : ''));
-    });
+    return bootstrap(componentPath, prefix).catch(function () {});
   }));
 }
 
@@ -54,7 +44,7 @@ function bootstrapSites() {
 
     return bootstrapComponents(prefix).then(function () {
       return bootstrap(site.dir, prefix).catch(function () {
-        logLess('No bootstrap found for ' + site.slug);
+        log.logLess('No bootstrap found for ' + site.slug);
       });
     });
   }));
