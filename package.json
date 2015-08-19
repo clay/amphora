@@ -30,7 +30,8 @@
     "nunjucks-filters": "^1.0",
     "through2-filter": "^1.4",
     "vhost": "^3.0.0",
-    "winston": "^0.9"
+    "winston": "^0.9",
+    "elasticsearch":"^6.0.0"
   },
   "devDependencies": {
     "chai": "^2.1",
