@@ -4,7 +4,7 @@
   "description": "A full-stack framework for creating the web.",
   "main": "index.js",
   "scripts": {
-    "test": "istanbul cover node_modules/.bin/_mocha -- -R spec"
+    "test": "jscs . && jshint lib test && istanbul cover node_modules/.bin/_mocha -- -R spec"
   },
   "repository": {
     "type": "git",

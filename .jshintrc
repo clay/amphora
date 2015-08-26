@@ -1,31 +1,31 @@
 {
-  "bitwise":    true,   // prevent bitwise operations (e.g. ^, |, &)
-  "camelcase":  true,   // all vars must use camelCase
-  "browser":    true,   // allow browser global vars
-  "curly":      true,   // require curly brackets in loops and conditionals
-  "eqeqeq":     true,   // require strict equality
-  "forin":      true,   // require hasOwnProperty check in for...in loops
-  "freeze":     true,   // prevent native object prototype overwriting
-  "immed":      true,   // require immediate function invocations to be wrapped in parens
-  "indent":     2,      // require 2-space indentation
-  "newcap":     true,   // require PascalCase constructor function names
-  "noarg":      true,   // prevent arguments.callee, because it sucks
-  "undef":      true,   // prevent explicitly undeclared variables
-  "unused":     true,   // warn when defining variables that are never used
-  "strict":     true,   // use strict mode
-  "node":       true,   // allow node global vars
-  "latedef":    true,   // don't use variables before they're defined
-  "esnext":     true,   // enable es6 syntax
+  "bitwise": true,
+  "camelcase": true,
+  "browser": true,
+  "curly": true,
+  "eqeqeq": true,
+  "forin": true,
+  "freeze": true,
+  "immed": true,
+  "indent": 2,
+  "newcap": true,
+  "noarg": true,
+  "undef": true,
+  "unused": true,
+  "strict": true,
+  "node": true,
+  "latedef": true,
+  "esnext": true,
+  "maxcomplexity": 8,
+  "maxdepth": 4,
   "globals": {
-      /* MOCHA */
-      "describe": false,
-      "it": false,
-      "before": false,
-      "beforeEach": false,
-      "after": false,
-      "afterEach": false,
-      /* FACTORY */
-      "DS": false,
-      "Promise": true
+    "describe": false,
+    "it": false,
+    "before": false,
+    "beforeEach": false,
+    "after": false,
+    "afterEach": false,
+    "DS": false,
+    "Promise": true
   }
 }
