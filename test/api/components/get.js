@@ -13,7 +13,8 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
-      componentList = [ 'clay-c5', 'clay-c3', 'clay-c4' ],
+      // todo: Stop putting internal information into something we're going to open-source
+      componentList = ['clay-c5', 'clay-c3', 'clay-c4'],
       message406 = '406 text/html not acceptable';
 
     beforeEach(function () {
