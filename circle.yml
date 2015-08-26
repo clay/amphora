@@ -7,6 +7,8 @@ dependencies:
   pre:
     - npm install -g istanbul
     - npm install -g node-gyp
+    - npm install -g jscs
+    - npm install -g jshint
 test:
   post:
     - cp -r ./coverage/* $CIRCLE_ARTIFACTS
