@@ -65,5 +65,6 @@ module.exports = function (router) {
 
 //services exposed to outside
 module.exports.db = require('./lib/services/db');
+module.exports.search = require('./lib/services/search');
 module.exports.components = require('./lib/services/components');
 module.exports.pages = require('./lib/services/pages');
