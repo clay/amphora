@@ -3,7 +3,7 @@ Amphora
 
 📰 _"A new way to organize, edit, and deliver the web, one component at a time"_
 
-[![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&t=cQ880T)](https://coveralls.io/r/nymag/amphora?branch=master)
+[![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&service=github&t=WhTOg8)](https://coveralls.io/github/nymag/amphora?branch=master)
 
 Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://thecut.com/), [Grub Street](http://www.grubstreet.com/), and [The Science of Us](http://www.scienceofus.com/).  
 Created by New York Media.

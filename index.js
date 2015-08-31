@@ -1,4 +1,3 @@
-// this will set up things
 'use strict';
 
 var _ = require('lodash'),
@@ -9,7 +8,6 @@ var _ = require('lodash'),
   bootstrap = require('./lib/bootstrap'),
   bluebird = require('bluebird'),
   log = require('./lib/log');
-
 
 /**
  * @returns {Promise}
@@ -41,8 +39,8 @@ function bootstrapSites() {
     var prefix = site.path.length > 1 ? site.host + site.path : site.host;
 
     return bootstrapComponents(prefix).then(function () {
-      return bootstrap(site.dir, prefix).catch(function () {
-        log.logLess('No bootstrap found for ' + site.slug);
+      return bootstrap(site.dir, prefix).catch(function (ex) {
+        log.error('Bootstrap error:' + ex.stack);
       });
     });
   }));
@@ -65,6 +63,5 @@ module.exports = function (router) {
 
 //services exposed to outside
 module.exports.db = require('./lib/services/db');
-module.exports.search = require('./lib/services/search');
 module.exports.components = require('./lib/services/components');
 module.exports.pages = require('./lib/services/pages');
