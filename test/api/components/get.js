@@ -75,6 +75,18 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 404, '404 Not Found');
     });
 
+    describe('/components/:name.bad', function () {
+      var path = this.title;
+
+      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'valid'}, 404, '{"message":"Not Found","code":404}');
+      acceptsJson(path, {name: 'missing'}, 404, '{"message":"Not Found","code":404}');
+
+      acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'missing'}, 404, '404 Not Found');
+    });
+
     describe('/components/:name@:version', function () {
       var path = this.title;
 
