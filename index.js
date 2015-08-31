@@ -40,7 +40,7 @@ function bootstrapSites() {
 
     return bootstrapComponents(prefix).then(function () {
       return bootstrap(site.dir, prefix).catch(function (ex) {
-        console.error('Bootstrap error:' + ex.stack);
+        log.error('Bootstrap error:' + ex.stack);
       });
     });
   }));
