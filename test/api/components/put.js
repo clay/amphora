@@ -14,8 +14,6 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      updatesOther = apiAccepts.updatesOther(_.camelCase(filename)),
-      createsNewVersion = apiAccepts.createsNewVersion(_.camelCase(filename)),
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
       cascadingTarget = 'localhost.example.com/components/validDeep',
@@ -129,13 +127,6 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
 
       cascades(path, {name: 'valid', id: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
-
-      updatesOther(path, path + '@latest', {name: 'valid', id: 'newId'}, data);
-      updatesOther(path + '@latest', path, {name: 'valid', id: 'newId'}, data);
-
-      createsNewVersion(path, {name: 'valid', id: 'newId'}, data);
-      createsNewVersion(path + '@latest', {name: 'valid', id: 'newId'}, data);
-      createsNewVersion(path + '@published', {name: 'valid', id: 'newId'}, data);
     });
 
     describe('/components/:name/instances/:id@:version', function () {
@@ -159,12 +150,6 @@ describe(endpointName, function () {
 
       //published version
       version = 'published';
-      acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));
-      cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), addVersion(version), cascadingDeepData);
-
-      //latest version
-      version = 'latest';
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));
       cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), addVersion(version), cascadingDeepData);
