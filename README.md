@@ -32,6 +32,30 @@ Clay separates concerns into two main areas: components and sites.  Create two n
 /sites       (for site-level settings, routes, and site-specific assets)
 ```
 
+In your project's main server file (e.g. `app.js`), instantiate a new Amphora instance by passing in an `express` app and/or the templating engines you want to use. Both of these are optional.
+
+```js
+var app = require('express')(),
+  amphora = require('@nymdev/amphora'),
+  nunjucks = require('nunjucks'),
+  port = process.env.PORT || 3000,
+  env;
+
+// add project-specific things to your app
+app.set('strict routing', true);
+
+// instantiate templating engines if you need to add project-specific
+// globals, mixins, filters, formatters, etc
+env = nunjucks.configure('.', { autoescape: true });
+env.addGlobal('projectName', 'MyCoolProject');
+
+return amphora(app, { nunjucks: env })
+  .then(function (server) {
+    server.listen(port);
+    console.log('Server listening on port ' + port);
+  });
+```
+
 ### How to create a component
 
 Components in Clay have the following structure:
