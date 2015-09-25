@@ -2,7 +2,7 @@
 
 var _ = require('lodash'),
   express = require('express'),
-  siteService = require('./lib/sites'),
+  siteService = require('./lib/services/sites'),
   files = require('./lib/files'),
   routes = require('./lib/routes'),
   bootstrap = require('./lib/bootstrap'),
@@ -81,4 +81,4 @@ module.exports = function (options) {
 module.exports.db = require('./lib/services/db');
 module.exports.components = require('./lib/services/components');
 module.exports.pages = require('./lib/services/pages');
-module.exports.sites = require('./lib/services/sites');
+module.exports.sites = siteService;
