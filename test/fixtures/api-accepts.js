@@ -11,7 +11,7 @@ var _ = require('lodash'),
   multiplex = require('multiplex-templates'),
   log = require('../../lib/log'),
   schema = require('../../lib/schema'),
-  siteService = require('../../lib/sites'),
+  siteService = require('../../lib/services/sites'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
   app,
@@ -400,7 +400,7 @@ function beforeTesting(suite, options) {
 
 /**
  * Generic before each test, make the DB and Host consistent, and get a _new_ version of express.
- * 
+ *
  * Yes, brand new, for every single test.
  *
  * @param {Object} options
