@@ -1,7 +1,7 @@
 {
   "name": "@nymdev/amphora",
   "version": "0.15.2",
-  "description": "A full-stack framework for creating the web.",
+  "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
   "scripts": {
     "test": "jscs . && jshint lib test && istanbul cover node_modules/.bin/_mocha"
