@@ -6,7 +6,7 @@ Amphora
 [![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&service=github&t=WhTOg8)](https://coveralls.io/github/nymag/amphora?branch=master)
 
 Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://thecut.com/), [Grub Street](http://www.grubstreet.com/), and [The Science of Us](http://www.scienceofus.com/).  
-Created by New York Media. Open
+Created by New York Media.
 
 ## Table of Contents
 
@@ -17,9 +17,9 @@ Created by New York Media. Open
 
 ## Introduction
 
-Amphora is an API mixin for Express that saves, publishes and composes data with the key-value store of your choice. Amphora is core part of the Clay project, an open-source content management system.
+Amphora is an API mixin for Express that saves, publishes and composes data with the key-value store of your choice. Amphora is a core part of the Clay project, an open-source content management system.
 
-Amphora is stable. Changes are expected to be feature additions and non-breaking.
+Amphora is stable. Changes are expected for additional features and non-breaking.
 
 ## Installation
 
