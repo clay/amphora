@@ -6,7 +6,7 @@ Amphora
 [![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&service=github&t=WhTOg8)](https://coveralls.io/github/nymag/amphora?branch=master)
 
 Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://thecut.com/), [Grub Street](http://www.grubstreet.com/), and [The Science of Us](http://www.scienceofus.com/).  
-Created by New York Media.
+Created by New York Media. Open
 
 ## Table of Contents
 
@@ -17,7 +17,9 @@ Created by New York Media.
 
 ## Introduction
 
-Amphora is a partial-API that saves, publishes and composes data from a key-value store.  It is part of the larger Clay project, which is an open-source content management system for publications.
+Amphora is an API mixin for Express that saves, publishes and composes data with the key-value store of your choice. Amphora is core part of the Clay project, an open-source content management system.
+
+Amphora is stable. Changes are expected to be feature additions and non-breaking.
 
 ## Installation
 
@@ -29,10 +31,10 @@ Clay separates concerns into two main areas: components and sites.  Create two n
 
 ```
 /components  (where your custom components live)
-/sites       (for site-level settings, routes, and site-specific assets)
+/sites       (for site-specific settings, routes, and assets)
 ```
 
-In your project's main server file (e.g. `app.js`), instantiate a new Amphora instance by passing in an `express` app and/or the templating engines you want to use. Both of these are optional.
+In your project's main server file (e.g. `app.js`), instantiate a new Amphora instance by passing in an `express` app and/or the templating engines you want to use. Both are optional.
 
 ```js
 var app = require('express')(),
