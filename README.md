@@ -17,7 +17,9 @@ Created by New York Media.
 
 ## Introduction
 
-Amphora is a partial-API that saves, publishes and composes data from a key-value store.  It is part of the larger Clay project, which is an open-source content management system for publications.
+Amphora is an API mixin for Express that saves, publishes and composes data with the key-value store of your choice. Amphora is a core part of the Clay project, an open-source content management system.
+
+Amphora is stable. Changes are expected for additional features and non-breaking.
 
 ## Installation
 
@@ -29,10 +31,10 @@ Clay separates concerns into two main areas: components and sites.  Create two n
 
 ```
 /components  (where your custom components live)
-/sites       (for site-level settings, routes, and site-specific assets)
+/sites       (for site-specific settings, routes, and assets)
 ```
 
-In your project's main server file (e.g. `app.js`), instantiate a new Amphora instance by passing in an `express` app and/or the templating engines you want to use. Both of these are optional.
+In your project's main server file (e.g. `app.js`), instantiate a new Amphora instance by passing in an `express` app and/or the templating engines you want to use. Both are optional.
 
 ```js
 var app = require('express')(),
@@ -73,7 +75,7 @@ Clay Components can be made with over 30+ templating languages using [multiplex-
 [handlebars](https://github.com/wycats/handlebars.js/),
 [nunjucks](https://github.com/mozilla/nunjucks),
 [react](https://github.com/facebook/react).
-Simply end your template file with an identifying extension and Clay will process it in the appropriate engine. For example, `template.jade` will compile from Jade, and `template.html` will simply output unprocessed html.
+Simply end your template filename with an identifying extension and Clay will process it in the appropriate engine. For example, `template.jade` will compile from Jade, and `template.html` will simply output unprocessed html.
 
 ### How to create a schema
 
