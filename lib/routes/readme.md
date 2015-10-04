@@ -61,7 +61,7 @@ Example: `GET /components/text/instances`
 ### Modifying components
 `GET /components/:name[/instances/:id][@:version[.:extension]]` will return a component.  The form the data is based on the extension (.html, .json, .yaml), or the Accepts header of the request.  
 
-Requesting data without a version will return the latest saved version.  Some versions have special rules (see [Propagating Versions](#propagating-versions)), but any other version name can be used to specially tag any particular version.  Some versions are also created automatically to create an audit trail when saving to latest (see [Timestamped Versions](#timestamped-versions)).
+Requesting data without a version will return the latest saved version.  Some versions have special rules (see [Propagating Versions](#propagating-versions)), but any other version name can be used to specially tag any particular version.
 
 `PUT /components/:name[/instances/:id][@version]` will save the data such that `GET`ing the same uri will return exactly what was put there.
 
@@ -103,8 +103,6 @@ module.exports.del = function (ref) {
 /pages/:name
 /pages/:name@:version
 /pages/:name@:version.html
-/pages/:name/schedule
-/pages/:name/schedule/:event
 ```
 
 Pages consist of a layout and a list of areas.  Each area defined in a page maps to a area in the layout template.  For example:
@@ -123,10 +121,6 @@ The layout component in this example has two areas: center and side.  When the p
 ### Publishing
 
 Publishing a page has a special convenience behavior where all components referenced by the page will also be published.  (Example: https://github.com/nymag/amphora/pull/78)
-
-### Schedule
-
-Whenever a page is published, an event is added to its schedule with the current time and version that was published.  `PUT`ing an event with a future time will schedule a publication of that particular version in the future.
 
 ## URIs
 
@@ -157,10 +151,6 @@ Some versions have a special behaviour called _propagating_, which any reference
 The current propagating versions are:
 * published
 * latest
-
-### Timestamped Versions
-
-When new data is saved to a component or a page, a new _version_ is automatically created based on the current time and server instance such that if these versions are sorted in alphanumerical order, they will be in order of creation.
 
 ## RESTful API
 
