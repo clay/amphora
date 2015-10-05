@@ -41,6 +41,15 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
+    describe('/pages/:name.json', function () {
+      var path = this.title;
+
+      acceptsJson(path, {name: 'valid'}, 200, pageData);
+      acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
+      acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
+    });
+
     describe('/pages/:name.html', function () {
       var path = this.title;
 

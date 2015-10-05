@@ -38,10 +38,10 @@ hooks:
     handle-sigint: false
 check:
     global:
-        statements: 87
-        lines: 88
-        branches: 66
-        functions: 84
+        statements: 99
+        lines: 99
+        branches: 98
+        functions: 99
         excludes: []
     each:
         statements: 0

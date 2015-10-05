@@ -108,4 +108,5 @@ Fork the project and submit a PR on a branch that is not named `master`.  We use
 ## Advanced Topics
 
 - [New Concepts For Developers and Designers](https://github.com/nymag/amphora/wiki#for-developers-and-designers)
+- [Bootstrapping Data](https://github.com/nymag/amphora/tree/master/lib/bootstrap.md)
 - [Routing](https://github.com/nymag/amphora/tree/master/lib/routes)
