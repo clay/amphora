@@ -40,8 +40,8 @@ check:
     global:
         statements: 99
         lines: 99
-        branches: 95
-        functions: 98
+        branches: 97
+        functions: 99
         excludes: []
     each:
         statements: 0
