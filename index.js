@@ -1,51 +1,10 @@
 'use strict';
 
-var _ = require('lodash'),
-  express = require('express'),
+var express = require('express'),
   siteService = require('./lib/services/sites'),
-  files = require('./lib/files'),
   routes = require('./lib/routes'),
   bootstrap = require('./lib/bootstrap'),
-  bluebird = require('bluebird'),
-  log = require('./lib/log'),
   composer = require('./lib/composer');
-
-/**
- * @returns {Promise}
- */
-function bootstrapCurrentProject() {
-  return bootstrap('.').catch(function () {});
-}
-
-/**
- * @param {string} [prefix]
- * @returns {Promise}
- */
-function bootstrapComponents(prefix) {
-  var components = files.getComponents();
-
-  return bluebird.all(_.map(components, function (component) {
-    var componentPath = files.getComponentPath(component);
-    return bootstrap(componentPath, prefix).catch(function () {});
-  }));
-}
-
-/**
- * @returns {Promise}
- */
-function bootstrapSites() {
-  var sites = siteService.sites();
-
-  return bluebird.all(_.map(sites, function (site) {
-    var prefix = site.path.length > 1 ? site.host + site.path : site.host;
-
-    return bootstrapComponents(prefix).then(function () {
-      return bootstrap(site.dir, prefix).catch(function (ex) {
-        log.error('Bootstrap error:' + ex.stack);
-      });
-    });
-  }));
-}
 
 /**
  * optionally pass in an express app and/or templating engines
@@ -70,9 +29,7 @@ module.exports = function (options) {
   }
 
   //look for bootstraps in components
-  return bootstrapSites().then(function () {
-    return bootstrapCurrentProject();
-  }).then(function () {
+  return bootstrap().then(function () {
     return router;
   });
 };

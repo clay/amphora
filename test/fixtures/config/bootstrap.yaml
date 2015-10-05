@@ -1,4 +1,6 @@
+# designed to get 100% coverage, even the error cases
 components:
+  this-one: does-not-save
   image:
     instances:
       -
@@ -8,6 +10,8 @@ components:
         _ref: /components/image2
       -
         _ref: localhost/components/what
+      # this next one does not save either
+      -
   image2:
     src: http://placekitten.com/400/600
     alt: adorable kittens
