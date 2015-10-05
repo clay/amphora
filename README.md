@@ -17,7 +17,7 @@ Created by New York Media.
 
 ## Introduction
 
-Amphora is an API mixin for Express that saves, publishes and composes data with the key-value store of your choice. Amphora is a core part of the Clay project, an open-source content management system.
+Amphora is an API mixin for Express that saves, publishes and outputs data to a key-value store of your choice (e.g., Mongo, Redis, LevelDB, etc).
 
 Amphora is stable. Changes are expected for additional features and non-breaking.
 
