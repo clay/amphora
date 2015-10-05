@@ -2,7 +2,7 @@
 
 When an Amphora instance is first created, it is empty except for data that is
 bootstrapped.  Components, sites, and projects can have a `bootstrap.yml` file
-that populates the instance whenever a server is started.  These files is always
+that populates the instance whenever a server is started.  These data are always
 optional, but can be useful for automated testing or pre-populating your database.
 
 The bootstrap files are run in the following order:
