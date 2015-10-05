@@ -328,7 +328,6 @@ function stubSiteConfig(sandbox) {
       assetPath: '/'
     }
   });
-  sandbox.stub(siteService, 'hosts').returns([host]);
 }
 
 function stubFiles(sandbox) {
