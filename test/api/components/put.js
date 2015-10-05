@@ -60,6 +60,9 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406);
 
       cascades(path, {name: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {name: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
     describe('/components/:name/schema', function () {
@@ -92,6 +95,9 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing', version: version}, 406);
 
       cascades(path, {name: 'valid', version: version}, cascadingData(), cascadingTarget, cascadingDeepData);
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {name: 'valid', version: version}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
     describe('/components/:name/instances', function () {
@@ -127,6 +133,9 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
 
       cascades(path, {name: 'valid', id: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
     describe('/components/:name/instances/:id@:version', function () {
@@ -153,6 +162,9 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));
       cascades(path, {name: 'valid', version: version, id: 'valid'}, cascadingData(version), addVersion(version), cascadingDeepData);
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
   });
 });

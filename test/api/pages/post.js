@@ -45,6 +45,9 @@ describe(endpointName, function () {
         expect(body._ref).to.match(/^localhost.example.com\/pages\/.+/);
       });
       acceptsHtml(path, {}, 406, '406 text/html not acceptable');
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
     describe('/pages/:name', function () {
