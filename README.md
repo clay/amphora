@@ -1,10 +1,9 @@
 Amphora
 =========================
 
-_"A new way to organize, edit, and deliver the web, one component at a time."_
+<img src="amphora-logo.png" alt="illustration of an amphora" height="150" align="right">
 
-![Amphora illustration](amphora-logo.png =107)
-<img src="amphora-logo.png" alt="illustration of an amphora">
+_"A new way to organize, edit, and deliver the web, one component at a time."_
 
 [![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&service=github&t=WhTOg8)](https://coveralls.io/github/nymag/amphora?branch=master)
 
