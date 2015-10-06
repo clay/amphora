@@ -69,6 +69,9 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {name: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
     describe('/components/:name/instances/:id', function () {

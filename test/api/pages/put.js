@@ -75,6 +75,9 @@ describe(endpointName, function () {
 
       acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {name: 'valid'}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
     describe('/pages/:name@:version', function () {
@@ -97,6 +100,9 @@ describe(endpointName, function () {
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.center, version), versionedDeepData(version));
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.layout, version), versionedDeepData(version));
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingTarget, version), componentData);
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {name: 'valid', version: version}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
   });
 });
