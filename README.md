@@ -1,7 +1,7 @@
 Amphora
 =========================
 
-<img src="amphora-logo.png" alt="illustration of an amphora" height="150" align="right">
+<img src="amphora-logo.png" alt="illustration of an amphora" height="150" align="left">
 
 _"A new way to organize, edit, and deliver the web, one component at a time."_
 
