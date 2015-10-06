@@ -1,7 +1,11 @@
 Amphora
 =========================
 
-📰 _"A new way to organize, edit, and deliver the web, one component at a time"_
+<img src="https://raw.githubusercontent.com/nymag/media/master/amphora-logo.png" alt="illustration of an amphora" height="150" align="left">
+
+
+
+_"A new way to organize, edit, and deliver the web, one component at a time."_
 
 [![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&service=github&t=WhTOg8)](https://coveralls.io/github/nymag/amphora?branch=master)
 
@@ -19,7 +23,10 @@ Created by New York Media.
 
 Amphora is an API mixin for Express that saves, publishes and outputs data to a key-value store of your choice (e.g., Mongo, Redis, LevelDB, etc).
 
-Amphora is stable. Changes are expected for additional features and non-breaking.
+Amphora is an API mixin for [Express](https://github.com/strongloop/express) that saves, publishes and outputs data with the key-value store of your choice. (e.g., Mongo, Redis, LevelDB, etc.)
+
+Amphora is a core part of the Clay project, an open-source content management system.
+Amphora is stable. Non-breaking changes are expected for additional features.
 
 ## Installation
 
@@ -27,7 +34,7 @@ Amphora is stable. Changes are expected for additional features and non-breaking
 npm install --save @nymdev/amphora
 ```
 
-Clay separates concerns into two main areas: components and sites.  Create two new directories in your project:
+Clay separates concerns into two main areas: components and sites. Create two new directories in your project:
 
 ```
 /components  (where your custom components live)
@@ -103,7 +110,7 @@ The schema.yml file also works without these values; everything is optional. Mor
 
 ## Contribution
 
-Fork the project and submit a PR on a branch that is not named `master`.  We use linting tools and unit tests, which are built constantly using continuous integration.  If you find a bug, it would be appreciated if you could also submit a branch with a failing unit test to show your case.
+Fork the project and submit a PR on a branch that is not named `master`. We use linting tools and unit tests, which are built constantly using continuous integration. If you find a bug, it would be appreciated if you could also submit a branch with a failing unit test to show your case.
 
 ## Advanced Topics
 
