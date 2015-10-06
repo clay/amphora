@@ -15,22 +15,32 @@ Created by New York Media.
 ## Table of Contents
 
 * [Introduction](#introduction)
-* [Installation](#organization)
+* [Installation](#installation)
+* [Usage](#usage)
 * [Contribution](#contribution)
 * [Advanced Topics](#advanced-topics)
 
 ## Introduction
 
-Amphora is an API mixin for [Express](https://github.com/strongloop/express) that saves, publishes and outputs data with the key-value store of your choice. (e.g., Mongo, Redis, LevelDB, etc.)
+Amphora is a mixin for [Express](https://github.com/strongloop/express) that:
 
-Amphora is a core part of the Clay project, an open-source content management system.
-Amphora is stable. Non-breaking changes are expected for additional features.
+* Composes components into renderable pages
+* Uses any key-value store of your choice (e.g., Mongo, Redis, LevelDB, etc.)
+* Provides an API for managing instances of components, uris, and pages
+
+[Components are reusable, configurable, self-contained bits of the web.](https://github.com/nymag/amphora/wiki#clay-is-divided-into-components)
+
+Amphora is a core part of New York Media's upcoming Clay project, an open-source content management system.
+
+It follows semver and is stable as of v1.0.0.
 
 ## Installation
 
 ```
 npm install --save @nymdev/amphora
 ```
+
+## Usage
 
 Clay separates concerns into two main areas: components and sites. Create two new directories in your project:
 
@@ -39,7 +49,19 @@ Clay separates concerns into two main areas: components and sites. Create two ne
 /sites       (for site-specific settings, routes, and assets)
 ```
 
-In your project's main server file (e.g. `app.js`), instantiate a new Amphora instance by passing in an `express` app and/or the templating engines you want to use. Both are optional.
+In your project's main server file (e.g. `app.js`), instantiate a new Amphora instance.
+
+```js
+var amphora = require('@nymdev/amphora'),
+  port = process.env.PORT || 3000;
+
+return amphora()
+  .then(function (server) {
+    server.listen(port);
+  });
+```
+
+For additional configuration, you may pass in an Express app / router. You can also override the default templating engine(s) with your own.
 
 ```js
 var app = require('express')(),
@@ -48,18 +70,17 @@ var app = require('express')(),
   port = process.env.PORT || 3000,
   env;
 
-// add project-specific things to your app
+// add project-specific settings to your app
 app.set('strict routing', true);
+app.set('trust proxy', 1);
 
-// instantiate templating engines if you need to add project-specific
-// globals, mixins, filters, formatters, etc
-env = nunjucks.configure('.', { autoescape: true });
-env.addGlobal('projectName', 'MyCoolProject');
+env = nunjucks.configure();
+// add custom settings to your templating engine
+env.addGlobal('projectName', process.env.PROJECT_NAME);
 
-return amphora(app, { nunjucks: env })
+return amphora({app: app, engines: {nunjucks: env} })
   .then(function (server) {
     server.listen(port);
-    console.log('Server listening on port ' + port);
   });
 ```
 
@@ -67,8 +88,8 @@ return amphora(app, { nunjucks: env })
 
 Components in Clay have the following structure:
 ```
-/component-name     unique name of your web component
-    template.html   your template, preferably semantic
+/component-name     unique name of your component
+    template.html   your template
     schema.yml      describes how the component's data is edited
 ```
 
@@ -80,11 +101,12 @@ Clay Components can be made with over 30+ templating languages using [multiplex-
 [handlebars](https://github.com/wycats/handlebars.js/),
 [nunjucks](https://github.com/mozilla/nunjucks),
 [react](https://github.com/facebook/react).
-Simply end your template filename with an identifying extension and Clay will process it in the appropriate engine. For example, `template.jade` will compile from Jade, and `template.html` will simply output unprocessed html.
+
+Name your template with an identifying extension and Clay will render it with the corresponding engine. For example, `template.jade` will render with Jade, and `template.html` will simply render unprocessed html.
 
 ### How to create a schema
 
-The [Kiln](https://github.com/nymag/clay-kiln) project uses a component's schema.yml to determine how a component is edited. For example, if you want to edit the data in this template:
+[Kiln](https://github.com/nymag/clay-kiln) uses a component's schema.yml to determine how it is edited. For example, if you want to edit the data in this template:
 
 ```html
 <article>
@@ -92,19 +114,19 @@ The [Kiln](https://github.com/nymag/clay-kiln) project uses a component's schema
   <p>{{ story }}</p>
 </article>
 ```
-you could create a schema.yml file that would describe how that data is edited:
+You would create a schema.yml file that looks like:
 
 ```yaml
 title:
-  _type: text
-  _required: true
+  _label: Title
   _placeholder: Type your title here
+  _has: text
 story:
-  _type: textarea
   _placeholder: Type your life story here
+  _has: textarea
 ```
 
-The schema.yml file also works without these values; everything is optional. More details about schema.yml are available in the [Kiln](https://github.com/nymag/clay-kiln) project.
+More details about schema.yml are available in the [Kiln](https://github.com/nymag/clay-kiln) project.
 
 ## Contribution
 
