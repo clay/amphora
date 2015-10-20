@@ -53,8 +53,8 @@ describe(endpointName, function () {
     describe('/pages/:name', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'put'], code: 405, message: 'Method POST not allowed' });
-      acceptsJsonBody(path, {name: 'valid'}, pageData, 405, { allow:['get', 'put'], code: 405, message: 'Method POST not allowed' });
+      acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
+      acceptsJsonBody(path, {name: 'valid'}, pageData, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
       acceptsHtml(path, {name: 'valid'}, 405, '405 Method POST not allowed');
     });
 
@@ -62,8 +62,8 @@ describe(endpointName, function () {
       var path = this.title,
         version = 'def';
 
-      acceptsJson(path, {name: 'valid', version: version}, 405, { allow:['get', 'put'], code: 405, message: 'Method POST not allowed' });
-      acceptsJsonBody(path, {name: 'valid', version: version}, pageData, 405, { allow:['get', 'put'], code: 405, message: 'Method POST not allowed' });
+      acceptsJson(path, {name: 'valid', version: version}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
+      acceptsJsonBody(path, {name: 'valid', version: version}, pageData, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
       acceptsHtml(path, {name: 'valid', version: version}, 405, '405 Method POST not allowed');
     });
   });
