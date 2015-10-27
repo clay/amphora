@@ -49,6 +49,8 @@ describe(endpointName, function () {
 
       acceptsTextBody(path, {name: 'valid'}, data, 200, data);
       acceptsTextBody(path, {name: 'missing'}, data, 200, data);
+      // propagating versions shouldn't be here. Only published things can be public, so all uris are assumed to be @published already
+      acceptsTextBody(path, {name: 'valid'}, 'domain/pages/test@published', 400, 'Bad Request');
 
       // deny uris pointing to themselves
       acceptsTextBody(path, {name: 'valid'}, 'localhost.example.com/uris/valid', 400);
