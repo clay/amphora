@@ -1,0 +1,7 @@
+---
+name:
+ _type: text
+ _required: true
+areas:
+ body:
+   _type: component-list
