@@ -11,7 +11,7 @@ For a broader and less specific overview of routing, please see the [project's r
 - [Pages](#pages)
 - [URIs](#uris)
 - [Lists](#lists)
-- [Versions](#Versions)
+- [Versions](#versions)
 - [RESTful API](#restful-api)
 - [Errors](#errors)
 
@@ -132,6 +132,8 @@ A URI is used to redirect some slug or URI to another page or component.  They c
 
 - `example.com` is `/uris/ZXhhbXBsZS5jb20=` => `/pages/jdskla@published`
 - `example.com/other/` is `/uris/ZXhhbXBsZS5jb20vb3RoZXI=` => `/pages/4revd3s@published`
+
+A URI is assumed to be pointing at the `@published` version if another version is not provided.  Therefore, only published content or specially tagged versions can be publicly exposed through URIs.
 
 ## Lists
 
