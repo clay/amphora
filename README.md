@@ -1,6 +1,8 @@
 Amphora
 =========================
 
+[![Join the chat at https://gitter.im/nymag/amphora](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nymag/amphora?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 <img src="https://raw.githubusercontent.com/nymag/media/master/amphora-logo.png" alt="illustration of an amphora" height="150" align="left">
 
 
