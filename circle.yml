@@ -2,7 +2,7 @@ machine:
   timezone:
     America/New_York
   node:
-    version: iojs-v2.5.0
+    version: 4.0
 dependencies:
   pre:
     - npm install -g istanbul
