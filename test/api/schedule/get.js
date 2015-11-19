@@ -19,6 +19,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
+      sandbox.useFakeTimers();
       return apiAccepts.beforeEachScheduleTest(sandbox, hostname, pageData, layoutData, componentData, scheduleData);
     });
 

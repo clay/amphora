@@ -4,8 +4,7 @@ var _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
-  sinon = require('sinon'),
-  expect = require('chai').expect;
+  sinon = require('sinon');
 
 describe(endpointName, function () {
   describe(filename, function () {
@@ -22,6 +21,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
+      sandbox.useFakeTimers();
       return apiAccepts.beforeEachScheduleTest(sandbox, hostname, pageData, layoutData, componentData, scheduleData);
     });
 
