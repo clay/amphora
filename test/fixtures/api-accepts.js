@@ -493,6 +493,32 @@ function beforeEachPageTest(sandbox, hostname, pageData, layoutData, firstLevelC
  *
  * @param sandbox
  * @param hostname
+ * @param pageData
+ * @param layoutData
+ * @param componentData
+ * @param scheduleData
+ * @returns {Promise}
+ */
+function beforeEachScheduleTest(sandbox, hostname, pageData, layoutData, componentData, scheduleData) {
+  return beforeEachTest({
+    sandbox: sandbox,
+    hostname: hostname,
+    pathsAndData: {
+      '/components/layout': layoutData,
+      '/components/valid': componentData,
+      '/pages/valid': pageData,
+      '/schedule/valid': scheduleData
+    }
+  });
+}
+
+/**
+ * Before each test, make the DB and Host consistent, and get a _new_ version of express.
+ *
+ * Yes, brand new, for every single test.
+ *
+ * @param sandbox
+ * @param hostname
  * @param data
  * @returns {Promise}
  */
@@ -546,5 +572,6 @@ module.exports.expectDataPlusRef = expectDataPlusRef;
 module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachComponentTest = beforeEachComponentTest;
 module.exports.beforeEachPageTest = beforeEachPageTest;
+module.exports.beforeEachScheduleTest = beforeEachScheduleTest;
 module.exports.beforeEachUriTest = beforeEachUriTest;
 module.exports.beforeEachListTest = beforeEachListTest;

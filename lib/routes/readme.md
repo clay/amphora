@@ -11,6 +11,7 @@ For a broader and less specific overview of routing, please see the [project's r
 - [Pages](#pages)
 - [URIs](#uris)
 - [Lists](#lists)
+- [Schedule](#schedule)
 - [Versions](#versions)
 - [RESTful API](#restful-api)
 - [Errors](#errors)
@@ -142,13 +143,55 @@ A URI is assumed to be pointing at the `@published` version if another version i
 /lists/:id
 ```
 
-Lists are a _temporary_ solution until search functionality is discussed.  It is currently used for the tags component and the autocomplete behaviour as a temporary place to store lists of information.  It can store any list of data on a `PUT`, and return back the same list of data with a `GET`.
+Lists are a _temporary_ solution until search functionality is discussed.  It is currently used for the tags component and the autocomplete behavior as a temporary place to store lists of information.  It can store any list of data on a `PUT`, and return back the same list of data with a `GET`.
+
+## Schedule
+
+```
+/schedule
+/schedule/:id
+```
+
+Schedule is a list of pages or components that will be published in the future.
+
+### List of scheduled items
+
+`GET /schedule` will return a list of scheduled items, such as:
+```json
+[
+  {
+    "key": "domain.com/some-path/schedule/3f-abc",
+    "value": "'at':44392893402093,'publish':'abc'"
+  }
+]
+```
+
+### Add a scheduled item
+
+`POST /schedule` will add an item to be published in the future. The format of the item should be of `{ at: <timestamp>, publish: "<hostname/pages/some-page>" }`, where the `at` is a UNIX timestamp and the `publish` is a ref to a page or component.  On success, it will return a 201 with
+```json
+{
+  "_ref": "<site hostname and path>/schedule/<some-id>",
+  "at": 44392893402093,
+  "publish": "<hostname/pages/some-page>"
+}
+```
+
+### Remove a scheduled item
+
+`DELETE /schedule/:some-id` will remove the scheduling of a publish in the future.  On success, it will return a 200 with
+```json
+{
+  "at": 44392893402093,
+  "publish": "<site hostname and path>/pages/some-page>"
+}
+```
 
 ## Versions
 
 ### Propagating Versions
 
-Some versions have a special behaviour called _propagating_, which any reference within their data is changed to be the same version as itself.
+Some versions have a special behavior called _propagating_, which any reference within their data is changed to be the same version as itself.
 
 The current propagating versions are:
 * published
