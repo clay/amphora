@@ -507,6 +507,7 @@ function beforeEachScheduleTest(sandbox, hostname, pageData, layoutData, compone
       '/components/layout': layoutData,
       '/components/valid': componentData,
       '/pages/valid': pageData,
+      '/pages/valid@scheduled': _.assign({_ref: host + '/schedule/valid'}, scheduleData),
       '/schedule/valid': scheduleData
     }
   });

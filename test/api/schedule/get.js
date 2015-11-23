@@ -30,7 +30,7 @@ describe(endpointName, function () {
     describe('/schedule', function () {
       var path = this.title;
 
-      acceptsJson(path, {}, 200, '[{"key":"localhost.example.com/schedule/valid","value":"{}"}]');
+      acceptsJson(path, {}, 200, '[{"_ref":"localhost.example.com/schedule/valid"}]');
       acceptsHtml(path, {}, 406);
     });
 
