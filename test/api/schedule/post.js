@@ -15,7 +15,7 @@ describe(endpointName, function () {
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       time = new Date('2015-01-01').getTime(),
       componentData = {},
-      scheduleData = {},
+      scheduleData = { at: new Date('2015-01-01').getTime() },
       layoutData = {},
       pageData = {};
 

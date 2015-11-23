@@ -152,7 +152,9 @@ Lists are a _temporary_ solution until search functionality is discussed.  It is
 /schedule/:id
 ```
 
-Schedule is a list of pages or components that will be published in the future.
+Schedule is a list of pages or components that will be published in the future.  Items in this list will be published when the time passes.  Each item has two properties: `at`, which is a UNIX timestamp, and the `publish` property that is a reference to what will be published after that time.
+
+When an item is scheduled, a `@scheduled` version is created on the item that will be published.  When the item is eventually published, the `@scheduled` version will be removed.  The `@scheduled` version is a reference to the actual schedule uri that can be deleted to cancel the scheduled publication.
 
 ### List of scheduled items
 
@@ -160,22 +162,24 @@ Schedule is a list of pages or components that will be published in the future.
 ```json
 [
   {
-    "key": "domain.com/some-path/schedule/3f-abc",
-    "value": "'at':44392893402093,'publish':'abc'"
+    "_ref": "domain.com/some-path/schedule/3f-abc",
+    "at": 44392893402093,
+    "publish": "abc"
   }
 ]
 ```
 
 ### Add a scheduled item
 
-`POST /schedule` will add an item to be published in the future. The format of the item should be of `{ at: <timestamp>, publish: "<hostname/pages/some-page>" }`, where the `at` is a UNIX timestamp and the `publish` is a ref to a page or component.  On success, it will return a 201 with
+`POST /schedule` will add an item to be published in the future. The format of the item should be of
 ```json
 {
-  "_ref": "<site hostname and path>/schedule/<some-id>",
   "at": 44392893402093,
-  "publish": "<hostname/pages/some-page>"
+  "publish": "<uri to be published>"
 }
 ```
+where the `at` is a UNIX timestamp and the `publish` is a ref to a page or component.  On success, it will return a 201 with a reference to the schedule uri that was created.
+
 
 ### Remove a scheduled item
 
@@ -183,7 +187,7 @@ Schedule is a list of pages or components that will be published in the future.
 ```json
 {
   "at": 44392893402093,
-  "publish": "<site hostname and path>/pages/some-page>"
+  "publish": "<uri that was to be published>"
 }
 ```
 

@@ -14,7 +14,7 @@ describe(endpointName, function () {
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       componentData = {},
-      scheduleData = {},
+      scheduleData = { at: new Date('2015-01-01').getTime(), publish: 'localhost.example.com/pages/valid' },
       layoutData = {},
       pageData = {};
 
@@ -39,11 +39,11 @@ describe(endpointName, function () {
     describe('/schedule/:name', function () {
       var path = this.title;
 
-      acceptsJson(path, {name: 'valid'}, 200, pageData);
+      acceptsJson(path, {name: 'valid'}, 200, scheduleData);
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
 
-      acceptsJsonBody(path, {name: 'valid'}, pageData, 200, pageData);
-      acceptsJsonBody(path, {name: 'missing'}, pageData, 404, { message: 'Not Found', code: 404 });
+      acceptsJsonBody(path, {name: 'valid'}, scheduleData, 200, scheduleData);
+      acceptsJsonBody(path, {name: 'missing'}, scheduleData, 404, { message: 'Not Found', code: 404 });
 
       acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
