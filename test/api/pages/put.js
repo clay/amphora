@@ -16,11 +16,13 @@ describe(endpointName, function () {
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       pageData = {
+        url: 'http://localhost.example.com',
         layout: 'localhost.example.com/components/layout',
         center: 'localhost.example.com/components/valid',
         side: ['localhost.example.com/components/valid@valid']
       },
       cascadingPageData = {
+        url: 'http://localhost.example.com',
         layout: 'localhost.example.com/components/layoutCascading',
         center: 'localhost.example.com/components/validCascading',
         side: ['localhost.example.com/components/validCascading@valid']
@@ -31,6 +33,7 @@ describe(endpointName, function () {
       cascadingTarget = 'localhost.example.com/components/validDeep',
       versionedPageData = function (version) {
         return {
+          url: 'http://localhost.example.com',
           layout: 'localhost.example.com/components/layout@' + version,
           center: 'localhost.example.com/components/valid@' + version,
           side: ['localhost.example.com/components/valid@' + version]
@@ -41,6 +44,7 @@ describe(endpointName, function () {
       },
       cascadingReturnData = function (version) {
         return {
+          url: 'http://localhost.example.com',
           layout: 'localhost.example.com/components/layoutCascading@' + version,
           center: 'localhost.example.com/components/validCascading@' + version,
           side: ['localhost.example.com/components/validCascading@' + version]
@@ -98,7 +102,6 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', version: version}, pageData, 200, versionedPageData(version));
       acceptsJsonBody(path, {name: 'valid', version: version}, cascadingPageData, 200, cascadingReturnData(version));
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.center, version), versionedDeepData(version));
-      cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.layout, version), versionedDeepData(version));
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingTarget, version), componentData);
 
       // block with _ref at root of object

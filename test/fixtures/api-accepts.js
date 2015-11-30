@@ -249,7 +249,7 @@ function createsNewVersion(method) {
  * @returns {Function}
  */
 function cascades(method) {
-  return function (path, replacements, data, cascadingTarget, cascadingDeepData) {
+  return function (path, replacements, data, cascadingTarget, cascadingData) {
     var realPath = getRealPath(replacements, path);
 
     it(realPath + ' cascades to ' + cascadingTarget, function () {
@@ -260,9 +260,9 @@ function cascades(method) {
         .set('Host', host)
         .expect(200)
         .then(function () {
-          //expect deep data to now exist
+          //expect cascading data to now exist
           return db.get(cascadingTarget).then(JSON.parse).then(function (result) {
-            expect(result).to.deep.equal(cascadingDeepData);
+            expect(result).to.deep.equal(cascadingData);
           });
         });
     });
