@@ -18,7 +18,10 @@ components:
 pages:
   -
     layout: /a/b
-    head: /c/d
+    url: /x/y
+    body: /c/d
+    head:
+      - /e/f
 uris:
   a: b
   c: /d
