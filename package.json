@@ -36,9 +36,9 @@
   "devDependencies": {
     "chai": "^2.1",
     "coveralls": "^2.11.2",
-    "istanbul": "^0.4.1",
-    "jscs": "^2.6.0",
-    "jshint": "^2.8.0",
+    "istanbul": "^0.4",
+    "jscs": "^2.6",
+    "jshint": "^2.8",
     "mocha": "^2.2",
     "mock-fs": "^2.5.0",
     "sinon": "^1.14",
