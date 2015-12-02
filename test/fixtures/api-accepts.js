@@ -325,7 +325,8 @@ function stubSiteConfig(sandbox) {
       path: '/',
       slug: 'example',
       assetDir: 'public',
-      assetPath: '/'
+      assetPath: '/',
+      notify: _.noop
     }
   });
 }
@@ -416,7 +417,7 @@ function beforeEachTest(options) {
   stubSchema(options.sandbox);
   stubGetTemplate(options.sandbox);
   stubMultiplexRender(options.sandbox);
-  stubLogging(options.sandbox);
+  //stubLogging(options.sandbox);
   routes.addHost(app, options.hostname);
 
   return db.clear().then(function () {
