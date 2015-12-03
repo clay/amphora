@@ -14,7 +14,7 @@ describe(endpointName, function () {
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       componentData = {},
-      scheduleData = { at: new Date('2015-01-01').getTime(), publish: 'localhost.example.com/pages/valid' },
+      scheduleData = { at: new Date('2015-01-01').getTime(), publish: 'http://localhost.example.com/pages/valid' },
       layoutData = {},
       pageData = {};
 
