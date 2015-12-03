@@ -14,6 +14,7 @@ var _ = require('lodash'),
   siteService = require('../../lib/services/sites'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
+  uid = require('../../lib/uid'),
   app,
   host;
 
@@ -368,6 +369,12 @@ function stubLogging(sandbox) {
   return sandbox;
 }
 
+function stubUid(sandbox) {
+  sandbox.stub(uid);
+  uid.get.returns('some-uid');
+  return sandbox;
+}
+
 /**
  * Before starting testing at all, prepare certain things to make sure our performance testing is accurate.
  */
@@ -384,6 +391,7 @@ function beforeTesting(suite, options) {
   stubGetTemplate(options.sandbox);
   stubMultiplexRender(options.sandbox);
   stubLogging(options.sandbox);
+  stubUid(options.sandbox);
   routes.addHost(app, options.hostname);
 
   return db.clear().then(function () {
@@ -417,6 +425,7 @@ function beforeEachTest(options) {
   stubGetTemplate(options.sandbox);
   stubMultiplexRender(options.sandbox);
   stubLogging(options.sandbox);
+  stubUid(options.sandbox);
   routes.addHost(app, options.hostname);
 
   return db.clear().then(function () {

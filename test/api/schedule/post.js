@@ -36,8 +36,8 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 406, '406 text/html not acceptable');
 
       acceptsJsonBody(path, {}, _.assign({}, pageData), 400, { message: 'Missing "at" property as number.', code: 400 });
-      acceptsJsonBody(path, {}, _.assign({at: time}, pageData), 400, { message: 'Missing "publish" property as string.', code: 400 });
-      acceptsJsonBody(path, {}, _.assign({at: time, publish: 'abc'}, pageData), 201, { _ref: 'localhost.example.com/schedule/i4dd91c0-abc', at: time, publish: 'abc' });
+      acceptsJsonBody(path, {}, _.assign({at: time}, pageData), 400, { message: 'Missing "publish" property as valid url.', code: 400 });
+      acceptsJsonBody(path, {}, _.assign({at: time, publish: 'http://abc'}, pageData), 201, { _ref: 'localhost.example.com/schedule/some-uid', at: time, publish: 'http://abc' });
     });
 
     describe('/schedule/:name', function () {
