@@ -74,7 +74,7 @@ describe(endpointName, function () {
         .set('Host', hostname)
         .expect(200)
         .expect('Content-Type', /text/)
-        .then('http://some-url/d\nhttp://some-url/e\n');
+        .expect('http://some-url/d\nhttp://some-url/e\n');
     });
 
     it('gets sitemap even with bad json', function () {
@@ -84,7 +84,8 @@ describe(endpointName, function () {
           .set('Host', hostname)
           .expect(200)
           .expect('Content-Type', /text/)
-          .then('http://some-url/d\nhttp://some-url/e\n').then(function () {
+          .expect('http://some-url/d\nhttp://some-url/e\n')
+          .then(function () {
             sinon.assert.calledOnce(log.warn);
           });
       });

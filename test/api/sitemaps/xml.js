@@ -57,7 +57,17 @@ describe(endpointName, function () {
         .then(addUri('some-url/d', 'd'))
         .then(addPage('e', {url: 'http://some-url/e'}))
         .then(addPage('e@published', {url: 'http://some-url/e'}))
-        .then(addUri('some-url/e', 'e'));
+        .then(addUri('some-url/e', 'e'))
+        .then(addPage('f@published', {url: 'http://some-url/f', lastModified: new Date('2015-01-01').getTime()}))
+        .then(addUri('some-url/f', 'f'))
+        .then(addPage('g@published', {url: 'http://some-url/g', changeFrequency: 'never'}))
+        .then(addUri('some-url/g', 'g'))
+        .then(addPage('h@published', {url: 'http://some-url/h', priority: '1.0'}))
+        .then(addUri('some-url/h', 'h'))
+        .then(addPage('i@published', {url: 'http://some-url/i', lastModified: 'some time string'}))
+        .then(addUri('some-url/i', 'i'))
+        .then(addPage('j', {url: 'http://some-url/j'}))
+        .then(addUri('some-url/j', 'j-other'));
     });
 
     afterEach(function () {
@@ -74,7 +84,18 @@ describe(endpointName, function () {
         .set('Host', hostname)
         .expect(200)
         .expect('Content-Type', /xml/)
-        .then('http://some-url/d\nhttp://some-url/e\n');
+        .expect('<?xml version="1.0" encoding="UTF-8"?>' +
+          '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+          'xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" ' +
+          'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" ' +
+          'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" ' +
+          'xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">' +
+          '<url><loc>http://some-url/d</loc></url>' +
+          '<url><loc>http://some-url/e</loc></url>' +
+          '<url><loc>http://some-url/f</loc><lastmod>2015-01-01T00:00:00.000Z</lastmod></url>' +
+          '<url><loc>http://some-url/g</loc><changefreq>never</changefreq></url>' +
+          '<url><loc>http://some-url/h</loc><priority>1.0</priority></url>' +
+          '<url><loc>http://some-url/i</loc><lastmod>some time string</lastmod></url></urlset>');
     });
 
     it('gets sitemap even with bad json', function () {
@@ -84,7 +105,19 @@ describe(endpointName, function () {
           .set('Host', hostname)
           .expect(200)
           .expect('Content-Type', /xml/)
-          .then('http://some-url/d\nhttp://some-url/e\n').then(function () {
+          .expect('<?xml version="1.0" encoding="UTF-8"?>' +
+            '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+            'xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" ' +
+            'xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" ' +
+            'xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" ' +
+            'xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">' +
+            '<url><loc>http://some-url/d</loc></url>' +
+            '<url><loc>http://some-url/e</loc></url>' +
+            '<url><loc>http://some-url/f</loc><lastmod>2015-01-01T00:00:00.000Z</lastmod></url>' +
+            '<url><loc>http://some-url/g</loc><changefreq>never</changefreq></url>' +
+            '<url><loc>http://some-url/h</loc><priority>1.0</priority></url>' +
+            '<url><loc>http://some-url/i</loc><lastmod>some time string</lastmod></url></urlset>')
+          .then(function () {
             sinon.assert.calledOnce(log.warn);
           });
       });
