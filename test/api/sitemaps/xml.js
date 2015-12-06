@@ -2,6 +2,7 @@
 
 const _ = require('lodash'),
   bluebird = require('bluebird'),
+  components = require('../../../lib/services/components'),
   db = require('../../../lib/services/db'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   express = require('express'),
@@ -9,6 +10,7 @@ const _ = require('lodash'),
   files = require('../../../lib/files'),
   hostname = 'some-hostname',
   log = require('../../../lib/log'),
+  multiplexTemplates = require('multiplex-templates'),
   sinon = require('sinon'),
   routes = require('../../../lib/routes'),
   request = require('supertest-as-promised');
@@ -49,7 +51,10 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
+      sandbox.stub(components, 'get');
+      sandbox.stub(components, 'getTemplate');
       sandbox.stub(files, 'fileExists');
+      sandbox.stub(multiplexTemplates, 'render');
       sandbox.stub(log);
 
       header = '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -98,7 +103,10 @@ describe(endpointName, function () {
         .expect(header +
           '<url><loc>http://some-url/d</loc></url>' +
           '<url><loc>http://some-url/e</loc></url>' +
-          footer);
+          footer)
+        .then(function () {
+          sinon.assert.notCalled(log.warn);
+        });
     });
 
     it('get sitemap with lastModified as timestamp', function () {
@@ -111,6 +119,8 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/e</loc></url>' +
             '<url><loc>http://some-url/f</loc><lastmod>2015-01-01T00:00:00.000Z</lastmod></url>' +
             footer);
+        }).then(function () {
+          sinon.assert.notCalled(log.warn);
         });
     });
 
@@ -124,6 +134,8 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/e</loc></url>' +
             '<url><loc>http://some-url/f</loc><lastmod>some time string</lastmod></url>' +
             footer);
+        }).then(function () {
+          sinon.assert.notCalled(log.warn);
         });
     });
 
@@ -137,6 +149,8 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/e</loc></url>' +
             '<url><loc>http://some-url/f</loc><priority>1.0</priority></url>' +
             footer);
+        }).then(function () {
+          sinon.assert.notCalled(log.warn);
         });
     });
 
@@ -150,10 +164,12 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/e</loc></url>' +
             '<url><loc>http://some-url/f</loc><changefreq>never</changefreq></url>' +
             footer);
+        }).then(function () {
+          sinon.assert.notCalled(log.warn);
         });
     });
 
-    it('gets sitemap even with bad json', function () {
+    it('warns when given bad json, does not include page', function () {
       return db.put(hostname + '/pages/x@published', '{what?').then(function () {
         return request(app)
           .get('/sitemap.xml')
@@ -168,6 +184,106 @@ describe(endpointName, function () {
             sinon.assert.calledOnce(log.warn);
           });
       });
+    });
+
+    it('warns when uri does not point to page, does not include page', function () {
+      return bluebird.resolve()
+        .then(addUri('some-url/f', 'd'))
+        .then(addPage('f@published', {url: 'http://some-url/f'}))
+        .then(function () {
+          return requestSitemap(app).expect(header +
+            '<url><loc>http://some-url/d</loc></url>' +
+            '<url><loc>http://some-url/e</loc></url>' +
+            footer);
+        }).then(function () {
+          sinon.assert.calledOnce(log.warn);
+        });
+    });
+
+    it('get sitemap with component template', function () {
+      const componentReference = hostname + '/components/k',
+        componentData = {a: 'b'};
+
+      components.get.withArgs(componentReference).returns(bluebird.resolve(componentData));
+      components.getTemplate.returns('abc');
+      multiplexTemplates.render.returns('<def></def>');
+
+      return bluebird.resolve()
+        .then(addUri('some-url/f', 'f'))
+        .then(addPage('f@published', {url: 'http://some-url/f', area: componentReference}))
+        .then(function () {
+          return requestSitemap(app).expect(header +
+            '<url><loc>http://some-url/d</loc></url>' +
+            '<url><loc>http://some-url/e</loc></url>' +
+            '<url><loc>http://some-url/f</loc><def></def></url>' +
+            footer);
+        }).then(function () {
+          sinon.assert.notCalled(log.warn);
+        });
+    });
+
+    it('warns when render fails, but includes page without extras', function () {
+      const componentReference = hostname + '/components/k',
+        componentData = {a: 'b'};
+
+      components.get.withArgs(componentReference).returns(bluebird.resolve(componentData));
+      components.getTemplate.returns('abc');
+      multiplexTemplates.render.throws();
+
+      return bluebird.resolve()
+        .then(addUri('some-url/f', 'f'))
+        .then(addPage('f@published', {url: 'http://some-url/f', area: componentReference}))
+        .then(function () {
+          return requestSitemap(app).expect(header +
+            '<url><loc>http://some-url/d</loc></url>' +
+            '<url><loc>http://some-url/e</loc></url>' +
+            '<url><loc>http://some-url/f</loc></url>' +
+            footer);
+        }).then(function () {
+          sinon.assert.calledOnce(log.warn);
+        });
+    });
+
+    it('gets sitemap without extras if component does not have template', function () {
+      const componentReference = hostname + '/components/k',
+        componentData = {a: 'b'};
+
+      components.get.withArgs(componentReference).returns(bluebird.resolve(componentData));
+      components.getTemplate.returns(undefined);
+
+      return bluebird.resolve()
+        .then(addUri('some-url/f', 'f'))
+        .then(addPage('f@published', {url: 'http://some-url/f', area: componentReference}))
+        .then(function () {
+          return requestSitemap(app).expect(header +
+            '<url><loc>http://some-url/d</loc></url>' +
+            '<url><loc>http://some-url/e</loc></url>' +
+            '<url><loc>http://some-url/f</loc></url>' +
+            footer);
+        }).then(function () {
+          sinon.assert.notCalled(log.warn);
+        });
+    });
+
+    it('warns when component is not found', function () {
+      const componentReference = hostname + '/components/k',
+        error = new Error();
+      error.name = 'NotFoundError';
+
+      // note that if this page were to be rendered normally (in html) it will 404, so don't include in sitemap
+      components.get.throws(error);
+
+      return bluebird.resolve()
+        .then(addUri('some-url/f', 'f'))
+        .then(addPage('f@published', {url: 'http://some-url/f', area: componentReference}))
+        .then(function () {
+          return requestSitemap(app).expect(header +
+            '<url><loc>http://some-url/d</loc></url>' +
+            '<url><loc>http://some-url/e</loc></url>' +
+            footer);
+        }).then(function () {
+          sinon.assert.calledOnce(log.warn);
+        });
     });
   });
 });
