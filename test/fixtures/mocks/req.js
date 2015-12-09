@@ -34,6 +34,8 @@ function queryToString(query) {
 
 module.exports = function () {
   var hostname, path, baseUrl, query,
+    params = {},
+    headers = {},
     req = {};
 
   Object.defineProperty(req, 'url', defineReadOnly({
@@ -88,11 +90,23 @@ module.exports = function () {
     set: function (value) { hostname = value; }
   }));
 
+  Object.defineProperty(req, 'params', defineWritable({
+    get: function () { return params; },
+    set: function (value) { params = value; }
+  }));
+
+  Object.defineProperty(req, 'headers', defineWritable({
+    get: function () { return headers; },
+    set: function (value) { headers = value; }
+  }));
+
   // defaults
   req.path = '/someUrl';
   req.baseUrl = '';
   req.hostname = 'example.com';
   req.query = {};
+  req.accepts = _.noop;
+  req.get = _.noop;
 
   return req;
 };
