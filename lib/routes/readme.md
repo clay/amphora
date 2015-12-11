@@ -71,7 +71,7 @@ Some components want special server-side logic.  This can be done by creating a 
 
 ```js
 module.exports = function (ref, locals) {
-  //return a Promise with whatever data should be returned on a GET
+  //return a Promise or object with whatever data should be returned on a GET
 };
 ```
 
@@ -79,11 +79,11 @@ Other server-side logic can be overridden as well.  This is especially useful fo
 
 ```js
 module.exports = function (ref, locals) {
-  //return Promise with data
-  return Promise.resolve({"hey": "hey"});
+  //return Promise or object
+  return {"hey": "hey"};
 };
 module.exports.put = function (ref, data) {
-  //return Promise with operations to be performed in a batch
+  //return Promise or object with operations to be performed in a batch
   return Promise.resolve([{
     type: 'put',
     key: '/components/text',
@@ -91,8 +91,8 @@ module.exports.put = function (ref, data) {
   ]);
 };
 module.exports.del = function (ref) {
-  //return Promise with data;
-  return Promise.resolve({"hey": "hey"});
+  //return Promise or object with data;
+  return {"hey": "hey"};
 };
 ```
 
