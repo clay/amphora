@@ -31,23 +31,6 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachTest({
-        sandbox: sandbox,
-        hostname: hostname,
-        pathsAndData: {
-          '/components/layout': data.layout,
-          '/components/layout@valid': data.layout,
-          '/components/layoutCascading': data.firstLevelComponent,
-          '/components/valid': data.firstLevelComponent,
-          '/components/valid@valid': data.firstLevelComponent,
-          '/components/validCascading': data.firstLevelComponent,
-          '/components/validCascading@valid': data.firstLevelComponent,
-          '/components/validDeep': data.secondLevelComponent,
-          '/components/validDeep@valid': data.secondLevelComponent,
-          '/pages/valid': data.page,
-          '/pages/valid@valid': data.page
-        }
-      });
     });
 
     afterEach(function () {
@@ -56,6 +39,15 @@ describe(endpointName, function () {
 
     describe('/pages', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/layout': data.layout,
+          '/components/valid': data.firstLevelComponent,
+          '/components/valid@valid': data.firstLevelComponent,
+          '/pages/valid': data.page
+        }});
+      });
 
       acceptsJson(path, {}, 400, { message: 'Data missing layout reference.', code: 400 });
       acceptsJsonBody(path, {}, {}, 400, { message: 'Data missing layout reference.', code: 400 });
@@ -75,6 +67,10 @@ describe(endpointName, function () {
     describe('/pages/:name', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
       acceptsJsonBody(path, {name: 'valid'}, pageData, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
       acceptsHtml(path, {name: 'valid'}, 405, '405 Method POST not allowed');
@@ -83,6 +79,10 @@ describe(endpointName, function () {
     describe('/pages/:name@:version', function () {
       var path = this.title,
         version = 'def';
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
 
       acceptsJson(path, {name: 'valid', version: version}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
       acceptsJsonBody(path, {name: 'valid', version: version}, pageData, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
