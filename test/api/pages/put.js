@@ -49,11 +49,17 @@ describe(endpointName, function () {
           center: 'localhost.example.com/components/validCascading@' + version,
           side: ['localhost.example.com/components/validCascading@' + version]
         };
+      },
+      data = {
+        page: pageData,
+        layout: layoutData,
+        firstLevelComponent: deepData,
+        secondLevelComponent: componentData
       };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, deepData, componentData);
+      return apiAccepts.beforeEachPageTest(sandbox, hostname, data);
     });
 
     afterEach(function () {
@@ -103,6 +109,9 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', version: version}, cascadingPageData, 200, cascadingReturnData(version));
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.center, version), versionedDeepData(version));
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingTarget, version), componentData);
+
+      //published with empty data will publish @latest
+      //acceptsJsonBody(path, {name: 'valid', version: version}, {}, 200, versionedPageData(version));
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version: version}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});

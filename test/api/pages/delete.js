@@ -20,11 +20,17 @@ describe(endpointName, function () {
       },
       deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
       layoutData = { someArea: ['center'] },
-      componentData = { name: 'Manny', species: 'cat' };
+      componentData = { name: 'Manny', species: 'cat' },
+      data = {
+        page: pageData,
+        layout: layoutData,
+        firstLevelComponent: deepData,
+        secondLevelComponent: componentData
+      };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, deepData, componentData);
+      return apiAccepts.beforeEachPageTest(sandbox,  hostname, data);
     });
 
     afterEach(function () {

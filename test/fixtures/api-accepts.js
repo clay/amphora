@@ -469,28 +469,25 @@ function beforeEachComponentTest(sandbox, hostname, data) {
  *
  * @param sandbox
  * @param hostname
- * @param pageData
- * @param layoutData
- * @param firstLevelComponentData
- * @param secondLevelComponentData
+ * @param data
  * @returns {Promise}
  */
-function beforeEachPageTest(sandbox, hostname, pageData, layoutData, firstLevelComponentData, secondLevelComponentData) {
+function beforeEachPageTest(sandbox, hostname, data) {
   return beforeEachTest({
     sandbox: sandbox,
     hostname: hostname,
     pathsAndData: {
-      '/components/layout': layoutData,
-      '/components/layout@valid': layoutData,
-      '/components/layoutCascading': firstLevelComponentData,
-      '/components/valid': firstLevelComponentData,
-      '/components/valid@valid': firstLevelComponentData,
-      '/components/validCascading': firstLevelComponentData,
-      '/components/validCascading@valid': firstLevelComponentData,
-      '/components/validDeep': secondLevelComponentData,
-      '/components/validDeep@valid': secondLevelComponentData,
-      '/pages/valid': pageData,
-      '/pages/valid@valid': pageData
+      '/components/layout': data.layout,
+      '/components/layout@valid': data.layout,
+      '/components/layoutCascading': data.firstLevelComponent,
+      '/components/valid': data.firstLevelComponent,
+      '/components/valid@valid': data.firstLevelComponent,
+      '/components/validCascading': data.firstLevelComponent,
+      '/components/validCascading@valid': data.firstLevelComponent,
+      '/components/validDeep': data.secondLevelComponent,
+      '/components/validDeep@valid': data.secondLevelComponent,
+      '/pages/valid': data.page,
+      '/pages/valid@valid': data.page
     }
   });
 }
