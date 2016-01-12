@@ -19,7 +19,6 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachUriTest(sandbox,  hostname, data);
     });
 
     afterEach(function () {
@@ -29,6 +28,10 @@ describe(endpointName, function () {
     describe('/uris', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
       acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
@@ -37,6 +40,17 @@ describe(endpointName, function () {
 
     describe('/uris/:name', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid': data,
+          '/components/valid/instances/valid': data,
+          '/components/valid/instances/valid@valid': data,
+          '/pages/valid': data,
+          '/pages/valid@valid': data,
+          '/uris/valid': data
+        }});
+      });
 
       acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });
       acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });

@@ -21,7 +21,17 @@ describe(endpointName, function () {
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
       sandbox.useFakeTimers();
-      return apiAccepts.beforeEachScheduleTest(sandbox, hostname, pageData, layoutData, componentData, scheduleData);
+      return apiAccepts.beforeEachTest({
+        sandbox: sandbox,
+        hostname: hostname,
+        pathsAndData: {
+          '/components/layout': layoutData,
+          '/components/valid': componentData,
+          '/pages/valid': pageData,
+          '/pages/valid@scheduled': _.assign({_ref: hostname + '/schedule/valid'}, scheduleData),
+          '/schedule/valid': scheduleData
+        }
+      });
     });
 
     afterEach(function () {

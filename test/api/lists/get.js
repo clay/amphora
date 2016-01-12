@@ -16,7 +16,11 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachListTest(sandbox, hostname, data); //Does beforeEach need to be specific to each route?
+      return apiAccepts.beforeEachTest({
+        sandbox: sandbox,
+        hostname: hostname,
+        pathsAndData: {'/lists/valid': data}
+      });
     });
 
     afterEach(function () {

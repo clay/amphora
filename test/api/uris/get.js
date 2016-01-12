@@ -17,7 +17,6 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachUriTest(sandbox,  hostname, data);
     });
 
     afterEach(function () {
@@ -26,6 +25,11 @@ describe(endpointName, function () {
 
     describe('/uris', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: { '/uris/valid': data }});
+      });
+
       acceptsJson(path, {}, 200, '["localhost.example.com/uris/valid"]');
       acceptsHtml(path, {}, 406, '406 text/html not acceptable');
       acceptsText(path, {}, 406, 'Not Acceptable');
@@ -33,6 +37,10 @@ describe(endpointName, function () {
 
     describe('/uris/:name', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: { '/uris/valid': data }});
+      });
 
       acceptsJson(path, {name: 'invalid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });
       acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });

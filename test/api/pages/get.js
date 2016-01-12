@@ -25,7 +25,23 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachPageTest(sandbox, hostname, data);
+      return apiAccepts.beforeEachTest({
+        sandbox: sandbox,
+        hostname: hostname,
+        pathsAndData: {
+          '/components/layout': data.layout,
+          '/components/layout@valid': data.layout,
+          '/components/layoutCascading': data.firstLevelComponent,
+          '/components/valid': data.firstLevelComponent,
+          '/components/valid@valid': data.firstLevelComponent,
+          '/components/validCascading': data.firstLevelComponent,
+          '/components/validCascading@valid': data.firstLevelComponent,
+          '/components/validDeep': data.secondLevelComponent,
+          '/components/validDeep@valid': data.secondLevelComponent,
+          '/pages/valid': data.page,
+          '/pages/valid@valid': data.page
+        }
+      });
     });
 
     afterEach(function () {
