@@ -12,25 +12,12 @@ describe(endpointName, function () {
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      componentData = {},
       scheduleData = {},
-      layoutData = {},
       pageData = {};
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
       sandbox.useFakeTimers();
-      return apiAccepts.beforeEachTest({
-        sandbox: sandbox,
-        hostname: hostname,
-        pathsAndData: {
-          '/components/layout': layoutData,
-          '/components/valid': componentData,
-          '/pages/valid': pageData,
-          '/pages/valid@scheduled': _.assign({_ref: hostname + '/schedule/valid'}, scheduleData),
-          '/schedule/valid': scheduleData
-        }
-      });
     });
 
     afterEach(function () {
@@ -40,12 +27,24 @@ describe(endpointName, function () {
     describe('/schedule', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/schedule/valid': scheduleData
+        }});
+      });
+
       acceptsJson(path, {}, 200, '[{"_ref":"localhost.example.com/schedule/valid"}]');
       acceptsHtml(path, {}, 406);
     });
 
     describe('/schedule/:name', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/schedule/valid': scheduleData
+        }});
+      });
 
       acceptsJson(path, {name: 'valid'}, 200, pageData);
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });

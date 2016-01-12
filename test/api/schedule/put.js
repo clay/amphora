@@ -12,26 +12,11 @@ describe(endpointName, function () {
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
-      acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      componentData = {},
-      scheduleData = { at: new Date('2015-01-01').getTime() },
-      layoutData = {},
-      pageData = {};
+      acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename));
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
       sandbox.useFakeTimers();
-      return apiAccepts.beforeEachTest({
-        sandbox: sandbox,
-        hostname: hostname,
-        pathsAndData: {
-          '/components/layout': layoutData,
-          '/components/valid': componentData,
-          '/pages/valid': pageData,
-          '/pages/valid@scheduled': _.assign({_ref: hostname + '/schedule/valid'}, scheduleData),
-          '/schedule/valid': scheduleData
-        }
-      });
     });
 
     afterEach(function () {
@@ -41,6 +26,10 @@ describe(endpointName, function () {
     describe('/schedule', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
       acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
@@ -48,6 +37,10 @@ describe(endpointName, function () {
 
     describe('/schedule/:name', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname});
+      });
 
       acceptsJson(path, {}, 405, { allow:['get', 'delete'], code: 405, message: 'Method PUT not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get', 'delete'], code: 405, message: 'Method PUT not allowed' });

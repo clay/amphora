@@ -43,11 +43,6 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
-          '/components/valid': data,
-          '/components/valid/instances/valid': data,
-          '/components/valid/instances/valid@valid': data,
-          '/pages/valid': data,
-          '/pages/valid@valid': data,
           '/uris/valid': data
         }});
       });
