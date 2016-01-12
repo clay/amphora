@@ -137,9 +137,6 @@ describe(endpointName, function () {
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.center, version), versionedDeepData(version));
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingTarget, version), componentData);
 
-      //published with empty data will publish @latest
-      //acceptsJsonBody(path, {name: 'valid', version: version}, {}, 200, versionedPageData(version));
-
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version: version}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
