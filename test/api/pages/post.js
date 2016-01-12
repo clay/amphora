@@ -21,12 +21,10 @@ describe(endpointName, function () {
       },
       deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
       layoutData = { someArea: ['center'] },
-      componentData = { name: 'Manny', species: 'cat' },
       data = {
         page: pageData,
         layout: layoutData,
-        firstLevelComponent: deepData,
-        secondLevelComponent: componentData
+        firstLevelComponent: deepData
       };
 
     beforeEach(function () {

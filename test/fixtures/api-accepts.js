@@ -442,28 +442,6 @@ function beforeEachTest(options) {
   });
 }
 
-/**
- * Before each test, make the DB and Host consistent, and get a _new_ version of express.
- *
- * Yes, brand new, for every single test.
- *
- * @param sandbox
- * @param hostname
- * @param data
- * @returns {Promise}
- */
-function beforeEachComponentTest(sandbox, hostname, data) {
-  return beforeEachTest({
-    sandbox: sandbox,
-    hostname: hostname,
-    pathsAndData: {
-      '/components/valid': data,
-      '/components/valid/instances/valid': data,
-      '/components/valid/instances/valid@valid': data
-    }
-  });
-}
-
 module.exports.setApp = setApp;
 module.exports.setHost = setHost;
 module.exports.acceptsHtml = acceptsHtml;
@@ -479,4 +457,3 @@ module.exports.expectCleanReferences = expectCleanReferences;
 module.exports.expectDataPlusRef = expectDataPlusRef;
 module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachTest = beforeEachTest;
-module.exports.beforeEachComponentTest = beforeEachComponentTest;

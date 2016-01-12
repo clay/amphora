@@ -17,15 +17,6 @@ describe(endpointName, function () {
         layout: 'localhost.example.com/components/layout',
         center: 'localhost.example.com/components/valid',
         side: ['localhost.example.com/components/valid@valid']
-      },
-      deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
-      layoutData = { someArea: ['center'] },
-      componentData = { name: 'Manny', species: 'cat' },
-      data = {
-        page: pageData,
-        layout: layoutData,
-        firstLevelComponent: deepData,
-        secondLevelComponent: componentData
       };
 
     beforeEach(function () {
@@ -53,7 +44,7 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
-          '/pages/valid': data.page
+          '/pages/valid': pageData
         }});
       });
 
@@ -89,7 +80,7 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
-          '/pages/valid@valid': data.page
+          '/pages/valid@valid': pageData
         }});
       });
 
