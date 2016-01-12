@@ -14,9 +14,6 @@ describe(endpointName, function () {
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       time = new Date('2015-01-01').getTime(),
-      //componentData = {},
-      //scheduleData = { at: new Date('2015-01-01').getTime() },
-      //layoutData = {},
       pageData = {};
 
     beforeEach(function () {
