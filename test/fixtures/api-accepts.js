@@ -413,7 +413,7 @@ function beforeTesting(suite, options) {
  * @param {Object} options
  * @param {Object} options.sandbox
  * @param {String} options.hostname
- * @param {Object} options.pathsAndData E.g. `{'path/one': data1, 'path/two': data2}`
+ * @param {Object} [options.pathsAndData] E.g. `{'path/one': data1, 'path/two': data2}`
  * @returns {Promise}
  */
 function beforeEachTest(options) {
@@ -429,142 +429,18 @@ function beforeEachTest(options) {
   routes.addHost(app, options.hostname);
 
   return db.clear().then(function () {
-    return bluebird.all(_.map(options.pathsAndData, function (data, path) {
+    if (options.pathsAndData) {
+      return bluebird.all(_.map(options.pathsAndData, function (data, path) {
 
-      if (typeof data === 'object') {
-        data = JSON.stringify(data);
-      }
+        if (typeof data === 'object') {
+          data = JSON.stringify(data);
+        }
 
-      return db.put(host + path, data);
-    }));
-  });
-}
-
-/**
- * Before each test, make the DB and Host consistent, and get a _new_ version of express.
- *
- * Yes, brand new, for every single test.
- *
- * @param sandbox
- * @param hostname
- * @param data
- * @returns {Promise}
- */
-function beforeEachComponentTest(sandbox, hostname, data) {
-  return beforeEachTest({
-    sandbox: sandbox,
-    hostname: hostname,
-    pathsAndData: {
-      '/components/valid': data,
-      '/components/valid/instances/valid': data,
-      '/components/valid/instances/valid@valid': data
+        return db.put(host + path, data);
+      }));
     }
   });
 }
-
-/**
- * Before each test, make the DB and Host consistent, and get a _new_ version of express.
- *
- * Yes, brand new, for every single test.
- *
- * @param sandbox
- * @param hostname
- * @param pageData
- * @param layoutData
- * @param firstLevelComponentData
- * @param secondLevelComponentData
- * @returns {Promise}
- */
-function beforeEachPageTest(sandbox, hostname, pageData, layoutData, firstLevelComponentData, secondLevelComponentData) {
-  return beforeEachTest({
-    sandbox: sandbox,
-    hostname: hostname,
-    pathsAndData: {
-      '/components/layout': layoutData,
-      '/components/layout@valid': layoutData,
-      '/components/layoutCascading': firstLevelComponentData,
-      '/components/valid': firstLevelComponentData,
-      '/components/valid@valid': firstLevelComponentData,
-      '/components/validCascading': firstLevelComponentData,
-      '/components/validCascading@valid': firstLevelComponentData,
-      '/components/validDeep': secondLevelComponentData,
-      '/components/validDeep@valid': secondLevelComponentData,
-      '/pages/valid': pageData,
-      '/pages/valid@valid': pageData
-    }
-  });
-}
-
-/**
- * Before each test, make the DB and Host consistent, and get a _new_ version of express.
- *
- * Yes, brand new, for every single test.
- *
- * @param sandbox
- * @param hostname
- * @param pageData
- * @param layoutData
- * @param componentData
- * @param scheduleData
- * @returns {Promise}
- */
-function beforeEachScheduleTest(sandbox, hostname, pageData, layoutData, componentData, scheduleData) {
-  return beforeEachTest({
-    sandbox: sandbox,
-    hostname: hostname,
-    pathsAndData: {
-      '/components/layout': layoutData,
-      '/components/valid': componentData,
-      '/pages/valid': pageData,
-      '/pages/valid@scheduled': _.assign({_ref: host + '/schedule/valid'}, scheduleData),
-      '/schedule/valid': scheduleData
-    }
-  });
-}
-
-/**
- * Before each test, make the DB and Host consistent, and get a _new_ version of express.
- *
- * Yes, brand new, for every single test.
- *
- * @param sandbox
- * @param hostname
- * @param data
- * @returns {Promise}
- */
-function beforeEachUriTest(sandbox, hostname, data) {
-  return beforeEachTest({
-    sandbox: sandbox,
-    hostname: hostname,
-    pathsAndData: {
-      '/components/valid': data,
-      '/components/valid/instances/valid': data,
-      '/components/valid/instances/valid@valid': data,
-      '/pages/valid': data,
-      '/pages/valid@valid': data,
-      '/uris/valid': data
-    }
-  });
-}
-
-/**
- * Before each test, make the DB and Host consistent, and get a _new_ version of express.
- *
- * Yes, brand new, for every single test.
- *
- * @param sandbox
- * @param hostname
- * @param data
- * @returns {Promise}
- */
-function beforeEachListTest(sandbox, hostname, data) {
-  return beforeEachTest({
-    sandbox: sandbox,
-    hostname: hostname,
-    pathsAndData: {'/lists/valid': data}
-  });
-}
-
 
 module.exports.setApp = setApp;
 module.exports.setHost = setHost;
@@ -580,8 +456,4 @@ module.exports.expectAllRefsArePublished = expectAllRefsArePublished;
 module.exports.expectCleanReferences = expectCleanReferences;
 module.exports.expectDataPlusRef = expectDataPlusRef;
 module.exports.beforeTesting = beforeTesting;
-module.exports.beforeEachComponentTest = beforeEachComponentTest;
-module.exports.beforeEachPageTest = beforeEachPageTest;
-module.exports.beforeEachScheduleTest = beforeEachScheduleTest;
-module.exports.beforeEachUriTest = beforeEachUriTest;
-module.exports.beforeEachListTest = beforeEachListTest;
+module.exports.beforeEachTest = beforeEachTest;

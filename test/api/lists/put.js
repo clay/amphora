@@ -17,7 +17,11 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachUriTest(sandbox,  hostname, data);
+      return apiAccepts.beforeEachTest({
+        sandbox: sandbox,
+        hostname: hostname,
+        pathsAndData: {'/lists/valid': data}
+      });
     });
 
     afterEach(function () {
@@ -38,6 +42,7 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid'}, 400, {message: 'Only accepts lists.', code: 400});
       acceptsJson(path, {name: 'missing'}, 400, {message: 'Only accepts lists.', code: 400});
 
+      // overrides existing data
       acceptsJsonBody(path, {name: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'missing'}, data, 200, data);
 

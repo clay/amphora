@@ -18,7 +18,6 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachComponentTest(sandbox,  hostname, data);
     });
 
     afterEach(function () {
@@ -27,12 +26,21 @@ describe(endpointName, function () {
 
     describe('/components', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {}, 405);
       acceptsHtml(path, {}, 405);
     });
 
     describe('/components/:name', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
 
       acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
@@ -46,6 +54,10 @@ describe(endpointName, function () {
     describe('/components/:name/schema', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method POST not allowed' });
       acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method POST not allowed' });
@@ -57,6 +69,10 @@ describe(endpointName, function () {
 
     describe('/components/:name/instances', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
 
       acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid'}, 200, expectDataPlusRef({}));
@@ -76,6 +92,10 @@ describe(endpointName, function () {
 
     describe('/components/:name/instances/:id', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
 
       acceptsJson(path, {name: 'invalid', id: 'valid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid', id: 'valid'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });

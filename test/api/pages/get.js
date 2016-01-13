@@ -15,11 +15,16 @@ describe(endpointName, function () {
       pageData = { layout: 'localhost.example.com/components/layout', center: 'localhost.example.com/components/valid' },
       layoutData = { someArea: ['center'] },
       deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
-      componentData = { name: 'Manny', species: 'cat' };
+      componentData = { name: 'Manny', species: 'cat' },
+      data = {
+        page: pageData,
+        layout: layoutData,
+        firstLevelComponent: deepData,
+        secondLevelComponent: componentData
+      };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, deepData, componentData);
     });
 
     afterEach(function () {
@@ -28,12 +33,28 @@ describe(endpointName, function () {
 
     describe('/pages', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid': data.firstLevelComponent,
+          '/pages/valid': data.page,
+          '/pages/valid@valid': data.page
+        }});
+      });
+
+      // only pages, and only unversioned
       acceptsJson(path, {}, 200, '["localhost.example.com/pages/valid"]');
       acceptsHtml(path, {}, 406);
     });
 
     describe('/pages/:name', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/pages/valid': data.page
+        }});
+      });
 
       acceptsJson(path, {name: 'valid'}, 200, pageData);
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
@@ -44,6 +65,12 @@ describe(endpointName, function () {
     describe('/pages/:name.json', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/pages/valid': data.page
+        }});
+      });
+
       acceptsJson(path, {name: 'valid'}, 200, pageData);
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
       acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
@@ -52,6 +79,17 @@ describe(endpointName, function () {
 
     describe('/pages/:name.html', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/layout': data.layout,
+          '/components/layoutCascading': data.firstLevelComponent,
+          '/components/valid': data.firstLevelComponent,
+          '/components/validCascading': data.firstLevelComponent,
+          '/components/validDeep': data.secondLevelComponent,
+          '/pages/valid': data.page
+        }});
+      });
 
       acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
       acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
@@ -67,6 +105,12 @@ describe(endpointName, function () {
     describe('/pages/:name@:version', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/pages/valid@valid': data.page
+        }});
+      });
+
       acceptsJson(path, {name: 'valid', version: 'missing'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'missing', version: 'missing'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid', version: 'valid'}, 200, pageData);
@@ -80,6 +124,18 @@ describe(endpointName, function () {
 
     describe('/pages/:name@:version.html', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/layout': data.layout,
+          '/components/layoutCascading': data.firstLevelComponent,
+          '/components/valid': data.firstLevelComponent,
+          '/components/valid@valid': data.firstLevelComponent,
+          '/components/validCascading': data.firstLevelComponent,
+          '/components/validDeep': data.secondLevelComponent,
+          '/pages/valid@valid': data.page
+        }});
+      });
 
       acceptsJson(path, {name: 'valid', version: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
       acceptsJson(path, {name: 'missing', version: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });

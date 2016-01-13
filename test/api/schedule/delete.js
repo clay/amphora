@@ -13,15 +13,11 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      componentData = {},
-      scheduleData = { at: new Date('2015-01-01').getTime(), publish: 'http://localhost.example.com/pages/valid' },
-      layoutData = {},
-      pageData = {};
+      scheduleData = { at: new Date('2015-01-01').getTime(), publish: 'http://localhost.example.com/pages/valid' };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
       sandbox.useFakeTimers();
-      return apiAccepts.beforeEachScheduleTest(sandbox, hostname, pageData, layoutData, componentData, scheduleData);
     });
 
     afterEach(function () {
@@ -31,6 +27,10 @@ describe(endpointName, function () {
     describe('/schedule', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method DELETE not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method DELETE not allowed' });
       acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
@@ -38,6 +38,12 @@ describe(endpointName, function () {
 
     describe('/schedule/:name', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/schedule/valid': scheduleData
+        }});
+      });
 
       acceptsJson(path, {name: 'valid'}, 200, scheduleData);
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });

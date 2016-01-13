@@ -49,11 +49,16 @@ describe(endpointName, function () {
           center: 'localhost.example.com/components/validCascading@' + version,
           side: ['localhost.example.com/components/validCascading@' + version]
         };
+      },
+      data = {
+        page: pageData,
+        layout: layoutData,
+        firstLevelComponent: deepData,
+        secondLevelComponent: componentData
       };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachPageTest(sandbox,  hostname, pageData, layoutData, deepData, componentData);
     });
 
     afterEach(function () {
@@ -63,6 +68,10 @@ describe(endpointName, function () {
     describe('/pages', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
       acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
@@ -70,6 +79,10 @@ describe(endpointName, function () {
 
     describe('/pages/:name', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
 
       acceptsJson(path, {name: 'valid'}, 200, {});
       acceptsJson(path, {name: 'missing'}, 200, {});
@@ -87,6 +100,26 @@ describe(endpointName, function () {
     describe('/pages/:name@:version', function () {
       var path = this.title,
         version = 'def';
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({
+          sandbox: sandbox,
+          hostname: hostname,
+          pathsAndData: {
+            '/components/layout': data.layout,
+            '/components/layout@valid': data.layout,
+            '/components/layoutCascading': data.firstLevelComponent,
+            '/components/valid': data.firstLevelComponent,
+            '/components/valid@valid': data.firstLevelComponent,
+            '/components/validCascading': data.firstLevelComponent,
+            '/components/validCascading@valid': data.firstLevelComponent,
+            '/components/validDeep': data.secondLevelComponent,
+            '/components/validDeep@valid': data.secondLevelComponent,
+            '/pages/valid': data.page,
+            '/pages/valid@valid': data.page
+          }
+        });
+      });
 
       acceptsJson(path, {name: 'valid', version: version}, 200, {});
       acceptsJson(path, {name: 'missing', version: version}, 200, {});

@@ -19,7 +19,6 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachComponentTest(sandbox,  hostname, data);
     });
 
     afterEach(function () {
@@ -28,12 +27,23 @@ describe(endpointName, function () {
 
     describe('/components', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {}, 200, componentList);
       acceptsHtml(path, {}, 406, message406);
     });
 
     describe('/components/:name', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid': data
+        }});
+      });
 
       acceptsJson(path, {name: 'invalid'}, 404);
       acceptsJson(path, {name: 'valid'}, 200, data);
@@ -47,6 +57,12 @@ describe(endpointName, function () {
     describe('/components/:name.json', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid': data
+        }});
+      });
+
       acceptsJson(path, {name: 'invalid'}, 404);
       acceptsJson(path, {name: 'valid'}, 200, data);
       acceptsJson(path, {name: 'missing'}, 404);
@@ -59,6 +75,10 @@ describe(endpointName, function () {
     describe('/components/:name/schema', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {name: 'invalid'}, 404);
       acceptsJson(path, {name: 'valid'}, 200, {some:'schema', thatIs:'valid'});
       acceptsJson(path, {name: 'missing'}, 404);
@@ -70,6 +90,12 @@ describe(endpointName, function () {
 
     describe('/components/:name.html', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid': data
+        }});
+      });
 
       acceptsJson(path, {name: 'invalid'}, 404);
       acceptsJson(path, {name: 'valid'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
@@ -90,6 +116,12 @@ describe(endpointName, function () {
     describe('/components/:name.bad', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid': data
+        }});
+      });
+
       acceptsJson(path, {name: 'invalid'}, 404);
       acceptsJson(path, {name: 'valid'}, 404, '{"message":"Not Found","code":404}');
       acceptsJson(path, {name: 'missing'}, 404, '{"message":"Not Found","code":404}');
@@ -102,8 +134,15 @@ describe(endpointName, function () {
     describe('/components/:name@:version', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid@valid': data
+        }});
+      });
+
       acceptsJson(path, {name: 'invalid', version: 'missing'}, 404);
       acceptsJson(path, {name: 'valid', version: 'missing'}, 404);
+      acceptsJson(path, {name: 'valid', version: 'valid'}, 200, data);
       acceptsJson(path, {name: 'missing', version: 'missing'}, 404);
 
       acceptsHtml(path, {name: 'invalid', version: 'missing'}, 404);
@@ -114,7 +153,16 @@ describe(endpointName, function () {
     describe('/components/:name/instances', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid': data,
+          '/components/valid/instances/valid': data,
+          '/components/valid/instances/valid@valid': data
+        }});
+      });
+
       acceptsJson(path, {name: 'invalid'}, 404);
+      // no versioned or base instances in list
       acceptsJson(path, {name: 'valid'}, 200, '["localhost.example.com/components/valid/instances/valid"]');
       acceptsJson(path, {name: 'missing'}, 200, '[]');
 
@@ -125,6 +173,12 @@ describe(endpointName, function () {
 
     describe('/components/:name/instances/:id', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid/instances/valid': data
+        }});
+      });
 
       acceptsJson(path, {name: 'invalid', id: 'valid'}, 404);
       acceptsJson(path, {name: 'valid', id: 'valid'}, 200, data);
@@ -138,6 +192,12 @@ describe(endpointName, function () {
     describe('/components/:name/instances/:id.json', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid/instances/valid': data
+        }});
+      });
+
       acceptsJson(path, {name: 'invalid', id: 'valid'}, 404);
       acceptsJson(path, {name: 'valid', id: 'valid'}, 200, data);
       acceptsJson(path, {name: 'valid', id: 'missing'}, 404);
@@ -149,6 +209,12 @@ describe(endpointName, function () {
 
     describe('/components/:name/instances/:id.html', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid/instances/valid': data
+        }});
+      });
 
       acceptsJson(path, {name: 'invalid', id: 'valid'}, 404);
       acceptsJson(path, {name: 'valid', id: 'valid'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
@@ -168,7 +234,14 @@ describe(endpointName, function () {
     describe('/components/:name/instances/:id@:version', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid/instances/valid@valid': data
+        }});
+      });
+
       acceptsJson(path, {name: 'invalid', version: 'missing', id: 'valid'}, 404);
+      acceptsJson(path, {name: 'valid', version: 'valid', id: 'valid'}, 200, data);
       acceptsJson(path, {name: 'valid', version: 'missing', id: 'valid'}, 404);
       acceptsJson(path, {name: 'valid', version: 'missing', id: 'missing'}, 404);
 

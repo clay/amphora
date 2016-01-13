@@ -28,7 +28,6 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachComponentTest(sandbox,  hostname, data);
     });
 
     afterEach(function () {
@@ -37,12 +36,23 @@ describe(endpointName, function () {
 
     describe('/components', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
       acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
     });
 
     describe('/components/:name', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid': data
+        }});
+      });
 
       acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid'}, 200, data);
@@ -56,6 +66,10 @@ describe(endpointName, function () {
     describe('/components/:name/schema', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
       acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
@@ -68,6 +82,10 @@ describe(endpointName, function () {
     describe('/components/:name/instances', function () {
       var path = this.title;
 
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+      });
+
       acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'post'], code: 405, message: 'Method DELETE not allowed' });
       acceptsJson(path, {name: 'missing'}, 405, { allow:['get', 'post'], code: 405, message: 'Method DELETE not allowed' });
@@ -79,6 +97,12 @@ describe(endpointName, function () {
 
     describe('/components/:name/instances/:id', function () {
       var path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/valid/instances/valid': data
+        }});
+      });
 
       acceptsJson(path, {name: 'invalid', id: 'valid'}, 404, { message: 'Not Found', code: 404 });
       acceptsJson(path, {name: 'valid', id: 'valid'}, 200, data);
