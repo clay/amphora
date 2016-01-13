@@ -102,23 +102,19 @@ describe(endpointName, function () {
         version = 'def';
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({
-          sandbox: sandbox,
-          hostname: hostname,
-          pathsAndData: {
-            '/components/layout': data.layout,
-            '/components/layout@valid': data.layout,
-            '/components/layoutCascading': data.firstLevelComponent,
-            '/components/valid': data.firstLevelComponent,
-            '/components/valid@valid': data.firstLevelComponent,
-            '/components/validCascading': data.firstLevelComponent,
-            '/components/validCascading@valid': data.firstLevelComponent,
-            '/components/validDeep': data.secondLevelComponent,
-            '/components/validDeep@valid': data.secondLevelComponent,
-            '/pages/valid': data.page,
-            '/pages/valid@valid': data.page
-          }
-        });
+        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+          '/components/layout': data.layout,
+          '/components/layout@valid': data.layout,
+          '/components/layoutCascading': data.firstLevelComponent,
+          '/components/valid': data.firstLevelComponent,
+          '/components/valid@valid': data.firstLevelComponent,
+          '/components/validCascading': data.firstLevelComponent,
+          '/components/validCascading@valid': data.firstLevelComponent,
+          '/components/validDeep': data.secondLevelComponent,
+          '/components/validDeep@valid': data.secondLevelComponent,
+          '/pages/valid': data.page,
+          '/pages/valid@valid': data.page
+        }});
       });
 
       acceptsJson(path, {name: 'valid', version: version}, 200, {});
@@ -136,6 +132,9 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', version: version}, cascadingPageData, 200, cascadingReturnData(version));
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.center, version), versionedDeepData(version));
       cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingTarget, version), componentData);
+
+      // published blank data will publish @latest
+      acceptsJsonBody(path, {name: 'valid', version: version}, {}, 200, versionedPageData(version));
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version: version}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
