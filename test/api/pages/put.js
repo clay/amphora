@@ -135,6 +135,7 @@ describe(endpointName, function () {
 
       // published blank data will publish @latest
       acceptsJsonBody(path, {name: 'valid', version: version}, {}, 200, versionedPageData(version));
+      acceptsJsonBody(path, {name: 'missing', version: version}, {}, 404, { code: 404, message: 'Not Found'});
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version: version}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});

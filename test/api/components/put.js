@@ -194,6 +194,8 @@ describe(endpointName, function () {
 
       // published blank data will publish @latest
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, {}, 200, data);
+      // publishing blank data without a @latest will 404 because missing resource
+      acceptsJsonBody(path, {name: 'valid', version: version, id: 'missing'}, {}, 404, { code: 404, message: 'Not Found' });
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version: version, id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
