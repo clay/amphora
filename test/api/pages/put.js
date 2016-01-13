@@ -130,8 +130,14 @@ describe(endpointName, function () {
       version = 'published';
       acceptsJsonBody(path, {name: 'valid', version: version}, pageData, 200, versionedPageData(version));
       acceptsJsonBody(path, {name: 'valid', version: version}, cascadingPageData, 200, cascadingReturnData(version));
-      cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.center, version), versionedDeepData(version));
-      cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingTarget, version), componentData);
+      cascades(path, {name: 'valid', version: version}, cascadingPageData, {
+        path: replaceVersion(cascadingPageData.center, version),
+        data: versionedDeepData(version)
+      });
+      cascades(path, {name: 'valid', version: version}, cascadingPageData, {
+        path: replaceVersion(cascadingTarget, version),
+        data: componentData
+      });
 
       // published blank data will publish @latest
       acceptsJsonBody(path, {name: 'valid', version: version}, {}, 200, versionedPageData(version));

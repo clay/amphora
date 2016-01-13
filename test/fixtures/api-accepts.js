@@ -250,10 +250,10 @@ function createsNewVersion(method) {
  * @returns {Function}
  */
 function cascades(method) {
-  return function (path, replacements, data, cascadingTarget, cascadingData) {
+  return function (path, replacements, data, cascadesTo) {
     var realPath = getRealPath(replacements, path);
 
-    it(realPath + ' cascades to ' + cascadingTarget, function () {
+    it(realPath + ' cascades to ' + cascadesTo.path, function () {
       return request(app)[method](realPath)
         .send(data)
         .type('application/json')
@@ -262,8 +262,10 @@ function cascades(method) {
         .expect(200)
         .then(function () {
           //expect cascading data to now exist
-          return db.get(cascadingTarget).then(JSON.parse).then(function (result) {
-            expect(result).to.deep.equal(cascadingData);
+          return db.get(cascadesTo.path).then(JSON.parse).then(function (result) {
+            expect(result).to.deep.equal(cascadesTo.data);
+
+            console.log('cascaded to ', cascadesTo.path, result);
           });
         });
     });
@@ -424,7 +426,7 @@ function beforeEachTest(options) {
   stubSchema(options.sandbox);
   stubGetTemplate(options.sandbox);
   stubMultiplexRender(options.sandbox);
-  stubLogging(options.sandbox);
+  //stubLogging(options.sandbox);
   stubUid(options.sandbox);
   routes.addHost(app, options.hostname);
 
