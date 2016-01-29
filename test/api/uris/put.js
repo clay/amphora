@@ -35,7 +35,7 @@ describe(endpointName, function () {
       acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
-      acceptsText(path, {}, 405, 'Method Not Allowed');
+      acceptsText(path, {}, 405, '405 Method PUT not allowed');
     });
 
     describe('/uris/:name', function () {
@@ -57,10 +57,12 @@ describe(endpointName, function () {
       acceptsTextBody(path, {name: 'valid'}, data, 200, data);
       acceptsTextBody(path, {name: 'missing'}, data, 200, data);
       // propagating versions shouldn't be here. Only published things can be public, so all uris are assumed to be @published already
-      acceptsTextBody(path, {name: 'valid'}, 'domain/pages/test@published', 400, 'Bad Request');
+      acceptsTextBody(path, {name: 'valid'}, 'domain/pages/test@published', 400, '400 Cannot point uri at propagating version, such as @published');
 
       // deny uris pointing to themselves
-      acceptsTextBody(path, {name: 'valid'}, 'localhost.example.com/uris/valid', 400);
+      acceptsTextBody(path, {name: 'valid'}, 'localhost.example.com/uris/valid', 400, '400 Cannot point uri at itself');
+      // deny uris with quotes
+      acceptsTextBody(path, {name: 'valid'}, '"localhost.example.com/uris/valid"', 400, '400 Destination cannot contain quotes');
     });
   });
 });

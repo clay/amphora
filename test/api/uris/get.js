@@ -32,7 +32,7 @@ describe(endpointName, function () {
 
       acceptsJson(path, {}, 200, '["localhost.example.com/uris/valid"]');
       acceptsHtml(path, {}, 406, '406 text/html not acceptable');
-      acceptsText(path, {}, 406, 'Not Acceptable');
+      acceptsText(path, {}, 406, '406 text/plain not acceptable');
     });
 
     describe('/uris/:name', function () {
@@ -50,9 +50,9 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
 
-      acceptsText(path, {name: 'invalid'}, 404, 'Not Found');
+      acceptsText(path, {name: 'invalid'}, 404, '404 Not Found');
       acceptsText(path, {name: 'valid'}, 200, data);
-      acceptsText(path, {name: 'missing'}, 404, 'Not Found');
+      acceptsText(path, {name: 'missing'}, 404, '404 Not Found');
     });
   });
 });
