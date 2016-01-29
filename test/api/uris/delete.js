@@ -35,7 +35,7 @@ describe(endpointName, function () {
       acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
       acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
-      acceptsText(path, {}, 405, 'Method Not Allowed');
+      acceptsText(path, {}, 405, '405 Method DELETE not allowed');
     });
 
     describe('/uris/:name', function () {
@@ -54,10 +54,10 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
 
       acceptsText(path, {name: 'valid'}, 200, data);
-      acceptsText(path, {name: 'missing'}, 404, 'Not Found');
+      acceptsText(path, {name: 'missing'}, 404, '404 Not Found');
 
       acceptsTextBody(path, {name: 'valid'}, data, 200, data);
-      acceptsTextBody(path, {name: 'missing'}, data, 404, 'Not Found');
+      acceptsTextBody(path, {name: 'missing'}, data, 404, '404 Not Found');
     });
   });
 });
