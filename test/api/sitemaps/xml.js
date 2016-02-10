@@ -9,7 +9,7 @@ const _ = require('lodash'),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
   files = require('../../../lib/files'),
   hostname = 'some-hostname',
-  log = require('../../../lib/log'),
+  winston = require('winston'),
   multiplexTemplates = require('multiplex-templates'),
   sinon = require('sinon'),
   routes = require('../../../lib/routes'),
@@ -55,7 +55,7 @@ describe(endpointName, function () {
       sandbox.stub(components, 'getTemplate');
       sandbox.stub(files, 'fileExists');
       sandbox.stub(multiplexTemplates, 'render');
-      sandbox.stub(log);
+      sandbox.stub(winston);
 
       header = '<?xml version="1.0" encoding="UTF-8"?>' +
         '<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
@@ -105,7 +105,7 @@ describe(endpointName, function () {
           '<url><loc>http://some-url/e</loc></url>' +
           footer)
         .then(function () {
-          sinon.assert.notCalled(log.warn);
+          sinon.assert.notCalled(winston.log);
         });
     });
 
@@ -120,7 +120,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/f</loc><lastmod>2015-01-01T00:00:00.000Z</lastmod></url>' +
             footer);
         }).then(function () {
-          sinon.assert.notCalled(log.warn);
+          sinon.assert.notCalled(winston.log);
         });
     });
 
@@ -135,7 +135,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/f</loc><lastmod>some time string</lastmod></url>' +
             footer);
         }).then(function () {
-          sinon.assert.notCalled(log.warn);
+          sinon.assert.notCalled(winston.log);
         });
     });
 
@@ -150,7 +150,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/f</loc><priority>1.0</priority></url>' +
             footer);
         }).then(function () {
-          sinon.assert.notCalled(log.warn);
+          sinon.assert.notCalled(winston.log);
         });
     });
 
@@ -165,7 +165,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/f</loc><changefreq>never</changefreq></url>' +
             footer);
         }).then(function () {
-          sinon.assert.notCalled(log.warn);
+          sinon.assert.notCalled(winston.log);
         });
     });
 
@@ -181,7 +181,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/e</loc></url>' +
             footer)
           .then(function () {
-            sinon.assert.calledOnce(log.warn);
+            sinon.assert.calledWith(winston.log, 'warn');
           });
       });
     });
@@ -196,7 +196,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/e</loc></url>' +
             footer);
         }).then(function () {
-          sinon.assert.calledOnce(log.warn);
+          sinon.assert.calledWith(winston.log, 'warn');
         });
     });
 
@@ -218,7 +218,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/f</loc><def></def></url>' +
             footer);
         }).then(function () {
-          sinon.assert.notCalled(log.warn);
+          sinon.assert.notCalled(winston.log);
         });
     });
 
@@ -240,7 +240,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/f</loc></url>' +
             footer);
         }).then(function () {
-          sinon.assert.calledOnce(log.warn);
+          sinon.assert.calledWith(winston.log, 'warn');
         });
     });
 
@@ -261,7 +261,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/f</loc></url>' +
             footer);
         }).then(function () {
-          sinon.assert.notCalled(log.warn);
+          sinon.assert.notCalled(winston.log);
         });
     });
 
@@ -282,7 +282,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/e</loc></url>' +
             footer);
         }).then(function () {
-          sinon.assert.calledOnce(log.warn);
+          sinon.assert.calledWith(winston.log, 'warn');
         });
     });
   });

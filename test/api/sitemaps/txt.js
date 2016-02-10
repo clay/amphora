@@ -7,7 +7,7 @@ const _ = require('lodash'),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
   files = require('../../../lib/files'),
   hostname = 'some-hostname',
-  log = require('../../../lib/log'),
+  winston = require('winston'),
   sinon = require('sinon'),
   routes = require('../../../lib/routes'),
   request = require('supertest-as-promised');
@@ -41,7 +41,7 @@ describe(endpointName, function () {
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
       sandbox.stub(files, 'fileExists');
-      sandbox.stub(log);
+      sandbox.stub(winston);
 
       files.fileExists.withArgs('public').returns(true);
 
@@ -86,7 +86,7 @@ describe(endpointName, function () {
           .expect('Content-Type', /text/)
           .expect('http://some-url/d\nhttp://some-url/e\n')
           .then(function () {
-            sinon.assert.calledOnce(log.warn);
+            sinon.assert.calledWith(winston.log, 'warn');
           });
       });
     });
