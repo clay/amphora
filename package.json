@@ -23,7 +23,7 @@
     "glob": "^6.0",
     "js-yaml": "^3.2",
     "levelup": "^1.3",
-    "lodash": "^3.5",
+    "lodash": "^4.4.0",
     "lodash-ny-util": "^0.1.0",
     "memdown": "^1.0.0",
     "multiplex-templates": "^1.2",
