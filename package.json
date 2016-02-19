@@ -1,5 +1,5 @@
 {
-  "name": "@nymdev/amphora",
+  "name": "amphora",
   "version": "1.8.2",
   "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
