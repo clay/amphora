@@ -42,7 +42,7 @@
     "mocha": "^2.2",
     "sinon": "^1.14",
     "supertest": "^1.1",
-    "supertest-as-promised": "^2.0.0"
+    "supertest-as-promised": "^3.0.0"
   },
   "engines": {
     "node": "^4.0.0"
