@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
@@ -9,7 +9,7 @@ var _ = require('lodash'),
 
 describe(endpointName, function () {
   describe(filename, function () {
-    var sandbox,
+    let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
@@ -66,10 +66,10 @@ describe(endpointName, function () {
     });
 
     describe('/pages', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
       });
 
       acceptsJson(path, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
@@ -78,10 +78,10 @@ describe(endpointName, function () {
     });
 
     describe('/pages/:name', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
       });
 
       acceptsJson(path, {name: 'valid'}, 200, {});
@@ -98,11 +98,11 @@ describe(endpointName, function () {
     });
 
     describe('/pages/:name@:version', function () {
-      var path = this.title,
+      let path = this.title,
         version = 'def';
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/layout': data.layout,
           '/components/layout@valid': data.layout,
           '/components/layoutCascading': data.firstLevelComponent,
@@ -117,28 +117,28 @@ describe(endpointName, function () {
         }});
       });
 
-      acceptsJson(path, {name: 'valid', version: version}, 200, {});
-      acceptsJson(path, {name: 'missing', version: version}, 200, {});
+      acceptsJson(path, {name: 'valid', version}, 200, {});
+      acceptsJson(path, {name: 'missing', version}, 200, {});
 
-      acceptsJsonBody(path, {name: 'valid', version: version}, pageData, 200, pageData);
-      acceptsJsonBody(path, {name: 'missing', version: version}, pageData, 200, pageData);
+      acceptsJsonBody(path, {name: 'valid', version}, pageData, 200, pageData);
+      acceptsJsonBody(path, {name: 'missing', version}, pageData, 200, pageData);
 
-      acceptsHtml(path, {name: 'valid', version: version}, 406, '406 text/html not acceptable');
-      acceptsHtml(path, {name: 'missing', version: version}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'valid', version}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'missing', version}, 406, '406 text/html not acceptable');
 
       //published
       version = 'published';
-      acceptsJsonBody(path, {name: 'valid', version: version}, pageData, 200, versionedPageData(version));
-      acceptsJsonBody(path, {name: 'valid', version: version}, cascadingPageData, 200, cascadingReturnData(version));
-      cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingPageData.center, version), versionedDeepData(version));
-      cascades(path, {name: 'valid', version: version}, cascadingPageData, replaceVersion(cascadingTarget, version), componentData);
+      acceptsJsonBody(path, {name: 'valid', version}, pageData, 200, versionedPageData(version));
+      acceptsJsonBody(path, {name: 'valid', version}, cascadingPageData, 200, cascadingReturnData(version));
+      cascades(path, {name: 'valid', version}, cascadingPageData, replaceVersion(cascadingPageData.center, version), versionedDeepData(version));
+      cascades(path, {name: 'valid', version}, cascadingPageData, replaceVersion(cascadingTarget, version), componentData);
 
       // published blank data will publish @latest
-      acceptsJsonBody(path, {name: 'valid', version: version}, {}, 200, versionedPageData(version));
-      acceptsJsonBody(path, {name: 'missing', version: version}, {}, 404, { code: 404, message: 'Not Found'});
+      acceptsJsonBody(path, {name: 'valid', version}, {}, 200, versionedPageData(version));
+      acceptsJsonBody(path, {name: 'missing', version}, {}, 404, { code: 404, message: 'Not Found'});
 
       // block with _ref at root of object
-      acceptsJsonBody(path, {name: 'valid', version: version}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
+      acceptsJsonBody(path, {name: 'valid', version}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
   });
 });

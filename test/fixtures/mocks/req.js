@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
   control = require('../../../lib/control');
 
 /**
@@ -15,14 +15,14 @@ function queryToString(query) {
 }
 
 module.exports = function () {
-  var hostname, path, baseUrl, query,
+  let hostname, path, baseUrl, query,
     params = {},
     headers = {},
     req = {};
 
   Object.defineProperty(req, 'url', control.defineReadOnly({
-    get: function () {
-      var result = path;
+    get() {
+      let result = path;
 
       if (query && _.size(query) > 0) {
         result += '?' + queryToString(query);
@@ -33,16 +33,16 @@ module.exports = function () {
   }));
 
   Object.defineProperty(req, 'uri', control.defineReadOnly({
-    get: function () { return hostname + baseUrl + path; }
+    get() { return hostname + baseUrl + path; }
   }));
 
   Object.defineProperty(req, 'vhost', control.defineReadOnly({
-    get: function () { return {hostname: hostname}; }
+    get() { return { hostname }; }
   }));
 
   Object.defineProperty(req, 'originalUrl', control.defineReadOnly({
-    get: function () {
-      var result = baseUrl + path;
+    get() {
+      let result = baseUrl + path;
 
       if (query && _.size(query) > 0) {
         result += '?' + queryToString(query);
@@ -53,33 +53,33 @@ module.exports = function () {
   }));
 
   Object.defineProperty(req, 'query', control.defineWritable({
-    get: function () { return query; },
-    set: function (value) { query = value; }
+    get() { return query; },
+    set(value) { query = value; }
   }));
 
   Object.defineProperty(req, 'path', control.defineWritable({
-    get: function () { return path; },
-    set: function (value) { path = value; }
+    get() { return path; },
+    set(value) { path = value; }
   }));
 
   Object.defineProperty(req, 'baseUrl', control.defineWritable({
-    get: function () { return baseUrl; },
-    set: function (value) { baseUrl = value; }
+    get() { return baseUrl; },
+    set(value) { baseUrl = value; }
   }));
 
   Object.defineProperty(req, 'hostname', control.defineWritable({
-    get: function () { return hostname; },
-    set: function (value) { hostname = value; }
+    get() { return hostname; },
+    set(value) { hostname = value; }
   }));
 
   Object.defineProperty(req, 'params', control.defineWritable({
-    get: function () { return params; },
-    set: function (value) { params = value; }
+    get() { return params; },
+    set(value) { params = value; }
   }));
 
   Object.defineProperty(req, 'headers', control.defineWritable({
-    get: function () { return headers; },
-    set: function (value) { headers = value; }
+    get() { return headers; },
+    set(value) { headers = value; }
   }));
 
   // defaults
