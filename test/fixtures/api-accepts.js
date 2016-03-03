@@ -290,7 +290,7 @@ function expectDataPlusRef(data) {
 function expectAllRefsArePublished() {
   return function (res) {
     var data = res.body,
-      refs = _.listDeepObjects(data, '_ref');
+      refs = references.listDeepObjects(data, '_ref');
     _.each(refs, function (ref) {
       expect(ref.indexOf('@published') > -1).to.equal(true);
     });
@@ -304,7 +304,7 @@ function expectAllRefsArePublished() {
 function expectCleanReferences() {
   return function (res) {
     var data = res.body,
-      refs = _.listDeepObjects(data, '_ref');
+      refs = references.listDeepObjects(data, '_ref');
     _.each(refs, function (obj) {
       expect(_.size(obj)).to.equal(1);
     });
