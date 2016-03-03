@@ -283,34 +283,6 @@ function expectDataPlusRef(data) {
   };
 }
 
-/**
- * Expect all references in returned data to be @published
- * @returns {Function}
- */
-function expectAllRefsArePublished() {
-  return function (res) {
-    var data = res.body,
-      refs = references.listDeepObjects(data, '_ref');
-    _.each(refs, function (ref) {
-      expect(ref.indexOf('@published') > -1).to.equal(true);
-    });
-  };
-}
-
-/**
- * All _refs are in objects with a size of one.
- * @returns {Function}
- */
-function expectCleanReferences() {
-  return function (res) {
-    var data = res.body,
-      refs = references.listDeepObjects(data, '_ref');
-    _.each(refs, function (obj) {
-      expect(_.size(obj)).to.equal(1);
-    });
-  };
-}
-
 function setApp(value) {
   app = value;
 }
@@ -452,8 +424,6 @@ module.exports.acceptsTextBody = acceptsTextBody;
 module.exports.updatesOther = updatesOther;
 module.exports.createsNewVersion = createsNewVersion;
 module.exports.cascades = cascades;
-module.exports.expectAllRefsArePublished = expectAllRefsArePublished;
-module.exports.expectCleanReferences = expectCleanReferences;
 module.exports.expectDataPlusRef = expectDataPlusRef;
 module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachTest = beforeEachTest;
