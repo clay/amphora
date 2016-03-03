@@ -1,10 +1,10 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
   chalk = require('chalk');
 
 function enforceFastTest(obj) {
-  var title,
+  let title,
     report,
     speed = obj.speed,
     duration = obj.duration;
@@ -26,14 +26,14 @@ function enforceFastTest(obj) {
 }
 
 function enforceFastTestSuite(obj) {
-  var messages = [];
+  let messages = [];
   messages = messages.concat(_.filter(_.map(obj.tests, enforceFastTest), _.identity));
   messages = messages.concat(_.flattenDeep(_.map(obj.suites, enforceFastTestSuite)));
   return messages;
 }
 
 function enforcePerformance(obj) {
-  var messages;
+  let messages;
 
   obj = obj._runnable;
   while (obj.parent) { obj = obj.parent; }

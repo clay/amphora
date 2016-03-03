@@ -36,7 +36,7 @@ function addPage(id, data) {
 
 describe(endpointName, function () {
   describe(filename, function () {
-    var sandbox, app;
+    let sandbox, app;
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();

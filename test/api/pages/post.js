@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
@@ -9,7 +9,7 @@ var _ = require('lodash'),
 
 describe(endpointName, function () {
   describe(filename, function () {
-    var sandbox,
+    let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
@@ -36,10 +36,10 @@ describe(endpointName, function () {
     });
 
     describe('/pages', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/layout': data.layout,
           '/components/valid': data.firstLevelComponent,
           '/components/valid@valid': data.firstLevelComponent,
@@ -50,7 +50,7 @@ describe(endpointName, function () {
       acceptsJson(path, {}, 400, { message: 'Data missing layout reference.', code: 400 });
       acceptsJsonBody(path, {}, {}, 400, { message: 'Data missing layout reference.', code: 400 });
       acceptsJsonBody(path, {}, pageData, 201, function (result) {
-        var body = result.body;
+        const body = result.body;
         expect(body.center).to.match(/^localhost.example.com\/components\/valid\/instances\/.+/);
         expect(body.side[0]).to.match(/^localhost.example.com\/components\/valid\/instances\/.+/);
         expect(body.layout).to.equal(pageData.layout);
@@ -63,10 +63,10 @@ describe(endpointName, function () {
     });
 
     describe('/pages/:name', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
       });
 
       acceptsJson(path, {name: 'valid'}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
@@ -75,16 +75,16 @@ describe(endpointName, function () {
     });
 
     describe('/pages/:name@:version', function () {
-      var path = this.title,
+      let path = this.title,
         version = 'def';
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
       });
 
-      acceptsJson(path, {name: 'valid', version: version}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
-      acceptsJsonBody(path, {name: 'valid', version: version}, pageData, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
-      acceptsHtml(path, {name: 'valid', version: version}, 405, '405 Method POST not allowed');
+      acceptsJson(path, {name: 'valid', version}, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
+      acceptsJsonBody(path, {name: 'valid', version}, pageData, 405, { allow:['get', 'put', 'delete'], code: 405, message: 'Method POST not allowed' });
+      acceptsHtml(path, {name: 'valid', version}, 405, '405 Method POST not allowed');
     });
   });
 });

@@ -47,7 +47,7 @@ function requestSitemap(app) {
 
 describe(endpointName, function () {
   describe(filename, function () {
-    var sandbox, app, header, footer;
+    let sandbox, app, header, footer;
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();

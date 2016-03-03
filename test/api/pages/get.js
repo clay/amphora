@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
@@ -8,7 +8,7 @@ var _ = require('lodash'),
 
 describe(endpointName, function () {
   describe(filename, function () {
-    var sandbox,
+    let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
@@ -32,10 +32,10 @@ describe(endpointName, function () {
     });
 
     describe('/pages', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid': data.firstLevelComponent,
           '/pages/valid': data.page,
           '/pages/valid@valid': data.page
@@ -48,10 +48,10 @@ describe(endpointName, function () {
     });
 
     describe('/pages/:name', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/pages/valid': data.page
         }});
       });
@@ -63,10 +63,10 @@ describe(endpointName, function () {
     });
 
     describe('/pages/:name.json', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/pages/valid': data.page
         }});
       });
@@ -78,10 +78,10 @@ describe(endpointName, function () {
     });
 
     describe('/pages/:name.html', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/layout': data.layout,
           '/components/layoutCascading': data.firstLevelComponent,
           '/components/valid': data.firstLevelComponent,
@@ -103,10 +103,10 @@ describe(endpointName, function () {
     });
 
     describe('/pages/:name@:version', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/pages/valid@valid': data.page
         }});
       });
@@ -123,10 +123,10 @@ describe(endpointName, function () {
     });
 
     describe('/pages/:name@:version.html', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/layout': data.layout,
           '/components/layoutCascading': data.firstLevelComponent,
           '/components/valid': data.firstLevelComponent,

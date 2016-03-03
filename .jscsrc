@@ -27,6 +27,9 @@
         "function",
         "typeof"
     ],
+    "requireEarlyReturn": true,
+    "requireEnhancedObjectLiterals": true,
+    "disallowVar": true,
     "requireSpaceBeforeBlockStatements": true,
     "requireParenthesesAroundIIFE": true,
     "requireSpacesInConditionalExpression": true,

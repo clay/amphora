@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
@@ -8,7 +8,7 @@ var _ = require('lodash'),
 
 describe(endpointName, function () {
   describe(filename, function () {
-    var sandbox,
+    let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
@@ -24,10 +24,10 @@ describe(endpointName, function () {
     });
 
     describe('/uris', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: { '/uris/valid': data }});
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: { '/uris/valid': data }});
       });
 
       acceptsJson(path, {}, 200, '["localhost.example.com/uris/valid"]');
@@ -36,10 +36,10 @@ describe(endpointName, function () {
     });
 
     describe('/uris/:name', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: { '/uris/valid': data }});
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: { '/uris/valid': data }});
       });
 
       acceptsJson(path, {name: 'invalid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });

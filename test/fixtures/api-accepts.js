@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
   express = require('express'),
   request = require('supertest-as-promised'),
   files = require('../../lib/files'),
@@ -14,9 +14,8 @@ var _ = require('lodash'),
   siteService = require('../../lib/services/sites'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
-  uid = require('../../lib/uid'),
-  app,
-  host;
+  uid = require('../../lib/uid');
+let app, host;
 
 /**
  * @param {object} replacements
@@ -38,10 +37,10 @@ function getRealPath(replacements, path) {
  * @param options.data          Expected data to be returned
  */
 function createTest(options) {
-  var realPath = getRealPath(options.replacements, options.path);
+  const realPath = getRealPath(options.replacements, options.path);
 
   it(options.description, function () {
-    var promise = request(app)[options.method](realPath);
+    let promise = request(app)[options.method](realPath);
 
     if (options.body !== undefined) {
       promise = promise.send(options.body);
@@ -77,11 +76,11 @@ function acceptsHtml(method) {
   return function (path, replacements, status, data) {
     createTest({
       description: JSON.stringify(replacements) + ' accepts html',
-      path: path,
-      method: method,
-      replacements: replacements,
-      data: data,
-      status: status,
+      path,
+      method,
+      replacements,
+      data,
+      status,
       accept: 'text/html',
       contentType: /html/
     });
@@ -97,12 +96,12 @@ function acceptsJsonBody(method) {
   return function (path, replacements, body, status, data) {
     createTest({
       description: JSON.stringify(replacements) + ' accepts json with body ' + JSON.stringify(body),
-      path: path,
-      method: method,
-      replacements: replacements,
-      body: body,
-      data: data,
-      status: status,
+      path,
+      method,
+      replacements,
+      body,
+      data,
+      status,
       accept: 'application/json',
       contentType: /json/
     });
@@ -118,11 +117,11 @@ function acceptsJson(method) {
   return function (path, replacements, status, data) {
     createTest({
       description: JSON.stringify(replacements) + ' accepts json',
-      path: path,
-      method: method,
-      replacements: replacements,
-      data: data,
-      status: status,
+      path,
+      method,
+      replacements,
+      data,
+      status,
       accept: 'application/json',
       contentType: /json/
     });
@@ -138,12 +137,12 @@ function acceptsTextBody(method) {
   return function (path, replacements, body, status, data) {
     createTest({
       description: JSON.stringify(replacements) + ' accepts text with body ' + body,
-      path: path,
-      method: method,
-      replacements: replacements,
-      body: body,
-      data: data,
-      status: status,
+      path,
+      method,
+      replacements,
+      body,
+      data,
+      status,
       accept: 'text/plain',
       contentType: /text/
     });
@@ -159,11 +158,11 @@ function acceptsText(method) {
   return function (path, replacements, status, data) {
     createTest({
       description: JSON.stringify(replacements) + ' accepts text',
-      path: path,
-      method: method,
-      replacements: replacements,
-      data: data,
-      status: status,
+      path,
+      method,
+      replacements,
+      data,
+      status,
       accept: 'text/plain',
       contentType: /text/
     });
@@ -172,7 +171,7 @@ function acceptsText(method) {
 
 function updatesOther(method) {
   return function (path, otherPath, replacements, data) {
-    var realPath = getRealPath(replacements, path),
+    const realPath = getRealPath(replacements, path),
       realOtherPath = getRealPath(replacements, otherPath);
 
     it(JSON.stringify(replacements) + ' updates other ' + otherPath, function () {
@@ -195,12 +194,12 @@ function updatesOther(method) {
  * @returns {Promise}
  */
 function getVersions(ref) {
-  var str = '',
+  let str = '',
     errors = [],
     deferred = bluebird.defer(),
     prefix = ref.split('@')[0];
 
-  db.list({prefix: prefix, values: false, transforms: [filter({wantStrings: true}, function (str) {
+  db.list({prefix, values: false, transforms: [filter({wantStrings: true}, function (str) {
     return str.indexOf('@') !== -1;
   })]})
     .on('data', function (data) {
@@ -220,7 +219,7 @@ function getVersions(ref) {
 
 function createsNewVersion(method) {
   return function (path, replacements, data) {
-    var realPath = getRealPath(replacements, path);
+    const realPath = getRealPath(replacements, path);
 
     it(realPath + ' creates new version', function () {
       return getVersions(host + realPath).then(function (oldVersions) {
@@ -251,7 +250,7 @@ function createsNewVersion(method) {
  */
 function cascades(method) {
   return function (path, replacements, data, cascadingTarget, cascadingData) {
-    var realPath = getRealPath(replacements, path);
+    const realPath = getRealPath(replacements, path);
 
     it(realPath + ' cascades to ' + cascadingTarget, function () {
       return request(app)[method](realPath)
@@ -294,7 +293,7 @@ function setHost(value) {
 function stubSiteConfig(sandbox) {
   sandbox.stub(siteService, 'sites').returns({
     example: {
-      host: host,
+      host,
       path: '/',
       slug: 'example',
       assetDir: 'public',
@@ -315,21 +314,21 @@ function stubFiles(sandbox) {
 }
 
 function stubSchema(sandbox) {
-  var stubGet = sandbox.stub(schema, 'getSchema');
+  const stubGet = sandbox.stub(schema, 'getSchema');
   stubGet.withArgs('validThing').returns({some: 'schema', thatIs: 'valid'});
   stubGet.withArgs('missingThing').throws(new Error('File not found.'));
   return sandbox;
 }
 
 function stubGetTemplate(sandbox) {
-  var stub = sandbox.stub(components, 'getTemplate');
+  const stub = sandbox.stub(components, 'getTemplate');
   stub.withArgs('valid').returns('some/valid/template.nunjucks');
   stub.withArgs('layout').returns('some/valid/template.for.layout.nunjucks');
   return sandbox;
 }
 
 function stubMultiplexRender(sandbox) {
-  var template = _.template('<valid><% print(JSON.stringify(obj)) %></valid>');
+  const template = _.template('<valid><% print(JSON.stringify(obj)) %></valid>');
   sandbox.stub(multiplex, 'render', function (name, data) {
     return template(_.omit(data, 'state', 'getTemplate', 'locals', 'site'));
   });

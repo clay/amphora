@@ -1,5 +1,5 @@
 'use strict';
-var glob = require('glob'),
+const glob = require('glob'),
   _ = require('lodash'),
   chai = require('chai'),
   tests = glob.sync(__dirname + '/../lib/**/*.test.js'),

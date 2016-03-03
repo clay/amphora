@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
@@ -8,7 +8,7 @@ var _ = require('lodash'),
 
 describe(endpointName, function () {
   describe(filename, function () {
-    var sandbox,
+    let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
@@ -25,10 +25,10 @@ describe(endpointName, function () {
     });
 
     describe('/components', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname  });
       });
 
       acceptsJson(path, {}, 405);
@@ -36,10 +36,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname  });
       });
 
       acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
@@ -52,10 +52,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name/schema', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname  });
       });
 
       acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
@@ -68,10 +68,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name/instances', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname  });
       });
 
       acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
@@ -91,10 +91,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name/instances/:id', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname  });
       });
 
       acceptsJson(path, {name: 'invalid', id: 'valid'}, 404, { message: 'Not Found', code: 404 });

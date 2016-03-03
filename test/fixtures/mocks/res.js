@@ -1,11 +1,11 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
   Transform = require('stream').Transform;
 
 module.exports = function (options) {
   options = options || {};
-  var pipeData = '',
+  let pipeData = '',
     res = new Transform();
   //if they pipe to here, pretend they're just doing a send for testing ease.
   res._transform = function (chunk, encoding, done) {

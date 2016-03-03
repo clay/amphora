@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash'),
+const _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
@@ -8,7 +8,7 @@ var _ = require('lodash'),
 
 describe(endpointName, function () {
   describe(filename, function () {
-    var sandbox,
+    let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
@@ -26,10 +26,10 @@ describe(endpointName, function () {
     });
 
     describe('/components', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
       });
 
       acceptsJson(path, {}, 200, componentList);
@@ -37,10 +37,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid': data
         }});
       });
@@ -55,10 +55,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name.json', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid': data
         }});
       });
@@ -73,10 +73,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name/schema', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
       });
 
       acceptsJson(path, {name: 'invalid'}, 404);
@@ -89,10 +89,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name.html', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid': data
         }});
       });
@@ -114,10 +114,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name.bad', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid': data
         }});
       });
@@ -132,10 +132,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name@:version', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid@valid': data
         }});
       });
@@ -151,10 +151,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name/instances', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid': data,
           '/components/valid/instances/valid': data,
           '/components/valid/instances/valid@valid': data
@@ -172,10 +172,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name/instances/:id', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid/instances/valid': data
         }});
       });
@@ -190,10 +190,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name/instances/:id.json', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid/instances/valid': data
         }});
       });
@@ -208,10 +208,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name/instances/:id.html', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid/instances/valid': data
         }});
       });
@@ -232,10 +232,10 @@ describe(endpointName, function () {
     });
 
     describe('/components/:name/instances/:id@:version', function () {
-      var path = this.title;
+      const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox: sandbox, hostname: hostname, pathsAndData: {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid/instances/valid@valid': data
         }});
       });
