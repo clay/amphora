@@ -54,7 +54,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406, message406);
 
       //deny trailing slash
-      acceptsJson(path + '/', {name: 'valid'}, 400, { message: 'Trailing slash on RESTful id in url is not acceptable', code: 400 });
+      acceptsJson(path + '/', {name: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
     describe('/components/:name.json', function () {
@@ -153,7 +153,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing', version: 'missing'}, 406);
 
       //deny trailing slash
-      acceptsJson(path + '/', {name: 'valid', version: 'valid'}, 400, { message: 'Trailing slash on RESTful id in url is not acceptable', code: 400 });
+      acceptsJson(path + '/', {name: 'valid', version: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
     describe('/components/:name/instances', function () {
@@ -195,7 +195,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
 
       //deny trailing slash
-      acceptsJson(path + '/', {name: 'valid', id: 'valid'}, 400, { message: 'Trailing slash on RESTful id in url is not acceptable', code: 400 });
+      acceptsJson(path + '/', {name: 'valid', id: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
     describe('/components/:name/instances/:id.json', function () {
@@ -259,7 +259,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', version: 'missing', id: 'missing'}, 406);
 
       //deny trailing slash
-      acceptsJson(path + '/', {name: 'valid', version: 'valid', id: 'valid'}, 400, { message: 'Trailing slash on RESTful id in url is not acceptable', code: 400 });
+      acceptsJson(path + '/', {name: 'valid', version: 'valid', id: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
   });
 });

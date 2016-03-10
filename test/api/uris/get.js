@@ -55,7 +55,7 @@ describe(endpointName, function () {
       acceptsText(path, {name: 'missing'}, 404, '404 Not Found');
 
       //deny trailing slashes
-      acceptsText(path + '/', {name: 'valid'}, 400, '400 Trailing slash on RESTful id in url is not acceptable');
+      acceptsText(path + '/', {name: 'valid'}, 400, '400 Trailing slash on RESTful id in URL is not acceptable');
     });
   });
 });

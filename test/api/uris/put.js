@@ -64,7 +64,7 @@ describe(endpointName, function () {
       // deny uris with quotes
       acceptsTextBody(path, {name: 'valid'}, '"localhost.example.com/uris/valid"', 400, '400 Destination cannot contain quotes');
       // deny trailing slashes
-      acceptsTextBody(path + '/', {name: 'valid'}, '"localhost.example.com/uris/valid"', 400, '400 Trailing slash on RESTful id in url is not acceptable');
+      acceptsTextBody(path + '/', {name: 'valid'}, '"localhost.example.com/uris/valid"', 400, '400 Trailing slash on RESTful id in URL is not acceptable');
     });
   });
 });

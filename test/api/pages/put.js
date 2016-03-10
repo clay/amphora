@@ -139,7 +139,7 @@ describe(endpointName, function () {
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
-      acceptsJsonBody(path + '/', {name: 'valid', version}, pageData, 400, { message: 'Trailing slash on RESTful id in url is not acceptable', code: 400 });
+      acceptsJsonBody(path + '/', {name: 'valid', version}, pageData, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
   });
 });
