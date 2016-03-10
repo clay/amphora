@@ -70,6 +70,9 @@ describe(endpointName, function () {
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
+
+      //deny trailing slashes
+      acceptsJsonBody(path + '/', {name: 'valid'}, data, 400, { message: 'Trailing slash on RESTful id in url is not acceptable', code: 400 });
     });
 
     describe('/components/:name/schema', function () {
@@ -113,6 +116,9 @@ describe(endpointName, function () {
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
+
+      //deny trailing slashes
+      acceptsJsonBody(path + '/', {name: 'valid', version}, data, 400, { message: 'Trailing slash on RESTful id in url is not acceptable', code: 400 });
     });
 
     describe('/components/:name/instances', function () {
@@ -159,6 +165,9 @@ describe(endpointName, function () {
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
+
+      //deny trailing slashes
+      acceptsJsonBody(path + '/', {name: 'valid', id: 'valid'}, data, 400, { message: 'Trailing slash on RESTful id in url is not acceptable', code: 400 });
     });
 
     describe('/components/:name/instances/:id@:version', function () {
@@ -199,6 +208,9 @@ describe(endpointName, function () {
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version, id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
+
+      //deny trailing slashes
+      acceptsJsonBody(path + '/', {name: 'valid', version, id: 'valid'}, data, 400, { message: 'Trailing slash on RESTful id in url is not acceptable', code: 400 });
     });
   });
 });
