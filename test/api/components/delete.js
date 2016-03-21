@@ -112,5 +112,23 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 406, '406 text/html not acceptable');
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406, '406 text/html not acceptable');
     });
+
+    describe('/components/:name/instances/:id@:version', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
+          '/components/valid/instances/valid@valid': data
+        }});
+      });
+
+      acceptsJson(path, {name: 'invalid', id: 'valid', version: 'valid'}, 404, { message: 'Not Found', code: 404 });
+      acceptsJson(path, {name: 'valid', id: 'valid', version: 'valid'}, 200, data);
+      acceptsJson(path, {name: 'valid', id: 'missing', version: 'valid'}, 404, { message: 'Not Found', code: 404 });
+
+      acceptsHtml(path, {name: 'invalid', id: 'valid', version: 'valid'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid', id: 'valid', version: 'valid'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'valid', id: 'missing', version: 'valid'}, 406, '406 text/html not acceptable');
+    });
   });
 });
