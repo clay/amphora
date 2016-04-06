@@ -47,7 +47,7 @@ function createTest(options) {
     }
 
     promise = promise
-      .type(options.accept)
+      .type(options.clientType || options.accept) // acceptsHtmlBody sets a different client type
       .set('Accept', options.accept)
       .set('Host', host);
 
@@ -82,8 +82,9 @@ function acceptsHtmlBody(method) {
       body,
       data,
       status,
-      accept: 'text/html',
-      contentType: /html/
+      clientType: 'application/json', // type to send in request
+      accept: 'text/html', // accept header
+      contentType: /html/ // type that should be returned
     });
   };
 }

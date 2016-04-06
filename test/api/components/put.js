@@ -209,26 +209,20 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid', id: 'missing'}, 406);
 
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 200);
-      acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 200);
-      acceptsHtmlBody(path, {name: 'missing', id: 'missing'}, data, 200);
-      acceptsHtmlBody(path, {name: 'valid'}, cascadingData(), 200);
-
-      // acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
-      // acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 406, '<valid>{' +
-      // '"_components":["valid"],' +
-      // '"name":"Manny",' +
-      // '"species":"cat",' +
-      // '"template":"valid",' +
-      // '"_self":"localhost.example.com/components/valid"' +
-      // '}</valid>');
-      // acceptsHtmlBody(path, {name: 'valid', id: 'missing'}, {}, 200, '<valid>{' +
-      // '"_components":["valid"],' +
-      // '"name":"Manny",' +
-      // '"species":"cat",' +
-      // '"template":"valid",' +
-      // '"_self":"localhost.example.com/components/valid"' +
-      // '}</valid>');
+      acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 200, '<valid>{' +
+      '"_components":["valid"],' +
+      '"name":"Manny",' +
+      '"species":"cat",' +
+      '"template":"valid",' +
+      '"_self":"localhost.example.com/components/valid/instances/valid"' +
+      '}</valid>');
+      acceptsHtmlBody(path, {name: 'valid', id: 'missing'}, data, 200, '<valid>{' +
+      '"_components":["valid"],' +
+      '"name":"Manny",' +
+      '"species":"cat",' +
+      '"template":"valid",' +
+      '"_self":"localhost.example.com/components/valid/instances/missing"' +
+      '}</valid>');
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
