@@ -68,6 +68,27 @@ function createTest(options) {
 }
 
 /**
+ * Create a generic test that accepts HTML with a BODY
+ * @param method
+ * @returns {Function}
+ */
+function acceptsHtmlBody(method) {
+  return function (path, replacements, body, status, data) {
+    createTest({
+      description: JSON.stringify(replacements) + ' accepts html with body ' + JSON.stringify(body),
+      path,
+      method,
+      replacements,
+      body,
+      data,
+      status,
+      accept: 'text/html',
+      contentType: /html/
+    });
+  };
+}
+
+/**
  * Create a generic test that accepts HTML
  * @param method
  * @returns {Function}
@@ -416,6 +437,7 @@ function beforeEachTest(options) {
 module.exports.setApp = setApp;
 module.exports.setHost = setHost;
 module.exports.acceptsHtml = acceptsHtml;
+module.exports.acceptsHtmlBody = acceptsHtmlBody;
 module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.acceptsText = acceptsText;

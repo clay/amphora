@@ -14,6 +14,7 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
+      acceptsHtmlBody = apiAccepts.acceptsHtmlBody(_.camelCase(filename)),
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
       cascadingTarget = 'localhost.example.com/components/validDeep',
@@ -168,6 +169,69 @@ describe(endpointName, function () {
 
       //deny trailing slashes
       acceptsJsonBody(path + '/', {name: 'valid', id: 'valid'}, data, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
+    });
+
+    describe('/components/:name/instances/:id.json', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
+      });
+
+      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404, { code: 404, message: 'Not Found' });
+      acceptsJson(path, {name: 'valid', id: 'valid'}, 200, {});
+      acceptsJson(path, {name: 'valid', id: 'missing'}, 200, {});
+
+      acceptsJsonBody(path, {name: 'invalid', id: 'valid'}, {}, 404, { code: 404, message: 'Not Found' });
+      acceptsJsonBody(path, {name: 'valid', id: 'valid'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'missing', id: 'missing'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'valid'}, cascadingData(), 200, cascadingReturnData());
+
+      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
+      acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
+      acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
+
+      cascades(path, {name: 'valid', id: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
+    });
+
+    describe('/components/:name/instances/:id.html', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
+      });
+
+      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404, { code: 404, message: 'Not Found' });
+      acceptsJson(path, {name: 'valid', id: 'valid'}, 406);
+      acceptsJson(path, {name: 'valid', id: 'missing'}, 406);
+
+      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
+      acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 200);
+      acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 200);
+      acceptsHtmlBody(path, {name: 'missing', id: 'missing'}, data, 200);
+      acceptsHtmlBody(path, {name: 'valid'}, cascadingData(), 200);
+
+      // acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
+      // acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 406, '<valid>{' +
+      // '"_components":["valid"],' +
+      // '"name":"Manny",' +
+      // '"species":"cat",' +
+      // '"template":"valid",' +
+      // '"_self":"localhost.example.com/components/valid"' +
+      // '}</valid>');
+      // acceptsHtmlBody(path, {name: 'valid', id: 'missing'}, {}, 200, '<valid>{' +
+      // '"_components":["valid"],' +
+      // '"name":"Manny",' +
+      // '"species":"cat",' +
+      // '"template":"valid",' +
+      // '"_self":"localhost.example.com/components/valid"' +
+      // '}</valid>');
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
     describe('/components/:name/instances/:id@:version', function () {
