@@ -47,7 +47,7 @@ function createTest(options) {
     }
 
     promise = promise
-      .type(options.accept)
+      .type(options.clientType || options.accept) // acceptsHtmlBody sets a different client type
       .set('Accept', options.accept)
       .set('Host', host);
 
@@ -65,6 +65,28 @@ function createTest(options) {
 
     return promise;
   });
+}
+
+/**
+ * Create a generic test that accepts HTML with a BODY
+ * @param method
+ * @returns {Function}
+ */
+function acceptsHtmlBody(method) {
+  return function (path, replacements, body, status, data) {
+    createTest({
+      description: JSON.stringify(replacements) + ' accepts html with body ' + JSON.stringify(body),
+      path,
+      method,
+      replacements,
+      body,
+      data,
+      status,
+      clientType: 'application/json', // type to send in request
+      accept: 'text/html', // accept header
+      contentType: /html/ // type that should be returned
+    });
+  };
 }
 
 /**
@@ -416,6 +438,7 @@ function beforeEachTest(options) {
 module.exports.setApp = setApp;
 module.exports.setHost = setHost;
 module.exports.acceptsHtml = acceptsHtml;
+module.exports.acceptsHtmlBody = acceptsHtmlBody;
 module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.acceptsText = acceptsText;
