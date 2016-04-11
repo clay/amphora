@@ -20,6 +20,7 @@ let app, host;
 /**
  * @param {object} replacements
  * @param {string} path
+ * @returns {string}
  */
 function getRealPath(replacements, path) {
   return _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
@@ -28,13 +29,13 @@ function getRealPath(replacements, path) {
 /**
  * Create a generic API test.  (shortcut)
  * @param {object} options
- * @param options.path          The path to the route, e.g. `uri/:name`
- * @param options.replacements  Replace path with a value, e.g. `uri/:name` becomes `uri/something`
- * @param options.accept        E.g. 'application/json'
- * @param options.contentType   E.g. /json/
- * @param options.body          Data to send with the request (put, post)
- * @param options.status        Expected HTTP status to be returned
- * @param options.data          Expected data to be returned
+ * @param {string} options.path          The path to the route, e.g. `uri/:name`
+ * @param {object} options.replacements  Replace path with a value, e.g. `uri/:name` becomes `uri/something`
+ * @param {string} options.accept        E.g. 'application/json'
+ * @param {string|regex} options.contentType   E.g. /json/
+ * @param {object|string} options.body          Data to send with the request (put, post)
+ * @param {number} options.status        Expected HTTP status to be returned
+ * @param {object|string} options.data          Expected data to be returned
  */
 function createTest(options) {
   const realPath = getRealPath(options.replacements, options.path);
@@ -58,7 +59,7 @@ function createTest(options) {
       promise = promise.expect(options.data);
     }
 
-    //if there is no extension to the url, then all endpoints should have a Vary header with Accept
+    // if there is no extension to the url, then all endpoints should have a Vary header with Accept
     if (!options.path.match(/.*\/.*\.(.*)/)) {
       promise.expect('Vary', /Accept/);
     }
@@ -69,10 +70,11 @@ function createTest(options) {
 
 /**
  * Create a generic test that accepts HTML with a BODY
- * @param method
+ * @param {string} method
  * @returns {Function}
  */
 function acceptsHtmlBody(method) {
+  // eslint-disable-next-line
   return function (path, replacements, body, status, data) {
     createTest({
       description: JSON.stringify(replacements) + ' accepts html with body ' + JSON.stringify(body),
@@ -91,7 +93,7 @@ function acceptsHtmlBody(method) {
 
 /**
  * Create a generic test that accepts HTML
- * @param method
+ * @param {string} method
  * @returns {Function}
  */
 function acceptsHtml(method) {
@@ -111,10 +113,11 @@ function acceptsHtml(method) {
 
 /**
  * Create a generic test that accepts JSON with a BODY
- * @param method
+ * @param {string} method
  * @returns {Function}
  */
 function acceptsJsonBody(method) {
+  // eslint-disable-next-line
   return function (path, replacements, body, status, data) {
     createTest({
       description: JSON.stringify(replacements) + ' accepts json with body ' + JSON.stringify(body),
@@ -152,10 +155,11 @@ function acceptsJson(method) {
 
 /**
  * Create a generic test that accepts JSON with a BODY
- * @param method
+ * @param {string} method
  * @returns {Function}
  */
 function acceptsTextBody(method) {
+  // eslint-disable-next-line
   return function (path, replacements, body, status, data) {
     createTest({
       description: JSON.stringify(replacements) + ' accepts text with body ' + body,
@@ -255,9 +259,9 @@ function createsNewVersion(method) {
           .then(function () {
             return getVersions(host + realPath);
           }).then(function (newVersions) {
-            //no versions are deleted
+            // no versions are deleted
             expect(newVersions).to.include.members(oldVersions);
-            //should have one new version, not counting realPath
+            // should have one new version, not counting realPath
             expect(_.without(newVersions, realPath).length - oldVersions.length).to.be.at.least(1);
           });
       });
@@ -267,10 +271,11 @@ function createsNewVersion(method) {
 
 /**
  * Expect deep data to exist after cascading operation
- * @param method
+ * @param {string} method
  * @returns {Function}
  */
 function cascades(method) {
+  // eslint-disable-next-line
   return function (path, replacements, data, cascadingTarget, cascadingData) {
     const realPath = getRealPath(replacements, path);
 
@@ -282,7 +287,7 @@ function cascades(method) {
         .set('Host', host)
         .expect(200)
         .then(function () {
-          //expect cascading data to now exist
+          // expect cascading data to now exist
           return db.get(cascadingTarget).then(JSON.parse).then(function (result) {
             expect(result).to.deep.equal(cascadingData);
           });
@@ -337,6 +342,7 @@ function stubFiles(sandbox) {
 
 function stubSchema(sandbox) {
   const stubGet = sandbox.stub(schema, 'getSchema');
+
   stubGet.withArgs('validThing').returns({some: 'schema', thatIs: 'valid'});
   stubGet.withArgs('missingThing').throws(new Error('File not found.'));
   return sandbox;
@@ -344,6 +350,7 @@ function stubSchema(sandbox) {
 
 function stubGetTemplate(sandbox) {
   const stub = sandbox.stub(components, 'getTemplate');
+
   stub.withArgs('valid').returns('some/valid/template.nunjucks');
   stub.withArgs('layout').returns('some/valid/template.for.layout.nunjucks');
   return sandbox;
@@ -351,6 +358,7 @@ function stubGetTemplate(sandbox) {
 
 function stubMultiplexRender(sandbox) {
   const template = _.template('<valid><% print(JSON.stringify(obj)) %></valid>');
+
   sandbox.stub(multiplex, 'render', function (name, data) {
     return template(_.omit(data, 'state', 'getTemplate', 'locals', 'site'));
   });
@@ -373,7 +381,7 @@ function stubUid(sandbox) {
  */
 
 function beforeTesting(suite, options) {
-  //extra time to prime the 'requires'
+  // extra time to prime the 'requires'
   suite.timeout(500);
 
   app = express();
