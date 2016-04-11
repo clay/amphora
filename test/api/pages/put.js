@@ -126,7 +126,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', version}, 406, '406 text/html not acceptable');
       acceptsHtml(path, {name: 'missing', version}, 406, '406 text/html not acceptable');
 
-      //published
+      // published
       version = 'published';
       acceptsJsonBody(path, {name: 'valid', version}, pageData, 200, versionedPageData(version));
       acceptsJsonBody(path, {name: 'valid', version}, cascadingPageData, 200, cascadingReturnData(version));

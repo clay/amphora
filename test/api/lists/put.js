@@ -34,7 +34,7 @@ describe(endpointName, function () {
 
     describe('/lists/:name', function () {
       const path = this.title;
-      
+
       acceptsJson(path, {name: 'valid'}, 400, {message: 'Only accepts lists.', code: 400});
       acceptsJson(path, {name: 'missing'}, 400, {message: 'Only accepts lists.', code: 400});
 

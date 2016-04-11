@@ -171,6 +171,10 @@ describe(endpointName, function () {
 
     it('warns when given bad json, does not include page', function () {
       return db.put(hostname + '/pages/x@published', '{what?').then(function () {
+        function expectLog() {
+          sinon.assert.calledWith(winston.log, 'warn');
+        }
+
         return request(app)
           .get('/sitemap.xml')
           .set('Host', hostname)
@@ -180,9 +184,7 @@ describe(endpointName, function () {
             '<url><loc>http://some-url/d</loc></url>' +
             '<url><loc>http://some-url/e</loc></url>' +
             footer)
-          .then(function () {
-            sinon.assert.calledWith(winston.log, 'warn');
-          });
+          .then(expectLog);
       });
     });
 
@@ -268,6 +270,7 @@ describe(endpointName, function () {
     it('warns when component is not found', function () {
       const componentReference = hostname + '/components/k',
         error = new Error();
+
       error.name = 'NotFoundError';
 
       // note that if this page were to be rendered normally (in html) it will 404, so don't include in sitemap

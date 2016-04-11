@@ -5,7 +5,7 @@ const _ = require('lodash'),
 
 /**
  *
- * @param query
+ * @param {object} query
  * @returns {string}
  */
 function queryToString(query) {

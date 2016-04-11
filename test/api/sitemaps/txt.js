@@ -78,6 +78,10 @@ describe(endpointName, function () {
     });
 
     it('gets sitemap even with bad json', function () {
+      function expectLog() {
+        sinon.assert.calledWith(winston.log, 'warn');
+      }
+
       return db.put(hostname + '/pages/x@published', '{what?').then(function () {
         return request(app)
           .get('/sitemap.txt')
@@ -85,9 +89,7 @@ describe(endpointName, function () {
           .expect(200)
           .expect('Content-Type', /text/)
           .expect('http://some-url/d\nhttp://some-url/e\n')
-          .then(function () {
-            sinon.assert.calledWith(winston.log, 'warn');
-          });
+          .then(expectLog);
       });
     });
   });
