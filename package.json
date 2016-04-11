@@ -4,7 +4,7 @@
   "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/jscs . && node_modules/.bin/jshint lib test && node_modules/.bin/istanbul cover node_modules/.bin/_mocha"
+    "test": "node_modules/.bin/eslint --max-warnings 0 lib test && node_modules/.bin/istanbul cover node_modules/.bin/_mocha"
   },
   "repository": {
     "type": "git",
@@ -35,9 +35,8 @@
   "devDependencies": {
     "chai": "^3.4",
     "coveralls": "^2.11.2",
+    "eslint": "^2.7.0",
     "istanbul": "^0.4",
-    "jscs": "^2.11",
-    "jshint": "^2.8",
     "mocha": "^2.2",
     "sinon": "^1.14",
     "supertest": "^1.1",
