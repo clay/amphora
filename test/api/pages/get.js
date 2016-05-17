@@ -12,9 +12,9 @@ describe(endpointName, function () {
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      pageData = { layout: 'localhost.example.com/components/layout', center: 'localhost.example.com/components/valid' },
-      layoutData = { someArea: ['center'] },
-      deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
+      pageData = { layout: 'localhost.example.com/components/layout', center: ['localhost.example.com/components/valid'] },
+      layoutData = { center: 'center', deep: [{_ref: 'localhost.example.com/components/validDeep'}] },
+      deepData = { _ref: 'localhost.example.com/components/validDeep' },
       componentData = { name: 'Manny', species: 'cat' },
       data = {
         page: pageData,
@@ -94,11 +94,11 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
       acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
       acceptsHtml(path, {name: 'valid'}, 200, '<valid>{' +
-        '"_components":["layout","valid","validDeep"],' +
-        '"someArea":[{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}}],' +
+        '"_components":["layout","validDeep","valid"],' +
+        '"center":[{"_ref":"localhost.example.com/components/valid"}],"deep":[{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}],' +
         '"template":"layout",' +
         '"_self":"localhost.example.com/pages/valid",' +
-        '"_pageData":{"center":"localhost.example.com/components/valid"}}</valid>');
+        '"_pageData":{"center":["localhost.example.com/components/valid"]}}</valid>');
       acceptsHtml(path, {name: 'missing'}, 404, '404 Not Found');
     });
 
@@ -148,11 +148,11 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', version: 'missing'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'missing', version: 'missing'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid', version: 'valid'}, 200, '<valid>{' +
-        '"_components":["layout","valid","validDeep"],' +
-        '"someArea":[{"_ref":"localhost.example.com/components/valid","deep":{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}}],' +
+        '"_components":["layout","validDeep","valid"],' +
+        '"center":[{"_ref":"localhost.example.com/components/valid"}],"deep":[{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}],' +
         '"template":"layout",' +
         '"_self":"localhost.example.com/pages/valid@valid",' +
-        '"_pageData":{"center":"localhost.example.com/components/valid"},' +
+        '"_pageData":{"center":["localhost.example.com/components/valid"]},' +
         '"_version":"valid"' +
         '}</valid>');
       acceptsHtml(path, {name: 'missing', version: 'valid'}, 404, '404 Not Found');
