@@ -129,7 +129,7 @@ Publishing a page has a special convenience behavior where all components refere
 /uris/<base64(:path)>
 ```
 
-A URI is used to redirect some slug or URI to another page or component.  They can also redirect to other uris, or several uris can point to the same resource.  URIs are stored as Base64, so:
+A URI is used to redirect some slug or URI to another page or component.  They can also redirect to other uris (establishing a 301 redirect), or several uris can point to the same resource.  URIs are stored as Base64, so:
 
 - `example.com` is `/uris/ZXhhbXBsZS5jb20=` => `/pages/jdskla@published`
 - `example.com/other/` is `/uris/ZXhhbXBsZS5jb20vb3RoZXI=` => `/pages/4revd3s@published`
