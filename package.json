@@ -30,7 +30,8 @@
     "template2env": "^1.0.4",
     "through2-filter": "^2.0.0",
     "vhost": "^3.0.0",
-    "winston": "^2.1.0"
+    "winston": "^2.1.0",
+    "winston-logstash": "^0.2.11"
   },
   "devDependencies": {
     "chai": "^3.4.0",
