@@ -6,7 +6,7 @@
   "scripts": {
     "test": "npm run eslint && npm run test-suite",
     "eslint": "eslint --max-warnings 0 lib test",
-    "test-suite": "istanbul cover mocha"
+    "test-suite": "istanbul cover _mocha"
   },
   "repository": {
     "type": "git",
