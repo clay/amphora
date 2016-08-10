@@ -234,7 +234,7 @@ function getVersions(ref) {
       errors.push(err);
     }).on('end', function () {
       if (errors.length) {
-        deferred.reject(_.first(errors));
+        deferred.reject(_.head(errors));
       } else {
         deferred.resolve(JSON.parse(str));
       }
