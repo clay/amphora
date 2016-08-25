@@ -35,7 +35,7 @@ It follows semver and is stable as of v1.0.0.
 ## Installation
 
 ```
-npm install --save @nymdev/amphora
+npm install --save amphora
 ```
 
 ## Usage
