@@ -50,7 +50,7 @@ Clay separates concerns into two main areas: components and sites. Create two ne
 In your project's main server file (e.g. `app.js`), instantiate a new Amphora instance.
 
 ```js
-var amphora = require('@nymdev/amphora'),
+var amphora = require('amphora'),
   port = process.env.PORT || 3000;
 
 return amphora()
@@ -63,7 +63,7 @@ For additional configuration, you may pass in an Express app / router. You can a
 
 ```js
 var app = require('express')(),
-  amphora = require('@nymdev/amphora'),
+  amphora = require('amphora'),
   nunjucks = require('nunjucks'),
   port = process.env.PORT || 3000,
   env;
