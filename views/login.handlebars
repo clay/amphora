@@ -98,18 +98,12 @@
     <h1 class="header">Log in to Clay</h1>
     <p class="details">Please choose the provider attached to your account</p>
     <div class="buttons">
-      <a class="button twitter" href="{{path}}/auth/twitter" title="Log in with Twitter">
-        <div class="button-icon">{{> twitter }}</div>
-        <span class="button-text">Log in with Twitter</span>
-      </a>
-      <a class="button google" href="{{path}}/auth/google" title="Log in with Google">
-        <div class="button-icon">{{> google }}</div>
-        <span class="button-text">Log in with Google</span>
-      </a>
-      <a class="button slack" href="{{path}}/auth/slack" title="Log in with Slack">
-        <div class="button-icon">{{> slack }}</div>
-        <span class="button-text">Log in with Slack</span>
-      </a>
+      {{#each currentProviders }}
+        <a class="button {{this.name}}" href="{{ this.url }}" title="{{ this.title }}">
+          <div class="button-icon">{{> ( icon ) }}</div>
+          <span class="button-text">{{ this.title }}</span>
+        </a>
+      {{/each}}
     </div>
   </div>
 </body>
