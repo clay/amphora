@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Log In - Clay</title>
     <style>
+      .flash-error,
       .header,
       .details,
       .button {
@@ -15,6 +16,16 @@
         display: flex;
         justify-content: center;
         padding: 20px;
+      }
+
+      .flash-error {
+        background-color: #ff9696;
+        border: 1px solid #ff2e2e;
+        border-radius: 4px;
+        max-width: 90vw;
+        padding: 10px;
+        position: absolute;
+        top: 10px;
       }
 
       .login-options {
@@ -77,6 +88,9 @@
     </style>
 </head>
 <body class="login-page">
+  {{#each flash.error}}
+    <div class="flash-error">{{ this }}</div>
+  {{/each}}
   <div class="login-options">
     <div class="clay-logo">
       <a href="{{path}}" title="Back to site">{{> clay-logo }}</a>
