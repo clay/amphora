@@ -98,7 +98,8 @@ describe(endpointName, function () {
         '"center":[{"_ref":"localhost.example.com/components/valid"}],"deep":[{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}],' +
         '"template":"layout",' +
         '"_self":"localhost.example.com/pages/valid",' +
-        '"_pageData":{"center":["localhost.example.com/components/valid"]}}</valid>');
+        '"_pageData":{"center":["localhost.example.com/components/valid"]},' +
+        '"_layoutRef":"localhost.example.com/components/layout"}</valid>');
       acceptsHtml(path, {name: 'missing'}, 404, '404 Not Found');
     });
 
@@ -153,7 +154,8 @@ describe(endpointName, function () {
         '"template":"layout",' +
         '"_self":"localhost.example.com/pages/valid@valid",' +
         '"_pageData":{"center":["localhost.example.com/components/valid"]},' +
-        '"_version":"valid"' +
+        '"_version":"valid",' +
+        '"_layoutRef":"localhost.example.com/components/layout"' +
         '}</valid>');
       acceptsHtml(path, {name: 'missing', version: 'valid'}, 404, '404 Not Found');
     });
