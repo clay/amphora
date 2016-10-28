@@ -14,7 +14,7 @@ describe(endpointName, function () {
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       expectDataPlusRef = apiAccepts.expectDataPlusRef,
-      data = { name: 'Manny', species: 'cat' };
+      data = {username: 'foo', provider: 'bar'};
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
@@ -31,8 +31,8 @@ describe(endpointName, function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname  });
       });
 
-      acceptsJson(path, {name: 'valid'}, 200, expectDataPlusRef({}));
-      acceptsJson(path, {name: 'missing'}, 200, expectDataPlusRef({}));
+      acceptsJson(path, {name: 'valid'}, 500, { message: 'Server Error', code: 500 });
+      acceptsJson(path, {name: 'missing'}, 500, { message: 'Server Error', code: 500 });
 
       acceptsJsonBody(path, {name: 'valid'}, data, 200, expectDataPlusRef(data));
       acceptsJsonBody(path, {name: 'missing'}, data, 200, expectDataPlusRef(data));
