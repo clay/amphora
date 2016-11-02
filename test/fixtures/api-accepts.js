@@ -393,7 +393,7 @@ function beforeTesting(suite, options) {
   stubMultiplexRender(options.sandbox);
   stubLogging(options.sandbox);
   stubUid(options.sandbox);
-  routes.addHost(app, options.hostname);
+  routes.addHost(app, options.hostname, null, []);
 
   return db.clear().then(function () {
     return bluebird.all([
