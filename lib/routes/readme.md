@@ -11,6 +11,7 @@ For a broader and less specific overview of routing, please see the [project's r
 - [Pages](#pages)
 - [URIs](#uris)
 - [Lists](#lists)
+- [Users](#users)
 - [Schedule](#schedule)
 - [Versions](#versions)
 - [RESTful API](#restful-api)
@@ -144,6 +145,16 @@ A URI is assumed to be pointing at the `@published` version if another version i
 ```
 
 Lists are a _temporary_ solution until search functionality is discussed.  It is currently used for the tags component and the autocomplete behavior as a temporary place to store lists of information.  It can store any list of data on a `PUT`, and return back the same list of data with a `GET`.
+
+## Users
+
+### Overview
+```
+/users
+/users/:id
+```
+
+Each user has a `username` and `provider`, which determines how they authenticate over oauth. Users can also have other data, including `name`, `imageUrl`, and `title`.
 
 ## Schedule
 
