@@ -3,6 +3,7 @@
 // services exposed to outside
 module.exports = require('./lib/setup');
 module.exports.db = require('./lib/services/db');
+module.exports.search = require('./lib/services/search');
 module.exports.composer = require('./lib/services/composer');
 module.exports.components = require('./lib/services/components');
 module.exports.schedule = require('./lib/services/schedule');
