@@ -68,7 +68,7 @@ describe(endpointName, function () {
       files.fileExists.withArgs('public').returns(true);
 
       app = express();
-      routes.addHost(app, hostname);
+      routes.addHost({ router: app, hostname: hostname });
 
       return db.clear()
         // a should not show because no url in page
