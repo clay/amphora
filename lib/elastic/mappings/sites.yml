@@ -1,24 +1,24 @@
 general:
   dynamic: strict
   properties:
-    title:
+    name:
       type: string
       index: not_analyzed
-    published:
-      type: boolean
-      index: not_analyzed
-    scheduled:
-      type: boolean
-      index: not_analyzed
-    url:
+    slug:
       type: string
       index: not_analyzed
-    uri:
+    host:
       type: string
       index: not_analyzed
-    siteSlug:
+    path:
       type: string
       index: not_analyzed
-  _timestamp:
-    enabled: true
-    store: yes
+    port:
+      type: string
+      index: not_analyzed
+    assetDir:
+      type: string
+      index: not_analyzed
+    assetPath:
+      type: string
+      index: not_analyzed
