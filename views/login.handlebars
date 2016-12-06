@@ -98,15 +98,31 @@
     <div class="clay-logo">
       <a href="{{path}}" title="Back to site">{{> clay-logo }}</a>
     </div>
-    <h1 class="header">Log in to Clay</h1>
-    <p class="details">Please choose the provider attached to your account</p>
+    {{#with user }}
+      {{#if name}}
+        <h1 class="header">Welcome, {{ name }}</h1>
+      {{else}}
+        <h1 class="header">Welcome, {{ username }}</h1>
+      {{/if}}
+      <p class="details">You are currently logged in to Clay</p>
+    {{else}}
+      <h1 class="header">Log in to Clay</h1>
+      <p class="details">Please choose the provider attached to your account</p>
+    {{/with}}
     <div class="buttons">
-      {{#each currentProviders }}
-        <a class="button {{this.name}}" href="{{ this.url }}" title="{{ this.title }}">
-          <div class="button-icon">{{> ( icon ) }}</div>
-          <span class="button-text">{{ this.title }}</span>
+      {{#if user}}
+        <a class="button logout" href="{{ logoutLink }}" title="Log Out">
+          <div class="button-icon">{{> logout }}</div>
+          <span class="button-text">Log out</span>
         </a>
-      {{/each}}
+      {{else}}
+        {{#each currentProviders }}
+          <a class="button {{this.name}}" href="{{ this.url }}" title="{{ this.title }}">
+            <div class="button-icon">{{> ( icon ) }}</div>
+            <span class="button-text">{{ this.title }}</span>
+          </a>
+        {{/each}}
+      {{/if}}
     </div>
   </div>
 </body>
