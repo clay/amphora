@@ -4,11 +4,20 @@ general:
     title:
       type: string
       index: not_analyzed
+    authors:
+      type: string
+      index: not_analyzed
     published:
       type: boolean
       index: not_analyzed
     scheduled:
       type: boolean
+      index: not_analyzed
+    scheduledTime:
+      type: string
+      index: not_analyzed
+    publishTime:
+      type: string
       index: not_analyzed
     url:
       type: string

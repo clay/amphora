@@ -11,4 +11,5 @@ module.exports.pages = require('./lib/services/pages');
 module.exports.sites = require('./lib/services/sites');
 module.exports.references = require('./lib/services/references');
 module.exports.log = require('./lib/services/log');
-module.exports.setPageName = require('./lib/services/page-list').setPageName;
+module.exports.pageTitleService = require('./lib/services/page-list').pageTitleService;
+module.exports.pageAuthorsService = require('./lib/services/page-list').pageAuthorsService;
