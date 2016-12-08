@@ -27,12 +27,16 @@ For a broader and less specific overview of routing, please see the [project's r
 /components/:name
 /components/:name@:version
 /components/:name.html
+/components/:name.json
 /components/:name@:version.html
+/components/:name@:version.json
 /components/:name/instances
 /components/:name/instances/:id
 /components/:name/intsances/:id.html
+/components/:name/intsances/:id.json
 /components/:name/instances/:id@:version
 /components/:name/instances/:id@:version.html
+/components/:name/instances/:id@:version.json
 ```
 
 ### List of components
@@ -59,6 +63,9 @@ Example: `GET /components/text/instances`
 ]
 ```
 
+### Component Data
+
+You can grab the default data for a component, data for a specific instance, or even data for a specific version (of an instance). GETs and PUTs to these endpoints behave as you would expect from a RESTful api (they return what you send them). GETs and PUTs to the `.json` and `.html` extensions also work, but they'll return the composed (i.e. a component and its children) JSON and HTML, respectively.
 
 ### Modifying components
 `GET /components/:name[/instances/:id][@:version[.:extension]]` will return a component.  The form the data is based on the extension (.html, .json, .yaml), or the Accepts header of the request.  
@@ -103,8 +110,10 @@ module.exports.del = function (ref) {
 ```
 /pages
 /pages/:name
+/pages/:name.json
 /pages/:name@:version
 /pages/:name@:version.html
+/pages/:name@:version.json
 ```
 
 Pages consist of a layout and a list of areas.  Each area defined in a page maps to a area in the layout template.  For example:
@@ -119,6 +128,10 @@ Pages consist of a layout and a list of areas.  Each area defined in a page maps
 }
 ```
 The layout component in this example has two areas: center and side.  When the page is displayed, the components listed here will be placed into the matching areas in the layout.
+
+### Page Data
+
+GETs and PUTs to pages work similarly to components. API calls without an extension will update/return data for that page, while the `.json` and `.html` extensions will return the composed (page and layout, and their child components) JSON and HTML, respectively.
 
 ### Publishing
 
