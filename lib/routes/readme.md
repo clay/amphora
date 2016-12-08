@@ -110,6 +110,7 @@ module.exports.del = function (ref) {
 ```
 /pages
 /pages/:name
+/pages/:name.html
 /pages/:name.json
 /pages/:name@:version
 /pages/:name@:version.html
