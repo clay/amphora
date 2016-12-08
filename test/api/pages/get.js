@@ -21,6 +21,14 @@ describe(endpointName, function () {
         layout: layoutData,
         firstLevelComponent: deepData,
         secondLevelComponent: componentData
+      },
+      deepPageData = {
+        center: [{ _ref: 'localhost.example.com/components/valid' }],
+        deep: [{
+          _ref: 'localhost.example.com/components/validDeep',
+          name: 'Manny',
+          species: 'cat'
+        }]
       };
 
     beforeEach(function () {
@@ -67,11 +75,16 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
+          '/components/layout': data.layout,
+          '/components/layoutCascading': data.firstLevelComponent,
+          '/components/valid': data.firstLevelComponent,
+          '/components/validCascading': data.firstLevelComponent,
+          '/components/validDeep': data.secondLevelComponent,
           '/pages/valid': data.page
         }});
       });
 
-      acceptsJson(path, {name: 'valid'}, 200, pageData);
+      acceptsJson(path, {name: 'valid'}, 200, deepPageData);
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
       acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
