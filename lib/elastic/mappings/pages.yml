@@ -3,7 +3,8 @@ general:
   properties:
     title:
       type: string
-      index: not_analyzed
+      index: analyzed
+      analyzer: simple
     authors:
       type: string
       index: not_analyzed

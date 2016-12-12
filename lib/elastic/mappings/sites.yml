@@ -25,3 +25,6 @@ general:
     mediaPath:
       type: string
       index: not_analyzed
+    siteIcon:
+      type: string
+      index: not_analyzed
