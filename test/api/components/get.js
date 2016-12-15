@@ -13,9 +13,16 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
+      deepData = { d: 'e' },
       // todo: Stop putting internal information into something we're going to open-source
       componentList = ['clay-c5', 'clay-c3', 'clay-c4'],
-      message406 = '406 text/html not acceptable';
+      message406 = '406 text/html not acceptable',
+      cascadingData = function (ref) {
+        return {a: 'b', c: {_ref: `localhost.example.com/components/${ref}`}};
+      },
+      cascadingReturnData = function (ref) {
+        return {a: 'b', c: {_ref: `localhost.example.com/components/${ref}`, d: 'e'}};
+      };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
@@ -62,12 +69,13 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid': data
+          '/components/valid': cascadingData('valid-deep'),
+          '/components/valid-deep': deepData
         }});
       });
 
       acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 200, data);
+      acceptsJson(path, {name: 'valid'}, 200, cascadingReturnData('valid-deep'));
       acceptsJson(path, {name: 'missing'}, 404);
 
       acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
@@ -203,12 +211,13 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid/instances/valid': data
+          '/components/valid/instances/valid': cascadingData('valid-deep/instances/valid-deep'),
+          '/components/valid-deep/instances/valid-deep': deepData
         }});
       });
 
       acceptsJson(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsJson(path, {name: 'valid', id: 'valid'}, 200, data);
+      acceptsJson(path, {name: 'valid', id: 'valid'}, 200, cascadingReturnData('valid-deep/instances/valid-deep'));
       acceptsJson(path, {name: 'valid', id: 'missing'}, 404);
 
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404, '404 Not Found');
