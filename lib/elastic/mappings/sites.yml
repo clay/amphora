@@ -22,9 +22,6 @@ general:
     assetPath:
       type: string
       index: not_analyzed
-    searchPath:
-      type: string
-      index: not_analyzed
     mediaPath:
       type: string
       index: not_analyzed
