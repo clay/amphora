@@ -1,5 +1,7 @@
 'use strict';
 
+const pageList = require('./lib/services/page-list');
+
 // services exposed to outside
 module.exports = require('./lib/setup');
 module.exports.db = require('./lib/services/db');
@@ -11,5 +13,7 @@ module.exports.pages = require('./lib/services/pages');
 module.exports.sites = require('./lib/services/sites');
 module.exports.references = require('./lib/services/references');
 module.exports.log = require('./lib/services/log');
-module.exports.pageTitleService = require('./lib/services/page-list').pageTitleService;
-module.exports.pageAuthorsService = require('./lib/services/page-list').pageAuthorsService;
+
+// Page List services
+module.exports.pageTitleService = pageList.pageTitleService;
+module.exports.pageAuthorsService = pageList.pageAuthorsService;
