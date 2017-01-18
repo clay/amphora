@@ -211,6 +211,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
       acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 200, '<valid>{' +
       '"_components":["valid"],' +
+      '"_componentSchemas":[{"name":"valid","schema":{"some":"schema","thatIs":"valid"}}],' +
       '"name":"Manny",' +
       '"species":"cat",' +
       '"template":"valid",' +
@@ -218,6 +219,7 @@ describe(endpointName, function () {
       '}</valid>');
       acceptsHtmlBody(path, {name: 'valid', id: 'missing'}, data, 200, '<valid>{' +
       '"_components":["valid"],' +
+      '"_componentSchemas":[{"name":"valid","schema":{"some":"schema","thatIs":"valid"}}],' +
       '"name":"Manny",' +
       '"species":"cat",' +
       '"template":"valid",' +

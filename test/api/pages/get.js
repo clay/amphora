@@ -108,6 +108,7 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
       acceptsHtml(path, {name: 'valid'}, 200, '<valid>{' +
         '"_components":["layout","validDeep","valid"],' +
+        '"_componentSchemas":[{"name":"layout"},{"name":"validDeep"},{"name":"valid","schema":{"some":"schema","thatIs":"valid"}}],' +
         '"center":[{"_ref":"localhost.example.com/components/valid"}],"deep":[{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}],' +
         '"template":"layout",' +
         '"_self":"localhost.example.com/pages/valid",' +
@@ -163,6 +164,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing', version: 'missing'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid', version: 'valid'}, 200, '<valid>{' +
         '"_components":["layout","validDeep","valid"],' +
+        '"_componentSchemas":[{"name":"layout"},{"name":"validDeep"},{"name":"valid","schema":{"some":"schema","thatIs":"valid"}}],' +
         '"center":[{"_ref":"localhost.example.com/components/valid"}],"deep":[{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}],' +
         '"template":"layout",' +
         '"_self":"localhost.example.com/pages/valid@valid",' +
