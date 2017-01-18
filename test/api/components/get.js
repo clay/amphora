@@ -116,7 +116,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid'}, 200,
         '<valid>{' +
         '"_components":["valid"],' +
-        '"_componentSchemas":[{"name":"valid","schema":{"some":"schema","thatIs":"valid"}}],' +
+        '"_componentSchemas":[{"name":"valid","schema":"components/validThing/schema.yml"}],' +
         '"name":"Manny",' +
         '"species":"cat",' +
         '"template":"valid",' +
@@ -242,7 +242,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 200, '<valid>{' +
         '"_components":["valid"],' +
-        '"_componentSchemas":[{"name":"valid","schema":{"some":"schema","thatIs":"valid"}}],' +
+        '"_componentSchemas":[{"name":"valid","schema":"components/validThing/schema.yml"}],' +
         '"name":"Manny",' +
         '"species":"cat",' +
         '"template":"valid",' +

@@ -341,10 +341,13 @@ function stubFiles(sandbox) {
 }
 
 function stubSchema(sandbox) {
-  const stubGet = sandbox.stub(schema, 'getSchema');
+  const stubGet = sandbox.stub(schema, 'getSchema'),
+    stubGetPath = sandbox.stub(schema, 'getSchemaPath');
 
   stubGet.withArgs('validThing').returns({some: 'schema', thatIs: 'valid'});
   stubGet.withArgs('missingThing').throws(new Error('File not found.'));
+  stubGetPath.withArgs('validThing').returns('components/validThing/schema.yml');
+  stubGetPath.withArgs('missingThing').throws(new Error('File not found.'));
   return sandbox;
 }
 
