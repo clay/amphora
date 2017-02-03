@@ -74,16 +74,33 @@ Requesting data without a version will return the latest saved version.  Some ve
 
 `PUT /components/:name[/instances/:id][@version]` will save the data such that `GET`ing the same uri will return exactly what was put there.
 
-### Server logic
-Some components want special server-side logic.  This can be done by creating a `server.js` or `index.js` file in their component's folder.
+### Component Logic
+
+Components may have pre-render and pre-save hooks, which do logic before rendering and saving, respectively. To add these, create a `model.js` file in the component's folder, and export `render` and/or `save` methods. Both of these methods should return objects with the component data, which may be wrapped in promises.
+
+_Note:_ It is much better to do component logic when saving rather than every time it wants to render.
 
 ```js
-module.exports = function (ref, locals) {
-  //return a Promise with whatever data should be returned on a GET
-};
+module.exports.render = function (ref, data, locals) {
+  // do logic
+  return data; // will be sent to the template
+}
+
+module.exports.save = function (ref, data, locals) {
+  // do logic
+  return data; // will be sent to the database
+}
 ```
 
-Other server-side logic can be overridden as well.  This is especially useful for performing logic on a `PUT` instead of a `GET`.
+You may pass `componenthooks=false` as a query param when doing API calls if you want to completely bypass the `model.js` (e.g. if you've already run through the logic client-side).
+
+### Legacy Server Logic
+
+This feature is deprecated as of amphora v2.11.0 and will be removed in the next major version (it is supplanted by the isomorphic `model.js` files). Legacy server-side logic lives in a `server.js` or `index.js` file in the component's folder, and has a few differences from the `model.js`:
+
+* the default exported function (run on `GET`) does not automatically receive data from the database, and must fetch it manually
+* the `put()` should return a database operation or array of operations (which may be wrapped in promises), rather than the component data itself
+* these files are _only_ run server-side, and will not be optimised to work in kiln
 
 ```js
 module.exports = function (ref, locals) {
@@ -97,10 +114,6 @@ module.exports.put = function (ref, data) {
     key: '/components/text',
     value:'{"hey": "hey"}'}
   ]);
-};
-module.exports.del = function (ref) {
-  //return Promise with data;
-  return Promise.resolve({"hey": "hey"});
 };
 ```
 
