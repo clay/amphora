@@ -39,7 +39,7 @@
     "passport-google-oauth": "^1.0.0",
     "passport-http-header-token": "^1.1.0",
     "passport-ldapauth": "^0.6.0",
-    "passport-slack": "0.0.6",
+    "passport-slack": "0.0.7",
     "passport-twitter": "^1.0.4",
     "template2env": "^1.0.4",
     "through2-filter": "^2.0.0",
