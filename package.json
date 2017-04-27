@@ -58,7 +58,7 @@
     "supertest-as-promised": "^3.0.0"
   },
   "engines": {
-    "node": "^6.0.0"
+    "node": "^6.10.0"
   },
   "engine-strict": true
 }
