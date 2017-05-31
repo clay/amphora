@@ -184,7 +184,9 @@ describe(endpointName, function () {
 
       acceptsJsonBody(path, {name: 'invalid', id: 'valid'}, {}, 404, { code: 404, message: 'Not Found' });
       acceptsJsonBody(path, {name: 'valid', id: 'valid'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'missing', id: 'missing'}, data, 200, data);
+
+      acceptsJsonBody(path, {name: 'missing', id: 'missing'}, data, 404, { code: 404, message: 'Not Found' });
+
       acceptsJsonBody(path, {name: 'valid'}, cascadingData(), 200, cascadingData());
 
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
