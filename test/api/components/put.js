@@ -197,39 +197,6 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
-    describe('/components/:name/instances/:id.html', function () {
-      const path = this.title;
-
-      beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname });
-      });
-
-      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404, { code: 404, message: 'Not Found' });
-      acceptsJson(path, {name: 'valid', id: 'valid'}, 406);
-      acceptsJson(path, {name: 'valid', id: 'missing'}, 406);
-
-      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 200, '<valid>{' +
-      '"_components":["valid"],' +
-      '"_componentSchemas":[{"name":"valid","schema":"components/validThing/schema.yml"}],' +
-      '"name":"Manny",' +
-      '"species":"cat",' +
-      '"template":"valid",' +
-      '"_self":"localhost.example.com/components/valid/instances/valid"' +
-      '}</valid>');
-      acceptsHtmlBody(path, {name: 'valid', id: 'missing'}, data, 200, '<valid>{' +
-      '"_components":["valid"],' +
-      '"_componentSchemas":[{"name":"valid","schema":"components/validThing/schema.yml"}],' +
-      '"name":"Manny",' +
-      '"species":"cat",' +
-      '"template":"valid",' +
-      '"_self":"localhost.example.com/components/valid/instances/missing"' +
-      '}</valid>');
-
-      // block with _ref at root of object
-      acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
-    });
-
     describe('/components/:name/instances/:id@:version', function () {
       let path = this.title,
         version = 'def';

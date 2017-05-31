@@ -90,33 +90,6 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
-    describe('/pages/:name.html', function () {
-      const path = this.title;
-
-      beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/layout': data.layout,
-          '/components/layoutCascading': data.firstLevelComponent,
-          '/components/valid': data.firstLevelComponent,
-          '/components/validCascading': data.firstLevelComponent,
-          '/components/validDeep': data.secondLevelComponent,
-          '/pages/valid': data.page
-        }});
-      });
-
-      acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
-      acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
-      acceptsHtml(path, {name: 'valid'}, 200, '<valid>{' +
-        '"_components":["layout","validDeep","valid"],' +
-        '"_componentSchemas":[{"name":"layout"},{"name":"validDeep"},{"name":"valid","schema":"components/validThing/schema.yml"}],' +
-        '"center":[{"_ref":"localhost.example.com/components/valid"}],"deep":[{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}],' +
-        '"template":"layout",' +
-        '"_self":"localhost.example.com/pages/valid",' +
-        '"_pageData":{"center":["localhost.example.com/components/valid"]},' +
-        '"_layoutRef":"localhost.example.com/components/layout"}</valid>');
-      acceptsHtml(path, {name: 'missing'}, 404, '404 Not Found');
-    });
-
     describe('/pages/:name@:version', function () {
       const path = this.title;
 
@@ -140,39 +113,5 @@ describe(endpointName, function () {
       acceptsJson(path + '/', {name: 'valid', version: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
-    describe('/pages/:name@:version.html', function () {
-      const path = this.title;
-
-      beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/layout': data.layout,
-          '/components/layoutCascading': data.firstLevelComponent,
-          '/components/valid': data.firstLevelComponent,
-          '/components/valid@valid': data.firstLevelComponent,
-          '/components/validCascading': data.firstLevelComponent,
-          '/components/validDeep': data.secondLevelComponent,
-          '/pages/valid@valid': data.page
-        }});
-      });
-
-      acceptsJson(path, {name: 'valid', version: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
-      acceptsJson(path, {name: 'missing', version: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
-      acceptsJson(path, {name: 'valid', version: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
-      acceptsJson(path, {name: 'missing', version: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
-
-      acceptsHtml(path, {name: 'valid', version: 'missing'}, 404, '404 Not Found');
-      acceptsHtml(path, {name: 'missing', version: 'missing'}, 404, '404 Not Found');
-      acceptsHtml(path, {name: 'valid', version: 'valid'}, 200, '<valid>{' +
-        '"_components":["layout","validDeep","valid"],' +
-        '"_componentSchemas":[{"name":"layout"},{"name":"validDeep"},{"name":"valid","schema":"components/validThing/schema.yml"}],' +
-        '"center":[{"_ref":"localhost.example.com/components/valid"}],"deep":[{"_ref":"localhost.example.com/components/validDeep","name":"Manny","species":"cat"}],' +
-        '"template":"layout",' +
-        '"_self":"localhost.example.com/pages/valid@valid",' +
-        '"_pageData":{"center":["localhost.example.com/components/valid"]},' +
-        '"_version":"valid",' +
-        '"_layoutRef":"localhost.example.com/components/layout"' +
-        '}</valid>');
-      acceptsHtml(path, {name: 'missing', version: 'valid'}, 404, '404 Not Found');
-    });
   });
 });
