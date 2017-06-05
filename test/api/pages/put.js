@@ -10,6 +10,7 @@ const _ = require('lodash'),
 describe(endpointName, function () {
   describe(filename, function () {
     let sandbox,
+      clock,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
@@ -19,13 +20,15 @@ describe(endpointName, function () {
         url: 'http://localhost.example.com',
         layout: 'localhost.example.com/components/layout',
         center: 'localhost.example.com/components/valid',
-        side: ['localhost.example.com/components/valid@valid']
+        side: ['localhost.example.com/components/valid@valid'],
+        lastModified: new Date(1).toISOString()
       },
       cascadingPageData = {
         url: 'http://localhost.example.com',
         layout: 'localhost.example.com/components/layoutCascading',
         center: 'localhost.example.com/components/validCascading',
-        side: ['localhost.example.com/components/validCascading@valid']
+        side: ['localhost.example.com/components/validCascading@valid'],
+        lastModified: new Date(1).toISOString()
       },
       deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
       layoutData = { someArea: ['center'] },
@@ -36,7 +39,8 @@ describe(endpointName, function () {
           url: 'http://localhost.example.com',
           layout: 'localhost.example.com/components/layout@' + version,
           center: 'localhost.example.com/components/valid@' + version,
-          side: ['localhost.example.com/components/valid@' + version]
+          side: ['localhost.example.com/components/valid@' + version],
+          lastModified: new Date(1).toISOString()
         };
       },
       versionedDeepData = function (version) {
@@ -47,22 +51,27 @@ describe(endpointName, function () {
           url: 'http://localhost.example.com',
           layout: 'localhost.example.com/components/layoutCascading@' + version,
           center: 'localhost.example.com/components/validCascading@' + version,
-          side: ['localhost.example.com/components/validCascading@' + version]
+          side: ['localhost.example.com/components/validCascading@' + version],
+          lastModified: new Date(1).toISOString()
         };
       },
       data = {
         page: pageData,
         layout: layoutData,
         firstLevelComponent: deepData,
-        secondLevelComponent: componentData
+        secondLevelComponent: componentData,
+        lastModified: new Date(1).toISOString()
       };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
+      clock = sinon.useFakeTimers();
+      clock.tick(1);
     });
 
     afterEach(function () {
       sandbox.restore();
+      clock.restore();
     });
 
     describe('/pages', function () {
