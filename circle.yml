@@ -2,7 +2,7 @@ machine:
   timezone:
     America/New_York
   node:
-    version: 4.0
+    version: 6.10.3
 test:
   post:
     - cp -r ./coverage/* $CIRCLE_ARTIFACTS
