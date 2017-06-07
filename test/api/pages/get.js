@@ -90,6 +90,25 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
+    describe('/pages/:name.html', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
+          '/components/layout': data.layout,
+          '/components/layoutCascading': data.firstLevelComponent,
+          '/components/valid': data.firstLevelComponent,
+          '/components/validCascading': data.firstLevelComponent,
+          '/components/validDeep': data.secondLevelComponent,
+          '/pages/valid': data.page
+        }});
+      });
+
+      acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
+      acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
+      acceptsHtml(path, {name: 'valid'}, 200, 'some html');
+    });
+
     describe('/pages/:name@:version', function () {
       const path = this.title;
 

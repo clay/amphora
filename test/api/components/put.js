@@ -5,6 +5,7 @@ const _ = require('lodash'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
   replaceVersion = require('../../../lib/services/references').replaceVersion,
+  render = require('../../../lib/render'),
   sinon = require('sinon');
 
 describe(endpointName, function () {
@@ -194,6 +195,25 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
 
       cascades(path, {name: 'valid', id: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
+
+      // block with _ref at root of object
+      acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
+    });
+
+    describe('/components/:name/instances/:id.html', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
+      });
+
+
+      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404, { code: 404, message: 'Not Found' });
+      acceptsJson(path, {name: 'valid', id: 'valid'}, 406);
+      acceptsJson(path, {name: 'valid', id: 'missing'}, 406);
+
+      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
+      acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 200, 'some html');
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});

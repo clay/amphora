@@ -181,6 +181,23 @@ describe(endpointName, function () {
       acceptsJson(path + '/', {name: 'valid', id: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
+    describe('/components/:name/instances/:id.:ext', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
+          '/components/valid/instances/valid': data
+        }});
+      });
+
+      acceptsJson(path, {name: 'invalid', id: 'valid', ext: 'html'}, 404);
+      acceptsJson(path, {name: 'valid', id: 'valid', ext: 'html'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
+      acceptsJson(path, {name: 'valid', id: 'missing', ext: 'html'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
+
+      acceptsHtml(path, {name: 'invalid', id: 'valid', ext: 'html'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid', id: 'valid', ext: 'html'}, 200, 'some html');
+    });
+
     describe('/components/:name/instances/:id.json', function () {
       const path = this.title;
 
