@@ -8,7 +8,6 @@ const _ = require('lodash'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
-  multiplex = require('multiplex-templates'),
   render = require('../../lib/render'),
   log = require('../../lib/services/log'),
   schema = require('../../lib/schema'),
@@ -372,9 +371,9 @@ function stubRenderComponent(sandbox) {
   const renderComponent = sandbox.stub(render, 'renderComponent');
 
   renderComponent.returns(bluebird.resolve({
-      type: 'html',
-      output: `some html`
-    }));
+    type: 'html',
+    output: 'some html'
+  }));
 
   return sandbox;
 }
@@ -383,21 +382,12 @@ function stubRenderPage(sandbox) {
   const renderPage = sandbox.stub(render, 'renderPage');
 
   renderPage.returns(bluebird.resolve({
-      type: 'html',
-      output: `some html`
-    }));
+    type: 'html',
+    output: 'some html'
+  }));
 
   return sandbox;
 }
-
-// function stubMultiplexRender(sandbox) {
-//   const template = _.template('<valid><% print(JSON.stringify(obj)) %></valid>');
-//
-//   sandbox.stub(multiplex, 'render', function (name, data) {
-//     return template(_.omit(data, 'state', 'getTemplate', 'locals', 'site'));
-//   });
-//   return sandbox;
-// }
 
 function stubLogging(sandbox) {
   sandbox.stub(log);
@@ -424,7 +414,6 @@ function beforeTesting(suite, options) {
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
   stubGetTemplate(options.sandbox);
-  // stubMultiplexRender(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
@@ -466,7 +455,6 @@ function beforeEachTest(options) {
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
   stubGetTemplate(options.sandbox);
-  // stubMultiplexRender(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);

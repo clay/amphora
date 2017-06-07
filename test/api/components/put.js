@@ -5,7 +5,6 @@ const _ = require('lodash'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
   replaceVersion = require('../../../lib/services/references').replaceVersion,
-  render = require('../../../lib/render'),
   sinon = require('sinon');
 
 describe(endpointName, function () {
