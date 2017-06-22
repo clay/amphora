@@ -1,6 +1,6 @@
 {
   "name": "amphora",
-  "version": "2.14.1",
+  "version": "3.0.0-beta.3",
   "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
   "scripts": {
@@ -22,9 +22,8 @@
     "chain-of-promises": "^1.0.0",
     "chalk": "^1.0.0",
     "cuid": "^1.2.5",
-    "elasticsearch": "^11.0.1",
     "eventify": "^2.0.0",
-    "express": "^4.12.2",
+    "express": "^4.15.3",
     "express-flash": "0.0.2",
     "express-session": "^1.14.1",
     "glob": "^7.0.0",
@@ -33,7 +32,6 @@
     "levelup": "^1.3.0",
     "lodash": "^4.14.2",
     "memdown": "^1.0.0",
-    "multiplex-templates": "^1.2.0",
     "node-fetch": "^1.3.0",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
@@ -58,7 +56,7 @@
     "supertest-as-promised": "^3.0.0"
   },
   "engines": {
-    "node": "^4.0.0"
+    "node": "^6.0.0"
   },
   "engine-strict": true
 }

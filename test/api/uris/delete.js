@@ -12,7 +12,6 @@ describe(endpointName, function () {
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
-      acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       acceptsTextBody = apiAccepts.acceptsTextBody(_.camelCase(filename)),
       acceptsText = apiAccepts.acceptsText(_.camelCase(filename)),
       data = 'mock data';
@@ -34,7 +33,6 @@ describe(endpointName, function () {
 
       acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
-      acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
       acceptsText(path, {}, 405, '405 Method DELETE not allowed');
     });
 
@@ -49,9 +47,6 @@ describe(endpointName, function () {
 
       acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });
       acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });
-
-      acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
-      acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
 
       acceptsText(path, {name: 'valid'}, 200, data);
       acceptsText(path, {name: 'missing'}, 404, '404 Not Found');

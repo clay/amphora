@@ -8,7 +8,7 @@ const _ = require('lodash'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
-  multiplex = require('multiplex-templates'),
+  render = require('../../lib/render'),
   log = require('../../lib/services/log'),
   schema = require('../../lib/schema'),
   siteService = require('../../lib/services/sites'),
@@ -359,12 +359,33 @@ function stubGetTemplate(sandbox) {
   return sandbox;
 }
 
-function stubMultiplexRender(sandbox) {
-  const template = _.template('<valid><% print(JSON.stringify(obj)) %></valid>');
+function stubRenderExists(sandbox) {
+  const rendererExists = sandbox.stub(render, 'rendererExists');
 
-  sandbox.stub(multiplex, 'render', function (name, data) {
-    return template(_.omit(data, 'state', 'getTemplate', 'locals', 'site'));
-  });
+  rendererExists.withArgs('html').returns(true);
+
+  return sandbox;
+}
+
+function stubRenderComponent(sandbox) {
+  const renderComponent = sandbox.stub(render, 'renderComponent');
+
+  renderComponent.returns(bluebird.resolve({
+    type: 'html',
+    output: 'some html'
+  }));
+
+  return sandbox;
+}
+
+function stubRenderPage(sandbox) {
+  const renderPage = sandbox.stub(render, 'renderPage');
+
+  renderPage.returns(bluebird.resolve({
+    type: 'html',
+    output: 'some html'
+  }));
+
   return sandbox;
 }
 
@@ -393,7 +414,9 @@ function beforeTesting(suite, options) {
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
   stubGetTemplate(options.sandbox);
-  stubMultiplexRender(options.sandbox);
+  stubRenderExists(options.sandbox);
+  stubRenderComponent(options.sandbox);
+  stubRenderPage(options.sandbox);
   stubLogging(options.sandbox);
   stubUid(options.sandbox);
   routes.addHost({
@@ -432,7 +455,9 @@ function beforeEachTest(options) {
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
   stubGetTemplate(options.sandbox);
-  stubMultiplexRender(options.sandbox);
+  stubRenderExists(options.sandbox);
+  stubRenderComponent(options.sandbox);
+  stubRenderPage(options.sandbox);
   stubLogging(options.sandbox);
   stubUid(options.sandbox);
   routes.addHost({

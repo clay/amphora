@@ -99,32 +99,6 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406, message406);
     });
 
-    describe('/components/:name.html', function () {
-      const path = this.title;
-
-      beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid': data
-        }});
-      });
-
-      acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
-      acceptsJson(path, {name: 'missing'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
-
-      acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
-      acceptsHtml(path, {name: 'valid'}, 200,
-        '<valid>{' +
-        '"_components":["valid"],' +
-        '"_componentSchemas":[{"name":"valid","schema":"components/validThing/schema.yml"}],' +
-        '"name":"Manny",' +
-        '"species":"cat",' +
-        '"template":"valid",' +
-        '"_self":"localhost.example.com/components/valid"' +
-        '}</valid>');
-      acceptsHtml(path, {name: 'missing'}, 404, '404 Not Found');
-    });
-
     describe('/components/:name.bad', function () {
       const path = this.title;
 
@@ -207,6 +181,23 @@ describe(endpointName, function () {
       acceptsJson(path + '/', {name: 'valid', id: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
+    describe('/components/:name/instances/:id.:ext', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
+          '/components/valid/instances/valid': data
+        }});
+      });
+
+      acceptsJson(path, {name: 'invalid', id: 'valid', ext: 'html'}, 404);
+      acceptsJson(path, {name: 'valid', id: 'valid', ext: 'html'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
+      acceptsJson(path, {name: 'valid', id: 'missing', ext: 'html'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
+
+      acceptsHtml(path, {name: 'invalid', id: 'valid', ext: 'html'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid', id: 'valid', ext: 'html'}, 200, 'some html');
+    });
+
     describe('/components/:name/instances/:id.json', function () {
       const path = this.title;
 
@@ -224,31 +215,6 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404, '404 Not Found');
       acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
-    });
-
-    describe('/components/:name/instances/:id.html', function () {
-      const path = this.title;
-
-      beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid/instances/valid': data
-        }});
-      });
-
-      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsJson(path, {name: 'valid', id: 'valid'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
-      acceptsJson(path, {name: 'valid', id: 'missing'}, 406, '{"message":"application/json not acceptable","code":406,"accept":["text/html"]}');
-
-      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404, '404 Not Found');
-      acceptsHtml(path, {name: 'valid', id: 'valid'}, 200, '<valid>{' +
-        '"_components":["valid"],' +
-        '"_componentSchemas":[{"name":"valid","schema":"components/validThing/schema.yml"}],' +
-        '"name":"Manny",' +
-        '"species":"cat",' +
-        '"template":"valid",' +
-        '"_self":"localhost.example.com/components/valid/instances/valid"' +
-        '}</valid>');
-      acceptsHtml(path, {name: 'valid', id: 'missing'}, 404, '404 Not Found');
     });
 
     describe('/components/:name/instances/:id@:version', function () {
