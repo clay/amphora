@@ -5,9 +5,9 @@ Amphora
 
 _"A new way to organize, edit, and deliver the web, one component at a time."_
 
-[![Circle CI](https://circleci.com/gh/nymag/amphora/tree/master.svg?style=svg)](https://circleci.com/gh/nymag/amphora/tree/master) [![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&service=github&t=WhTOg8)](https://coveralls.io/github/nymag/amphora?branch=master) [![Join the chat at https://gitter.im/nymag/amphora](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nymag/amphora)
+[![Circle CI](https://circleci.com/gh/nymag/amphora/tree/master.svg?style=svg)](https://circleci.com/gh/nymag/amphora/tree/master) [![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&service=github&t=WhTOg8)](https://coveralls.io/github/nymag/amphora?branch=master)
 
-Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://thecut.com/), [Grub Street](http://www.grubstreet.com/), and [The Science of Us](http://www.scienceofus.com/).  
+Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://www,thecut.com/), [Grub Street](http://www.grubstreet.com/).  
 Created by New York Media.
 
 ## Table of Contents
@@ -28,7 +28,7 @@ Amphora is a mixin for [Express](https://github.com/strongloop/express) that:
 
 [Components are reusable, configurable, self-contained bits of the web.](https://github.com/nymag/amphora/wiki#clay-is-divided-into-components)
 
-Amphora is a core part of New York Media's upcoming Clay project, an open-source content management system.
+Amphora is a core part of New York Media's Clay project, an open-source content management system.
 
 It follows semver and is stable as of v1.0.0.
 
@@ -64,7 +64,7 @@ For additional configuration, you may pass in an Express app / router. You can a
 ```js
 var app = require('express')(),
   amphora = require('amphora'),
-  nunjucks = require('nunjucks'),
+  amphoraHtml = require('amphora-html'),
   port = process.env.PORT || 3000,
   env;
 
@@ -72,14 +72,18 @@ var app = require('express')(),
 app.set('strict routing', true);
 app.set('trust proxy', 1);
 
-env = nunjucks.configure();
 // add custom settings to your templating engine
 env.addGlobal('projectName', process.env.PROJECT_NAME);
 
-return amphora({app: app, engines: {nunjucks: env} })
-  .then(function (server) {
-    server.listen(port);
-  });
+return amphora({
+  app: app,
+  renderers: {
+    default: 'html',
+    html: amphoraHtml
+  }
+}).then(function (s erver) {
+  server.listen(port);
+});
 ```
 
 ### How to create a component
@@ -87,44 +91,19 @@ return amphora({app: app, engines: {nunjucks: env} })
 Components in Clay have the following structure:
 ```
 /component-name     unique name of your component
-    template.html   your template
-    schema.yml      describes how the component's data is edited
+    template.handlebars   your template
+    schema.yml            describes how the component's data is edited
 ```
 
 All of these files are optional.
 
 ### How to create a template
 
-Clay Components can be made with over 30+ templating languages using [multiplex-templates](https://github.com/nymag/multiplex-templates), such as [jade](https://github.com/jadejs/jade), [mustache](https://github.com/mustache/mustache.github.com),
-[handlebars](https://github.com/wycats/handlebars.js/),
-[nunjucks](https://github.com/mozilla/nunjucks),
-[react](https://github.com/facebook/react).
-
-Name your template with an identifying extension and Clay will render it with the corresponding engine. For example, `template.jade` will render with Jade, and `template.html` will simply render unprocessed html.
+The template you create is dependent on whichever renderer you'd like to use. The Clay Core team supports an [HTML renderer](https://github.com/clay/amphora-html) using [Handlebars](http://handlebarsjs.com/) template, but the choice is yours. Either request a renderer or build one on your own!
 
 ### How to create a schema
 
-[Kiln](https://github.com/nymag/clay-kiln) uses a component's schema.yml to determine how it is edited. For example, if you want to edit the data in this template:
-
-```html
-<article>
-  <h1>{{ title }}</h1>
-  <p>{{ story }}</p>
-</article>
-```
-You would create a schema.yml file that looks like:
-
-```yaml
-title:
-  _label: Title
-  _placeholder: Type your title here
-  _has: text
-story:
-  _placeholder: Type your life story here
-  _has: textarea
-```
-
-More details about schema.yml are available in the [Kiln](https://github.com/nymag/clay-kiln) project.
+[Kiln](https://github.com/nymag/clay-kiln) uses a component's schema.yml to determine how it is edited. [Visit the Kiln wiki](https://github.com/clay/clay-kiln/wiki/Schemas-and-Behaviors) for examples of how to write schema files for your components.
 
 ## Contribution
 
