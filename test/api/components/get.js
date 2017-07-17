@@ -160,6 +160,27 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406);
     });
 
+    describe('/components/:name/instances?published=true', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
+          '/components/valid': data,
+          '/components/valid/instances/valid': data,
+          '/components/valid/instances/valid@published': data
+        }});
+      });
+
+      acceptsJson(path, {name: 'invalid'}, 404);
+      // no versioned or base instances in list
+      acceptsJson(path, {name: 'valid'}, 200, '["localhost.example.com/components/valid/instances/valid@published"]');
+      acceptsJson(path, {name: 'missing'}, 200, '[]');
+
+      acceptsHtml(path, {name: 'invalid'}, 404, '404 Not Found');
+      acceptsHtml(path, {name: 'valid'}, 406);
+      acceptsHtml(path, {name: 'missing'}, 406);
+    });
+
     describe('/components/:name/instances/:id', function () {
       const path = this.title;
 
