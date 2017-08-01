@@ -45,7 +45,7 @@ A plugin can add the following to its `module.exports`:
 `module.exports.publish`
    - hook triggered on page publish (db batch with page@published)
    - _note:_ when `publish` is triggered, `save` is also triggered
-   - given one param with uri and ops: `{ pageUri: string, ops: [{type: put|del, key: string, value: string}] }`
+   - given one param with uri and ops: `{ uri: pageUri, ops: [{type: put|del, key: string, value: string}] }`
 
 `module.exports.unpublish`
    - hook triggered on page unpublish
