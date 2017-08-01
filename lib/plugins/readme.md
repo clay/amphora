@@ -27,11 +27,11 @@ amphora({
 A plugin can add the following to its `module.exports`:
  
 `module.exports.init`
-   - run once when the plugin is registered
+   - runs once when the plugin is registered
    - given no params
 
 `module.exports.routes`
-   - run once when amphora adds routes for each site
+   - runs once when amphora adds routes for each site
    - given one param: express router
 
 `module.exports.save`
@@ -44,9 +44,10 @@ A plugin can add the following to its `module.exports`:
 
 `module.exports.publish`
    - hook triggered on page publish (db batch with page@published)
-   - note: when `publish` is triggered, `save` is also triggered; this may change in the future
+   - _note:_ when `publish` is triggered, `save` is also triggered
    - given one param with uri and ops: `{ pageUri: string, ops: [{type: put|del, key: string, value: string}] }`
 
 `module.exports.unpublish`
    - hook triggered on page unpublish
+   - _note:_ when `unpublish` is triggered, `delete` is also triggered
    - given one param: `{ url: pageUrl, uri: pageUri }`
