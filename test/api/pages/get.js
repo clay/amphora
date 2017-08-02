@@ -55,21 +55,21 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 406);
     });
 
-    describe('/pages?published=true', function () {
-      const path = this.title;
-
-      beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid': data.firstLevelComponent,
-          '/pages/valid': data.page,
-          '/pages/valid@published': data.page
-        }});
-      });
-
-      // only pages, and only unversioned
-      acceptsJson(path, {}, 200, '["localhost.example.com/pages/valid@published"]');
-      acceptsHtml(path, {}, 406);
-    });
+    // describe('/pages?published=true', function () {
+    //   const path = this.title;
+    //
+    //   beforeEach(function () {
+    //     return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
+    //       '/components/valid': data.firstLevelComponent,
+    //       '/pages/valid': data.page,
+    //       '/pages/valid@published': data.page
+    //     }});
+    //   });
+    //
+    //   // only pages, and only unversioned
+    //   acceptsJson(path, {}, 200, '["localhost.example.com/pages/valid@published"]');
+    //   acceptsHtml(path, {}, 406);
+    // });
 
     describe('/pages/:name', function () {
       const path = this.title;
