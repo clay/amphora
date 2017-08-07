@@ -11,7 +11,6 @@ const _ = require('lodash'),
   render = require('../../lib/render'),
   log = require('../../lib/services/log'),
   schema = require('../../lib/schema'),
-  auth = require('../../lib/auth'),
   siteService = require('../../lib/services/sites'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
@@ -401,10 +400,6 @@ function stubUid(sandbox) {
   return sandbox;
 }
 
-function stubAuthorization(sandbox) {
-
-}
-
 /**
  * Before starting testing at all, prepare certain things to make sure our performance testing is accurate.
  */
@@ -466,10 +461,6 @@ function beforeEachTest(options) {
   stubLogging(options.sandbox);
   stubUid(options.sandbox);
 
-  if (options.authorized) {
-    stubAuthorization(options.sandbox);
-  }
-
   routes.addHost({
     router: app,
     hostname: host
@@ -488,8 +479,6 @@ function beforeEachTest(options) {
     }
   });
 }
-
-
 
 module.exports.setApp = setApp;
 module.exports.setHost = setHost;
