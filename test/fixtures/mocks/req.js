@@ -33,8 +33,7 @@ module.exports = function () {
   }));
 
   Object.defineProperty(req, 'uri', control.defineReadOnly({
-    get() { return hostname + baseUrl + path; },
-    get(value) { return uri = value; }
+    get() { return hostname + baseUrl + path; }
   }));
 
   Object.defineProperty(req, 'vhost', control.defineReadOnly({
@@ -89,7 +88,6 @@ module.exports = function () {
   req.hostname = 'example.com';
   req.query = {};
   req.accepts = _.noop;
-  req.isAuthenticated = () => true;
   req.get = _.noop;
 
   return req;

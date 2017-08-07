@@ -460,7 +460,6 @@ function beforeEachTest(options) {
   stubRenderPage(options.sandbox);
   stubLogging(options.sandbox);
   stubUid(options.sandbox);
-
   routes.addHost({
     router: app,
     hostname: host
