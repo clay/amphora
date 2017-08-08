@@ -160,6 +160,22 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406);
     });
 
+    describe('/components/:name/instances/@published', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
+          '/components/valid': data,
+          '/components/valid/instances/valid': data,
+          '/components/valid/instances/valid@published': data
+        }});
+      });
+
+      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'valid'}, 200, '["localhost.example.com/components/valid/instances/valid@published"]');
+      acceptsJson(path, {name: 'missing'}, 200, '[]');
+    });
+
     describe('/components/:name/instances/:id', function () {
       const path = this.title;
 
