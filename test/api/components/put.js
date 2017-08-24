@@ -220,7 +220,7 @@ describe(endpointName, function () {
 
     describe('/components/:name/instances/:id@:version', function () {
       let path = this.title,
-        version = 'def';
+        version = 'scheduled';
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
@@ -249,10 +249,8 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));
       cascades(path, {name: 'valid', version, id: 'valid'}, cascadingData(version), addVersion(version), cascadingDeepData);
 
-      // published blank data will publish @latest
-      acceptsJsonBody(path, {name: 'valid', version, id: 'valid'}, {}, 200, data);
-      // publishing blank data without a @latest will 404 because missing resource
-      acceptsJsonBody(path, {name: 'valid', version, id: 'missing'}, {}, 404, { code: 404, message: 'Not Found' });
+      // published blank data will publish @published
+      acceptsJsonBody(path, {name: 'valid', version, id: 'valid'}, data, 200, data);
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version, id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
@@ -260,5 +258,26 @@ describe(endpointName, function () {
       // deny trailing slashes
       acceptsJsonBody(path + '/', {name: 'valid', version, id: 'valid'}, data, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
+
+
+
+
+    // describe('/components/:name/instances/:id@published', function () {
+    //   let path = this.title;
+    //
+    //   beforeEach(function () {
+    //     return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
+    //       '/components/valid/instances/valid': data
+    //     }});
+    //   });
+    //
+    //   // published blank data will publish @published
+    //   acceptsJsonBody(path, {name: 'valid', version: 'published', id: 'valid'}, {}, 200, data);
+    // });
+    //
+    //
+
+
+
   });
 });
