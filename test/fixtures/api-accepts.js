@@ -428,8 +428,7 @@ function beforeTesting(suite, options) {
   routes.addHost({
     router: app,
     hostname: host,
-    sites: null,
-    providers: ['apikey']
+    sites: null
   });
 
   return db.clear().then(function () {

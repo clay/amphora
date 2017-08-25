@@ -258,26 +258,5 @@ describe(endpointName, function () {
       // deny trailing slashes
       acceptsJsonBody(path + '/', {name: 'valid', version, id: 'valid'}, data, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
-
-
-
-
-    // describe('/components/:name/instances/:id@published', function () {
-    //   let path = this.title;
-    //
-    //   beforeEach(function () {
-    //     return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-    //       '/components/valid/instances/valid': data
-    //     }});
-    //   });
-    //
-    //   // published blank data will publish @published
-    //   acceptsJsonBody(path, {name: 'valid', version: 'published', id: 'valid'}, {}, 200, data);
-    // });
-    //
-    //
-
-
-
   });
 });
