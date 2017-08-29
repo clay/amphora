@@ -441,7 +441,6 @@ function beforeTesting(suite, options) {
   });
 }
 
-
 /**
  * Generic before each test, make the DB and Host consistent, and get a _new_ version of express.
  *
@@ -492,6 +491,25 @@ function beforeEachTest(options) {
   });
 }
 
+function beforeRenderTest(options) {
+  app = express();
+  host = options.hostname;
+  stubSiteConfig(options.sandbox);
+  stubFiles(options.sandbox);
+  stubSchema(options.sandbox);
+  stubGetTemplate(options.sandbox);
+  stubRenderExists(options.sandbox);
+  stubRenderComponent(options.sandbox);
+  stubRenderPage(options.sandbox);
+  stubLogging(options.sandbox);
+  stubUid(options.sandbox);
+  routes.addHost({
+    router: app,
+    hostname: host,
+    providers: []
+  });
+}
+
 module.exports.setApp = setApp;
 module.exports.setHost = setHost;
 module.exports.acceptsHtml = acceptsHtml;
@@ -506,3 +524,4 @@ module.exports.cascades = cascades;
 module.exports.expectDataPlusRef = expectDataPlusRef;
 module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachTest = beforeEachTest;
+module.exports.beforeRenderTest = beforeRenderTest;

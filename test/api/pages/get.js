@@ -11,7 +11,6 @@ describe(endpointName, function () {
     let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
-      acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       pageData = { layout: 'localhost.example.com/components/layout', center: ['localhost.example.com/components/valid'] },
       layoutData = { center: 'center', deep: [{_ref: 'localhost.example.com/components/validDeep'}] },
       deepData = { _ref: 'localhost.example.com/components/validDeep' },
@@ -52,7 +51,6 @@ describe(endpointName, function () {
 
       // only pages, and only unversioned
       acceptsJson(path, {}, 200, '["localhost.example.com/pages/valid"]');
-      acceptsHtml(path, {}, 406);
     });
 
     describe('/pages/@published', function () {
@@ -81,8 +79,6 @@ describe(endpointName, function () {
 
       acceptsJson(path, {name: 'valid'}, 200, pageData);
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
-      acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
-      acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
     describe('/pages/:name.json', function () {
@@ -101,27 +97,6 @@ describe(endpointName, function () {
 
       acceptsJson(path, {name: 'valid'}, 200, deepPageData);
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
-      acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
-      acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
-    });
-
-    describe('/pages/:name.html', function () {
-      const path = this.title;
-
-      beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/layout': data.layout,
-          '/components/layoutCascading': data.firstLevelComponent,
-          '/components/valid': data.firstLevelComponent,
-          '/components/validCascading': data.firstLevelComponent,
-          '/components/validDeep': data.secondLevelComponent,
-          '/pages/valid': data.page
-        }});
-      });
-
-      acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
-      acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/html'] });
-      acceptsHtml(path, {name: 'valid'}, 200, 'some html');
     });
 
     describe('/pages/:name@:version', function () {
@@ -138,14 +113,8 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid', version: 'valid'}, 200, pageData);
       acceptsJson(path, {name: 'missing', version: 'valid'}, 404, { message: 'Not Found', code: 404 });
 
-      acceptsHtml(path, {name: 'valid', version: 'missing'}, 406, '406 text/html not acceptable');
-      acceptsHtml(path, {name: 'missing', version: 'missing'}, 406, '406 text/html not acceptable');
-      acceptsHtml(path, {name: 'valid', version: 'valid'}, 406, '406 text/html not acceptable');
-      acceptsHtml(path, {name: 'missing', version: 'valid'}, 406, '406 text/html not acceptable');
-
       // blocks trailing slash
       acceptsJson(path + '/', {name: 'valid', version: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
-
   });
 });
