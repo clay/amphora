@@ -181,10 +181,6 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid', version: 'missing', id: 'valid'}, 404);
       acceptsJson(path, {name: 'valid', version: 'missing', id: 'missing'}, 404);
 
-      // acceptsHtml(path, {name: 'invalid', version: 'missing', id: 'valid'}, 404, '404 Not Found');
-      // acceptsHtml(path, {name: 'valid', version: 'missing', id: 'valid'}, 406);
-      // acceptsHtml(path, {name: 'valid', version: 'missing', id: 'missing'}, 406);
-
       // deny trailing slash
       acceptsJson(path + '/', {name: 'valid', version: 'valid', id: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
