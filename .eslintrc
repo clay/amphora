@@ -11,19 +11,6 @@
     "chai": false,
     "sinon": false
   },
-  // enable the es6 features supported by our browsers / iojs
-  "ecmaFeatures": {
-    "arrowFunctions": true,
-    "blockBindings": true,
-    "forOf": true,
-    "objectLiteralDuplicateProperties": true,
-    "objectLiteralShorthandProperties": true,
-    "objectLiteralShorthandMethods": true,
-    "octalLiterals": true,
-    "binaryLiterals": true,
-    "templateStrings": true,
-    "generators": false
-  },
   "rules": {
     // possible errors
     "no-extra-parens": 1,
