@@ -1,10 +1,7 @@
 'use strict';
 
-const _ = require('lodash'),
-  expect = require('chai').expect,
-  sinon = require('sinon'),
+const sinon = require('sinon'),
   render = require('../../../lib/render'),
-  responses = require('../../../lib/responses'),
   componentsRoutes = require('../../../lib/routes/components'),
   pagesRoutes = require('../../../lib/routes/pages');
 
