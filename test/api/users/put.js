@@ -13,7 +13,7 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      data = { username: 'manny', provider: 'google' };
+      data = { username: 'manny', provider: 'google', auth: 'admin' };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();

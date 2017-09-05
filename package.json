@@ -1,12 +1,12 @@
 {
   "name": "amphora",
-  "version": "3.6.0",
+  "version": "4.0.0-rc3",
   "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
   "scripts": {
-    "test": "npm run eslint && npm run test-suite",
+    "test": "npm run eslint && npm run mocha",
     "eslint": "eslint --max-warnings 0 lib test",
-    "test-suite": "istanbul cover _mocha"
+    "mocha": "istanbul cover _mocha"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
     "passport-twitter": "^1.0.4",
     "template2env": "^1.0.4",
     "through2-filter": "^2.0.0",
+    "through2-map": "^3.0.0",
     "vhost": "^3.0.0",
     "winston": "^2.1.0",
     "winston-logstash": "^0.2.11"
@@ -48,12 +49,11 @@
   "devDependencies": {
     "chai": "^3.4.0",
     "coveralls": "^2.11.2",
-    "eslint": "^2.7.0",
+    "eslint": "^4.3.0",
     "istanbul": "^0.4.0",
-    "mocha": "^2.2.0",
+    "mocha": "^3.5.0",
     "sinon": "^1.14.0",
-    "supertest": "^1.1.0",
-    "supertest-as-promised": "^3.0.0"
+    "supertest": "^3.0.0"
   },
   "engines": {
     "node": "^6.0.0"

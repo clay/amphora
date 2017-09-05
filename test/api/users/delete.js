@@ -50,7 +50,7 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/users/valid': data
+          '(ignoreHost)/users/valid': data
         }});
       });
 

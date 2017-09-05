@@ -13,8 +13,6 @@ describe(endpointName, function () {
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
-      acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      acceptsHtmlBody = apiAccepts.acceptsHtmlBody(_.camelCase(filename)),
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
       cascadingTarget = 'localhost.example.com/components/validDeep',
@@ -44,7 +42,6 @@ describe(endpointName, function () {
 
       acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-      acceptsHtml(path, {}, 405);
     });
 
     describe('/components/:name', function () {
@@ -62,10 +59,6 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'missing'}, data, 200, data);
       acceptsJsonBody(path, {name: 'valid'}, cascadingData(), 200, cascadingReturnData());
-
-      acceptsHtml(path, {name: 'invalid'}, 404);
-      acceptsHtml(path, {name: 'valid'}, 406);
-      acceptsHtml(path, {name: 'missing'}, 406);
 
       cascades(path, {name: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
 
@@ -86,10 +79,6 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'invalid'}, 404);
       acceptsJson(path, {name: 'valid'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
       acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
-
-      acceptsHtml(path, {name: 'invalid'}, 404);
-      acceptsHtml(path, {name: 'valid'}, 405);
-      acceptsHtml(path, {name: 'missing'}, 405);
     });
 
     describe('/components/:name@:version', function () {
@@ -108,10 +97,6 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', version}, data, 200, data);
       acceptsJsonBody(path, {name: 'missing', version}, data, 200, data);
       acceptsJsonBody(path, {name: 'valid', version}, cascadingData(), 200, cascadingReturnData());
-
-      acceptsHtml(path, {name: 'invalid', version}, 404);
-      acceptsHtml(path, {name: 'valid', version}, 406);
-      acceptsHtml(path, {name: 'missing', version}, 406);
 
       cascades(path, {name: 'valid', version}, cascadingData(), cascadingTarget, cascadingDeepData);
 
@@ -136,10 +121,6 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'invalid'}, {}, 404, { code: 404, message: 'Not Found' });
       acceptsJsonBody(path, {name: 'valid'}, data, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
       acceptsJsonBody(path, {name: 'missing'}, data, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
-
-      acceptsHtml(path, {name: 'invalid'}, 404);
-      acceptsHtml(path, {name: 'valid'}, 406);
-      acceptsHtml(path, {name: 'missing'}, 406);
     });
 
     describe('/components/:name/instances/:id', function () {
@@ -157,10 +138,6 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', id: 'valid'}, data, 200, data);
       acceptsJsonBody(path, {name: 'missing', id: 'missing'}, data, 200, data);
       acceptsJsonBody(path, {name: 'valid'}, cascadingData(), 200, cascadingReturnData());
-
-      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
-      acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
 
       cascades(path, {name: 'valid', id: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
 
@@ -189,30 +166,7 @@ describe(endpointName, function () {
 
       acceptsJsonBody(path, {name: 'valid'}, cascadingData(), 200, cascadingData());
 
-      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsHtml(path, {name: 'valid', id: 'valid'}, 406);
-      acceptsHtml(path, {name: 'valid', id: 'missing'}, 406);
-
       cascades(path, {name: 'valid', id: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
-
-      // block with _ref at root of object
-      acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
-    });
-
-    describe('/components/:name/instances/:id.html', function () {
-      const path = this.title;
-
-      beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname });
-      });
-
-
-      acceptsJson(path, {name: 'invalid', id: 'valid'}, 404, { code: 404, message: 'Not Found' });
-      acceptsJson(path, {name: 'valid', id: 'valid'}, 406);
-      acceptsJson(path, {name: 'valid', id: 'missing'}, 406);
-
-      acceptsHtml(path, {name: 'invalid', id: 'valid'}, 404);
-      acceptsHtmlBody(path, {name: 'valid', id: 'valid'}, data, 200, 'some html');
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
@@ -220,7 +174,7 @@ describe(endpointName, function () {
 
     describe('/components/:name/instances/:id@:version', function () {
       let path = this.title,
-        version = 'def';
+        version = 'scheduled';
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
@@ -237,10 +191,6 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'missing', version, id: 'missing'}, data, 200, data);
       acceptsJsonBody(path, {name: 'valid', version, id: 'valid'}, cascadingData(), 200, cascadingReturnData());
 
-      acceptsHtml(path, {name: 'invalid', version, id: 'valid'}, 404);
-      acceptsHtml(path, {name: 'valid', version, id: 'valid'}, 406);
-      acceptsHtml(path, {name: 'valid', version, id: 'missing'}, 406);
-
       cascades(path, {name: 'valid', version, id: 'valid'}, cascadingData(), cascadingTarget, cascadingDeepData);
 
       // published version
@@ -249,10 +199,8 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', version, id: 'valid'}, cascadingData(version), 200, cascadingReturnData(version));
       cascades(path, {name: 'valid', version, id: 'valid'}, cascadingData(version), addVersion(version), cascadingDeepData);
 
-      // published blank data will publish @latest
-      acceptsJsonBody(path, {name: 'valid', version, id: 'valid'}, {}, 200, data);
-      // publishing blank data without a @latest will 404 because missing resource
-      acceptsJsonBody(path, {name: 'valid', version, id: 'missing'}, {}, 404, { code: 404, message: 'Not Found' });
+      // published blank data will publish @published
+      acceptsJsonBody(path, {name: 'valid', version, id: 'valid'}, data, 200, data);
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version, id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});

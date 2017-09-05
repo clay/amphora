@@ -12,7 +12,7 @@ describe(endpointName, function () {
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      data = { username: 'manny', provider: 'google' },
+      data = { username: 'manny', provider: 'google', auth: 'admin' },
       message406 = '406 text/html not acceptable';
 
     beforeEach(function () {
@@ -39,7 +39,7 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/users/valid': data
+          '(ignoreHost)/users/valid': data
         }});
       });
 

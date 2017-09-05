@@ -2,7 +2,7 @@
 
 const _ = require('lodash'),
   express = require('express'),
-  request = require('supertest-as-promised'),
+  request = require('supertest'),
   files = require('../../lib/files'),
   components = require('../../lib/services/components'),
   routes = require('../../lib/routes'),
@@ -14,7 +14,8 @@ const _ = require('lodash'),
   siteService = require('../../lib/services/sites'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
-  uid = require('../../lib/uid');
+  uid = require('../../lib/uid'),
+  ignoreString = '(ignoreHost)';
 let app, host;
 
 /**
@@ -50,7 +51,8 @@ function createTest(options) {
     promise = promise
       .type(options.clientType || options.accept) // acceptsHtmlBody sets a different client type
       .set('Accept', options.accept)
-      .set('Host', host);
+      .set('Host', host)
+      .set('Authorization', 'token testKey');
 
     promise = promise.expect('Content-Type', options.contentType)
       .expect(options.status);
@@ -206,6 +208,7 @@ function updatesOther(method) {
         .type('application/json')
         .set('Accept', 'application/json')
         .set('Host', host)
+        .set('Authorization', 'token testKey')
         .then(function () {
           return db.get(host + realOtherPath).then(JSON.parse).then(function (result) {
             expect(result).to.deep.equal(data);
@@ -254,6 +257,7 @@ function createsNewVersion(method) {
           .type('application/json')
           .set('Accept', 'application/json')
           .set('Host', host)
+          .set('Authorization', 'token testKey')
           .expect(200)
           .expect(data)
           .then(function () {
@@ -285,6 +289,7 @@ function cascades(method) {
         .type('application/json')
         .set('Accept', 'application/json')
         .set('Host', host)
+        .set('Authorization', 'token testKey')
         .expect(200)
         .then(function () {
           // expect cascading data to now exist
@@ -410,6 +415,7 @@ function beforeTesting(suite, options) {
 
   app = express();
   host = options.hostname;
+  process.env.CLAY_ACCESS_KEY = 'testKey';
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
@@ -422,8 +428,7 @@ function beforeTesting(suite, options) {
   routes.addHost({
     router: app,
     hostname: host,
-    sites: null,
-    providers: []
+    sites: null
   });
 
   return db.clear().then(function () {
@@ -435,7 +440,6 @@ function beforeTesting(suite, options) {
     ]);
   });
 }
-
 
 /**
  * Generic before each test, make the DB and Host consistent, and get a _new_ version of express.
@@ -451,6 +455,7 @@ function beforeTesting(suite, options) {
 function beforeEachTest(options) {
   app = express();
   host = options.hostname;
+  process.env.CLAY_ACCESS_KEY = 'testKey';
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
@@ -462,20 +467,46 @@ function beforeEachTest(options) {
   stubUid(options.sandbox);
   routes.addHost({
     router: app,
-    hostname: host
+    hostname: host,
+    providers: ['apikey']
   });
+
 
   return db.clear().then(function () {
     if (options.pathsAndData) {
       return bluebird.all(_.map(options.pathsAndData, function (data, path) {
+        let ignoreHost = path.indexOf(ignoreString) > -1;
+
+        if (ignoreHost) {
+          path = path.replace(ignoreString, '');
+        }
 
         if (typeof data === 'object') {
           data = JSON.stringify(data);
         }
 
-        return db.put(host + path, data);
+        return db.put(`${ignoreHost ? '' : host}${path}`, data);
       }));
     }
+  });
+}
+
+function beforeRenderTest(options) {
+  app = express();
+  host = options.hostname;
+  stubSiteConfig(options.sandbox);
+  stubFiles(options.sandbox);
+  stubSchema(options.sandbox);
+  stubGetTemplate(options.sandbox);
+  stubRenderExists(options.sandbox);
+  stubRenderComponent(options.sandbox);
+  stubRenderPage(options.sandbox);
+  stubLogging(options.sandbox);
+  stubUid(options.sandbox);
+  routes.addHost({
+    router: app,
+    hostname: host,
+    providers: []
   });
 }
 
@@ -493,3 +524,4 @@ module.exports.cascades = cascades;
 module.exports.expectDataPlusRef = expectDataPlusRef;
 module.exports.beforeTesting = beforeTesting;
 module.exports.beforeEachTest = beforeEachTest;
+module.exports.beforeRenderTest = beforeRenderTest;
