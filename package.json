@@ -25,7 +25,7 @@
     "clay-log": "^1.1.0",
     "cuid": "^1.2.5",
     "eventify": "^2.0.0",
-    "express": "^4.15.3",
+    "express": "^4.15.5",
     "express-flash": "0.0.2",
     "express-session": "^1.14.1",
     "glob": "^7.0.0",
