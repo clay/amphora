@@ -433,10 +433,10 @@ function beforeTesting(suite, options) {
 
   return db.clear().then(function () {
     return bluebird.all([
-      request(app).put('/components/valid', JSON.stringify(options.data)),
-      request(app).get('/components/valid'),
-      request(app).post('/components/valid', JSON.stringify(options.data)),
-      request(app).delete('/components/valid')
+      request(app).put('/_components/valid', JSON.stringify(options.data)),
+      request(app).get('/_components/valid'),
+      request(app).post('/_components/valid', JSON.stringify(options.data)),
+      request(app).delete('/_components/valid')
     ]);
   });
 }

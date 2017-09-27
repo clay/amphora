@@ -45,12 +45,12 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
     });
 
-    describe('/users/:name', function () {
+    describe('/_users/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '(ignoreHost)/users/valid': data
+          '(ignoreHost)/_users/valid': data
         }});
       });
 

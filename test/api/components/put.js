@@ -15,7 +15,7 @@ describe(endpointName, function () {
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
-      cascadingTarget = 'localhost.example.com/components/validDeep',
+      cascadingTarget = 'localhost.example.com/_components/validDeep',
       addVersion = _.partial(replaceVersion, cascadingTarget),
       cascadingData = function (version) {
         return {a: 'b', c: {_ref: addVersion(version), d: 'e'}};
@@ -33,7 +33,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/components', function () {
+    describe('/_components', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -44,7 +44,7 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
     });
 
-    describe('/components/:name', function () {
+    describe('/_components/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -69,7 +69,7 @@ describe(endpointName, function () {
       acceptsJsonBody(path + '/', {name: 'valid'}, data, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
-    describe('/components/:name/schema', function () {
+    describe('/_components/:name/schema', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -81,7 +81,7 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'missing'}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });
     });
 
-    describe('/components/:name@:version', function () {
+    describe('/_components/:name@:version', function () {
       const path = this.title,
         version = 'def';
 
@@ -107,7 +107,7 @@ describe(endpointName, function () {
       acceptsJsonBody(path + '/', {name: 'valid', version}, data, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
-    describe('/components/:name/instances', function () {
+    describe('/_components/:name/instances', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -123,7 +123,7 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'missing'}, data, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
     });
 
-    describe('/components/:name/instances/:id', function () {
+    describe('/_components/:name/instances/:id', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -148,7 +148,7 @@ describe(endpointName, function () {
       acceptsJsonBody(path + '/', {name: 'valid', id: 'valid'}, data, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
-    describe('/components/:name/instances/:id.json', function () {
+    describe('/_components/:name/instances/:id.json', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -172,13 +172,13 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', id: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
-    describe('/components/:name/instances/:id@:version', function () {
+    describe('/_components/:name/instances/:id@:version', function () {
       let path = this.title,
         version = 'scheduled';
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid/instances/valid': data
+          '/_components/valid/instances/valid': data
         }});
       });
 

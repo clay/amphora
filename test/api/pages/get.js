@@ -44,36 +44,36 @@ describe(endpointName, function () {
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid': data.firstLevelComponent,
-          '/pages/valid': data.page,
-          '/pages/valid@valid': data.page
+          '/_pages/valid': data.page,
+          '/_pages/valid@valid': data.page
         }});
       });
 
       // only pages, and only unversioned
-      acceptsJson(path, {}, 200, '["localhost.example.com/pages/valid"]');
+      acceptsJson(path, {}, 200, '["localhost.example.com/_pages/valid"]');
     });
 
-    describe('/pages/@published', function () {
+    describe('/_pages/@published', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/components/valid': data.firstLevelComponent,
-          '/pages/valid': data.page,
-          '/pages/valid@published': data.page
+          '/_pages/valid': data.page,
+          '/_pages/valid@published': data.page
         }});
       });
 
       // only pages, and only unversioned
-      acceptsJson(path, {}, 200, '["localhost.example.com/pages/valid@published"]');
+      acceptsJson(path, {}, 200, '["localhost.example.com/_pages/valid@published"]');
     });
 
-    describe('/pages/:name', function () {
+    describe('/_pages/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/pages/valid': data.page
+          '/_pages/valid': data.page
         }});
       });
 
@@ -81,7 +81,7 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
     });
 
-    describe('/pages/:name.json', function () {
+    describe('/_pages/:name.json', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -91,7 +91,7 @@ describe(endpointName, function () {
           '/components/valid': data.firstLevelComponent,
           '/components/validCascading': data.firstLevelComponent,
           '/components/validDeep': data.secondLevelComponent,
-          '/pages/valid': data.page
+          '/_pages/valid': data.page
         }});
       });
 
@@ -99,12 +99,12 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
     });
 
-    describe('/pages/:name@:version', function () {
+    describe('/_pages/:name@:version', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/pages/valid@valid': data.page
+          '/_pages/valid@valid': data.page
         }});
       });
 

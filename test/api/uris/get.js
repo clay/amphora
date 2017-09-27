@@ -27,19 +27,19 @@ describe(endpointName, function () {
       const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: { '/uris/valid': data }});
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: { '/_uris/valid': data }});
       });
 
-      acceptsJson(path, {}, 200, '["localhost.example.com/uris/valid"]');
+      acceptsJson(path, {}, 200, '["localhost.example.com/_uris/valid"]');
       acceptsHtml(path, {}, 406, '406 text/html not acceptable');
       acceptsText(path, {}, 406, '406 text/plain not acceptable');
     });
 
-    describe('/uris/:name', function () {
+    describe('/_uris/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: { '/uris/valid': data }});
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: { '/_uris/valid': data }});
       });
 
       acceptsJson(path, {name: 'invalid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });

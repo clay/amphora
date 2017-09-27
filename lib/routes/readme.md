@@ -122,12 +122,12 @@ module.exports.put = function (ref, data) {
 ### Overview
 ```
 /pages
-/pages/:name
-/pages/:name.html
-/pages/:name.json
-/pages/:name@:version
-/pages/:name@:version.html
-/pages/:name@:version.json
+/_pages/:name
+/_pages/:name.html
+/_pages/:name.json
+/_pages/:name@:version
+/_pages/:name@:version.html
+/_pages/:name@:version.json
 ```
 
 Pages consist of a layout and a list of areas.  Each area defined in a page maps to a area in the layout template.  For example:
@@ -154,13 +154,13 @@ Publishing a page has a special convenience behavior where all components refere
 ## URIs
 
 ```
-/uris/<base64(:path)>
+/_uris/<base64(:path)>
 ```
 
 A URI is used to redirect some slug or URI to another page or component.  They can also redirect to other uris (establishing a 301 redirect), or several uris can point to the same resource.  URIs are stored as Base64, so:
 
-- `example.com` is `/uris/ZXhhbXBsZS5jb20=` => `/pages/jdskla@published`
-- `example.com/other/` is `/uris/ZXhhbXBsZS5jb20vb3RoZXI=` => `/pages/4revd3s@published`
+- `example.com` is `/_uris/ZXhhbXBsZS5jb20=` => `/_pages/jdskla@published`
+- `example.com/other/` is `/_uris/ZXhhbXBsZS5jb20vb3RoZXI=` => `/_pages/4revd3s@published`
 
 A URI is assumed to be pointing at the `@published` version if another version is not provided.  Therefore, only published content or specially tagged versions can be publicly exposed through URIs.
 
@@ -168,7 +168,7 @@ A URI is assumed to be pointing at the `@published` version if another version i
 
 ```
 /lists
-/lists/:id
+/_lists/:id
 ```
 
 Lists are a _temporary_ solution until search functionality is discussed.  It is currently used for the tags component and the autocomplete behavior as a temporary place to store lists of information.  It can store any list of data on a `PUT`, and return back the same list of data with a `GET`.
@@ -178,7 +178,7 @@ Lists are a _temporary_ solution until search functionality is discussed.  It is
 ### Overview
 ```
 /users
-/users/:id
+/_users/:id
 ```
 
 Each user has a `username` and `provider`, which determines how they authenticate over oauth. Users can also have other data, including `name`, `imageUrl`, and `title`.

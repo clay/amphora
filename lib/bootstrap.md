@@ -62,7 +62,7 @@ path so that the value does not start with a `/`.
 ```yaml
 #some file at /sites/my-site/bootstrap.yaml
 uris:
-  first-page.html: /pages/first-page
+  first-page.html: /_pages/first-page
 
 pages:
   first-page:

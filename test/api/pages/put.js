@@ -77,7 +77,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
     });
 
-    describe('/pages/:name', function () {
+    describe('/_pages/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -97,7 +97,7 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid'}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
-    describe('/pages/:name@:version', function () {
+    describe('/_pages/:name@:version', function () {
       let path = this.title,
         version = 'def';
 
@@ -112,8 +112,8 @@ describe(endpointName, function () {
           '/components/validCascading@valid': data.firstLevelComponent,
           '/components/validDeep': data.secondLevelComponent,
           '/components/validDeep@valid': data.secondLevelComponent,
-          '/pages/valid': data.page,
-          '/pages/valid@valid': data.page
+          '/_pages/valid': data.page,
+          '/_pages/valid@valid': data.page
         }});
       });
 

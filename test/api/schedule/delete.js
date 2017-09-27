@@ -13,7 +13,7 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      scheduleData = { at: new Date('2015-01-01').getTime(), publish: 'http://localhost.example.com/pages/valid' };
+      scheduleData = { at: new Date('2015-01-01').getTime(), publish: 'http://localhost.example.com/_pages/valid' };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();

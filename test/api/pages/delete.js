@@ -39,12 +39,12 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
     });
 
-    describe('/pages/:name', function () {
+    describe('/_pages/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/pages/valid': pageData
+          '/_pages/valid': pageData
         }});
       });
 
@@ -58,12 +58,12 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
-    describe('/pages/:name@:version', function () {
+    describe('/_pages/:name@:version', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/pages/valid@valid': pageData
+          '/_pages/valid@valid': pageData
         }});
       });
 

@@ -38,7 +38,7 @@ describe(endpointName, function () {
       acceptsText(path, {}, 405, '405 Method PUT not allowed');
     });
 
-    describe('/uris/:name', function () {
+    describe('/_uris/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -57,14 +57,14 @@ describe(endpointName, function () {
       acceptsTextBody(path, {name: 'valid'}, data, 200, data);
       acceptsTextBody(path, {name: 'missing'}, data, 200, data);
       // propagating versions shouldn't be here. Only published things can be public, so all uris are assumed to be @published already
-      acceptsTextBody(path, {name: 'valid'}, 'domain/pages/test@published', 400, '400 Cannot point uri at propagating version, such as @published');
+      acceptsTextBody(path, {name: 'valid'}, 'domain/_pages/test@published', 400, '400 Cannot point uri at propagating version, such as @published');
 
       // deny uris pointing to themselves
-      acceptsTextBody(path, {name: 'valid'}, 'localhost.example.com/uris/valid', 400, '400 Cannot point uri at itself');
+      acceptsTextBody(path, {name: 'valid'}, 'localhost.example.com/_uris/valid', 400, '400 Cannot point uri at itself');
       // deny uris with quotes
-      acceptsTextBody(path, {name: 'valid'}, '"localhost.example.com/uris/valid"', 400, '400 Destination cannot contain quotes');
+      acceptsTextBody(path, {name: 'valid'}, '"localhost.example.com/_uris/valid"', 400, '400 Destination cannot contain quotes');
       // deny trailing slashes
-      acceptsTextBody(path + '/', {name: 'valid'}, '"localhost.example.com/uris/valid"', 400, '400 Trailing slash on RESTful id in URL is not acceptable');
+      acceptsTextBody(path + '/', {name: 'valid'}, '"localhost.example.com/_uris/valid"', 400, '400 Trailing slash on RESTful id in URL is not acceptable');
     });
   });
 });

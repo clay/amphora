@@ -35,7 +35,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 405);
     });
 
-    describe('/users/:name', function () {
+    describe('/_users/:name', function () {
       const path = this.title;
 
       beforeEach(function () {

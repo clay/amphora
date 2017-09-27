@@ -34,12 +34,12 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 406, message406);
     });
 
-    describe('/users/:name', function () {
+    describe('/_users/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '(ignoreHost)/users/valid': data
+          '(ignoreHost)/_users/valid': data
         }});
       });
 

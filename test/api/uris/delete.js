@@ -36,12 +36,12 @@ describe(endpointName, function () {
       acceptsText(path, {}, 405, '405 Method DELETE not allowed');
     });
 
-    describe('/uris/:name', function () {
+    describe('/_uris/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/uris/valid': data
+          '/_uris/valid': data
         }});
       });
 
