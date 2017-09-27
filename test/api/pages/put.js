@@ -17,37 +17,37 @@ describe(endpointName, function () {
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       pageData = {
         url: 'http://localhost.example.com',
-        layout: 'localhost.example.com/components/layout',
-        center: 'localhost.example.com/components/valid',
-        side: ['localhost.example.com/components/valid@valid']
+        layout: 'localhost.example.com/_components/layout',
+        center: 'localhost.example.com/_components/valid',
+        side: ['localhost.example.com/_components/valid@valid']
       },
       cascadingPageData = {
         url: 'http://localhost.example.com',
-        layout: 'localhost.example.com/components/layoutCascading',
-        center: 'localhost.example.com/components/validCascading',
-        side: ['localhost.example.com/components/validCascading@valid']
+        layout: 'localhost.example.com/_components/layoutCascading',
+        center: 'localhost.example.com/_components/validCascading',
+        side: ['localhost.example.com/_components/validCascading@valid']
       },
-      deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
+      deepData = { deep: {_ref: 'localhost.example.com/_components/validDeep'} },
       layoutData = { someArea: ['center'] },
       componentData = { name: 'Manny', species: 'cat' },
-      cascadingTarget = 'localhost.example.com/components/validDeep',
+      cascadingTarget = 'localhost.example.com/_components/validDeep',
       versionedPageData = function (version) {
         return {
           url: 'http://localhost.example.com',
-          layout: 'localhost.example.com/components/layout@' + version,
-          center: 'localhost.example.com/components/valid@' + version,
-          side: ['localhost.example.com/components/valid@' + version]
+          layout: 'localhost.example.com/_components/layout@' + version,
+          center: 'localhost.example.com/_components/valid@' + version,
+          side: ['localhost.example.com/_components/valid@' + version]
         };
       },
       versionedDeepData = function (version) {
-        return { deep: {_ref: 'localhost.example.com/components/validDeep@' + version} };
+        return { deep: {_ref: 'localhost.example.com/_components/validDeep@' + version} };
       },
       cascadingReturnData = function (version) {
         return {
           url: 'http://localhost.example.com',
-          layout: 'localhost.example.com/components/layoutCascading@' + version,
-          center: 'localhost.example.com/components/validCascading@' + version,
-          side: ['localhost.example.com/components/validCascading@' + version]
+          layout: 'localhost.example.com/_components/layoutCascading@' + version,
+          center: 'localhost.example.com/_components/validCascading@' + version,
+          side: ['localhost.example.com/_components/validCascading@' + version]
         };
       },
       data = {
@@ -103,15 +103,15 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/layout': data.layout,
-          '/components/layout@valid': data.layout,
-          '/components/layoutCascading': data.firstLevelComponent,
-          '/components/valid': data.firstLevelComponent,
-          '/components/valid@valid': data.firstLevelComponent,
-          '/components/validCascading': data.firstLevelComponent,
-          '/components/validCascading@valid': data.firstLevelComponent,
-          '/components/validDeep': data.secondLevelComponent,
-          '/components/validDeep@valid': data.secondLevelComponent,
+          '/_components/layout': data.layout,
+          '/_components/layout@valid': data.layout,
+          '/_components/layoutCascading': data.firstLevelComponent,
+          '/_components/valid': data.firstLevelComponent,
+          '/_components/valid@valid': data.firstLevelComponent,
+          '/_components/validCascading': data.firstLevelComponent,
+          '/_components/validCascading@valid': data.firstLevelComponent,
+          '/_components/validDeep': data.secondLevelComponent,
+          '/_components/validDeep@valid': data.secondLevelComponent,
           '/_pages/valid': data.page,
           '/_pages/valid@valid': data.page
         }});

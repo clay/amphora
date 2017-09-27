@@ -23,26 +23,26 @@ For a broader and less specific overview of routing, please see the [project's r
 ### Overview
 
 ```
-/components
-/components/:name
-/components/:name@:version
-/components/:name.html
-/components/:name.json
-/components/:name@:version.html
-/components/:name@:version.json
-/components/:name/instances
-/components/:name/instances/:id
-/components/:name/intsances/:id.html
-/components/:name/intsances/:id.json
-/components/:name/instances/:id@:version
-/components/:name/instances/:id@:version.html
-/components/:name/instances/:id@:version.json
+/_components
+/_components/:name
+/_components/:name@:version
+/_components/:name.html
+/_components/:name.json
+/_components/:name@:version.html
+/_components/:name@:version.json
+/_components/:name/instances
+/_components/:name/instances/:id
+/_components/:name/intsances/:id.html
+/_components/:name/intsances/:id.json
+/_components/:name/instances/:id@:version
+/_components/:name/instances/:id@:version.html
+/_components/:name/instances/:id@:version.json
 ```
 
 ### List of components
-`GET /components` will return a list of the available known components.  This will be all the components defined in the `/components` folder of the current application, and also any components installed through the node package manager (npm).  
+`GET /_components` will return a list of the available known components.  This will be all the components defined in the `/_components` folder of the current application, and also any components installed through the node package manager (npm).  
 
-Example: `GET /components`
+Example: `GET /_components`
 ```json
 [
   "text",
@@ -52,14 +52,14 @@ Example: `GET /components`
 ]
 ```
 
-`GET /components/:name/instances` will return a list of the available instances within a particular component type.
+`GET /_components/:name/instances` will return a list of the available instances within a particular component type.
 
-Example: `GET /components/text/instances`
+Example: `GET /_components/text/instances`
 ```json
 [
-  "/components/text/instances/abc",
-  "/components/text/instances/def",
-  "/components/text/instances/def@published"
+  "/_components/text/instances/abc",
+  "/_components/text/instances/def",
+  "/_components/text/instances/def@published"
 ]
 ```
 
@@ -68,11 +68,11 @@ Example: `GET /components/text/instances`
 You can grab the default data for a component, data for a specific instance, or even data for a specific version (of an instance). GETs and PUTs to these endpoints behave as you would expect from a RESTful api (they return what you send them). GETs and PUTs to the `.json` and `.html` extensions also work, but they'll return the composed (i.e. a component and its children) JSON and HTML, respectively.
 
 ### Modifying components
-`GET /components/:name[/instances/:id][@:version[.:extension]]` will return a component.  The form the data is based on the extension (.html, .json, .yaml), or the Accepts header of the request.  
+`GET /_components/:name[/instances/:id][@:version[.:extension]]` will return a component.  The form the data is based on the extension (.html, .json, .yaml), or the Accepts header of the request.  
 
 Requesting data without a version will return the latest saved version.  Some versions have special rules (see [Propagating Versions](#propagating-versions)), but any other version name can be used to specially tag any particular version.
 
-`PUT /components/:name[/instances/:id][@version]` will save the data such that `GET`ing the same uri will return exactly what was put there.
+`PUT /_components/:name[/instances/:id][@version]` will save the data such that `GET`ing the same uri will return exactly what was put there.
 
 ### Component Logic
 
@@ -111,7 +111,7 @@ module.exports.put = function (ref, data) {
   //return Promise with operations to be performed in a batch
   return Promise.resolve([{
     type: 'put',
-    key: '/components/text',
+    key: '/_components/text',
     value:'{"hey": "hey"}'}
   ]);
 };
@@ -133,11 +133,11 @@ module.exports.put = function (ref, data) {
 Pages consist of a layout and a list of areas.  Each area defined in a page maps to a area in the layout template.  For example:
 ```json
 {
-  "layout": "/components/feature-layout",
-  "center": ["/components/article/instances/3vf3"],
+  "layout": "/_components/feature-layout",
+  "center": ["/_components/article/instances/3vf3"],
   "side": [
-    "/components/share",
-    "/components/newsletter"
+    "/_components/share",
+    "/_components/newsletter"
   ]
 }
 ```

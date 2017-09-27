@@ -15,11 +15,11 @@ describe(endpointName, function () {
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       pageData = {
-        layout: 'localhost.example.com/components/layout',
-        center: 'localhost.example.com/components/valid',
-        side: ['localhost.example.com/components/valid@valid']
+        layout: 'localhost.example.com/_components/layout',
+        center: 'localhost.example.com/_components/valid',
+        side: ['localhost.example.com/_components/valid@valid']
       },
-      deepData = { deep: {_ref: 'localhost.example.com/components/validDeep'} },
+      deepData = { deep: {_ref: 'localhost.example.com/_components/validDeep'} },
       layoutData = { someArea: ['center'] },
       data = {
         page: pageData,
@@ -40,9 +40,9 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/layout': data.layout,
-          '/components/valid': data.firstLevelComponent,
-          '/components/valid@valid': data.firstLevelComponent,
+          '/_components/layout': data.layout,
+          '/_components/valid': data.firstLevelComponent,
+          '/_components/valid@valid': data.firstLevelComponent,
           '/_pages/valid': data.page
         }});
       });
@@ -52,10 +52,10 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {}, pageData, 201, function (result) {
         const body = result.body;
 
-        expect(body.center).to.match(/^localhost.example.com\/components\/valid\/instances\/.+/);
-        expect(body.side[0]).to.match(/^localhost.example.com\/components\/valid\/instances\/.+/);
+        expect(body.center).to.match(/^localhost.example.com\/_components\/valid\/instances\/.+/);
+        expect(body.side[0]).to.match(/^localhost.example.com\/_components\/valid\/instances\/.+/);
         expect(body.layout).to.equal(pageData.layout);
-        expect(body._ref).to.match(/^localhost.example.com\/pages\/.+/);
+        expect(body._ref).to.match(/^localhost.example.com\/_pages\/.+/);
       });
       acceptsHtml(path, {}, 406, '406 text/html not acceptable');
 

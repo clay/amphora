@@ -25,7 +25,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/uris', function () {
+    describe('/_uris', function () {
       const path = this.title;
 
       beforeEach(function () {

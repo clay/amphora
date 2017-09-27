@@ -7,9 +7,9 @@ _components:
         src: http://placekitten.com/400/600
         alt: adorable kittens
       -
-        _ref: /components/image2
+        _ref: /_components/image2
       -
-        _ref: localhost/components/what
+        _ref: localhost/_components/what
       # this next one does not save either
       -
   image2:

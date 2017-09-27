@@ -16,7 +16,7 @@ The bootstrap files are run in the following order:
 1. Within sites
 
     Each bootstrap file found in a site has the site's hostname and path prepended
-    to each `/uris`, `/pages`, and `/components` as well as all
+    to each `/_uris`, `/_pages`, and `/_components` as well as all
     `{ _refs: '' }` that begin with a `/`.  This is useful for creating different
     uris for different environments, such as development, qa, staging, and production.
 
@@ -32,20 +32,20 @@ This file would create three articles in each site; one base article that other
 articles can be cloned from, and two normal article instances.
 
 ```yaml
-#some file at /components/article/bootstrap.yml
+#some file at /_components/article/bootstrap.yml
 components:
   article:
-    #base component available at /components/article
+    #base component available at /_components/article
     title: Some title
     image: Some image
 
     instances:
-      #at /components/article/instances/first-article
+      #at /_components/article/instances/first-article
       first-article:
         title: Some title
         image: Some image
 
-      #at /components/article/instances/second-article
+      #at /_components/article/instances/second-article
       second-article:
         title: Some title
         image: Some image
@@ -66,29 +66,29 @@ uris:
 
 pages:
   first-page:
-    layout: /components/my-layout/instances/normal-page
-    content: /components/content-area/instances/first-page-content
+    layout: /_components/my-layout/instances/normal-page
+    content: /_components/content-area/instances/first-page-content
 
 components:
   my-layout:
     instances:
-      #at /components/my-layout/instances/normal-page
+      #at /_components/my-layout/instances/normal-page
       normal-page:
         header-title: Name of my site
         logo-url: Some image's url
 
   content-area:
     instances:
-      #at /components/content-area/instances/first-page-content
+      #at /_components/content-area/instances/first-page-content
       first-page-content:
         title: Some title
         words: Some words
         slideshow:
-          _ref: /components/slideshow/instances/first-slideshow
+          _ref: /_components/slideshow/instances/first-slideshow
 
   slideshow:
     instances:
-      #at /components/slideshow/instances/first-slideshow
+      #at /_components/slideshow/instances/first-slideshow
       first-slideshow:
         - first image
         - second image

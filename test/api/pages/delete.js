@@ -14,9 +14,9 @@ describe(endpointName, function () {
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       pageData = {
-        layout: 'localhost.example.com/components/layout',
-        center: 'localhost.example.com/components/valid',
-        side: ['localhost.example.com/components/valid@valid']
+        layout: 'localhost.example.com/_components/layout',
+        center: 'localhost.example.com/_components/valid',
+        side: ['localhost.example.com/_components/valid@valid']
       };
 
     beforeEach(function () {
