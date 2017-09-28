@@ -24,25 +24,25 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/schedule', function () {
+    describe('/_schedule', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/schedule/valid': scheduleData
+          '/_schedule/valid': scheduleData
         }});
       });
 
-      acceptsJson(path, {}, 200, '[{"_ref":"localhost.example.com/schedule/valid"}]');
+      acceptsJson(path, {}, 200, '[{"_ref":"localhost.example.com/_schedule/valid"}]');
       acceptsHtml(path, {}, 406);
     });
 
-    describe('/schedule/:name', function () {
+    describe('/_schedule/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/schedule/valid': scheduleData
+          '/_schedule/valid': scheduleData
         }});
       });
 

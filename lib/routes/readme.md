@@ -186,8 +186,8 @@ Each user has a `username` and `provider`, which determines how they authenticat
 ## Schedule
 
 ```
-/schedule
-/schedule/:id
+/_schedule
+/_schedule/:id
 ```
 
 Schedule is a list of pages or components that will be published in the future.  Items in this list will be published when the time passes.  Each item has two properties: `at`, which is a UNIX timestamp, and the `publish` property that is a reference to what will be published after that time.
@@ -196,11 +196,11 @@ When an item is scheduled, a `@scheduled` version is created on the item that wi
 
 ### List of scheduled items
 
-`GET /schedule` will return a list of scheduled items, such as:
+`GET /_schedule` will return a list of scheduled items, such as:
 ```json
 [
   {
-    "_ref": "domain.com/some-path/schedule/3f-abc",
+    "_ref": "domain.com/some-path/_schedule/3f-abc",
     "at": 44392893402093,
     "publish": "abc"
   }
@@ -209,7 +209,7 @@ When an item is scheduled, a `@scheduled` version is created on the item that wi
 
 ### Add a scheduled item
 
-`POST /schedule` will add an item to be published in the future. The format of the item should be of
+`POST /_schedule` will add an item to be published in the future. The format of the item should be of
 ```json
 {
   "at": 44392893402093,
@@ -221,7 +221,7 @@ where the `at` is a UNIX timestamp and the `publish` is a ref to a page or compo
 
 ### Remove a scheduled item
 
-`DELETE /schedule/:some-id` will remove the scheduling of a publish in the future.  On success, it will return a 200 with
+`DELETE /_schedule/:some-id` will remove the scheduling of a publish in the future.  On success, it will return a 200 with
 ```json
 {
   "at": 44392893402093,

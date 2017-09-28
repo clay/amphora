@@ -23,7 +23,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/schedule', function () {
+    describe('/_schedule', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -35,7 +35,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
     });
 
-    describe('/schedule/:name', function () {
+    describe('/_schedule/:name', function () {
       const path = this.title;
 
       beforeEach(function () {

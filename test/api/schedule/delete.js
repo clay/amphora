@@ -24,7 +24,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/schedule', function () {
+    describe('/_schedule', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -36,12 +36,12 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
     });
 
-    describe('/schedule/:name', function () {
+    describe('/_schedule/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/schedule/valid': scheduleData
+          '/_schedule/valid': scheduleData
         }});
       });
 
