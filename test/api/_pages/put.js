@@ -65,7 +65,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/pages', function () {
+    describe('/_pages', function () {
       const path = this.title;
 
       beforeEach(function () {

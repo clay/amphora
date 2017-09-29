@@ -13,7 +13,8 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      data = { username: 'manny', provider: 'google', auth: 'admin' };
+      data = { username: 'manny', provider: 'google', auth: 'admin' },
+      expectedData = _.assign({_ref: '/_users/bWFubnlAZ29vZ2xl'}, data);
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
@@ -23,7 +24,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/users', function () {
+    describe('/_users', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -42,11 +43,12 @@ describe(endpointName, function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname });
       });
 
-      acceptsJson(path, {name: 'valid'}, 200, {});
-      acceptsJson(path, {name: 'missing'}, 200, {});
+      // TODO: Remove these?
+      // acceptsJson(path, {name: 'valid'}, 200, {});
+      // acceptsJson(path, {name: 'missing'}, 200, {});
 
-      acceptsJsonBody(path, {name: 'valid'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'missing'}, data, 200, data);
+      acceptsJsonBody(path, {name: 'valid'}, data, 200, expectedData);
+      acceptsJsonBody(path, {name: 'missing'}, data, 200, expectedData);
 
       acceptsHtml(path, {name: 'valid'}, 406);
       acceptsHtml(path, {name: 'missing'}, 406);

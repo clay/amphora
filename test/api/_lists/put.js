@@ -24,7 +24,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/lists', function () {
+    describe('/_lists', function () {
       const path = this.title;
 
       acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method PUT not allowed' });

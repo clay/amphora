@@ -18,7 +18,9 @@ require('..');
 // });
 
 _.each(apiTests, function (test) {
-  require(test);
+  // if (test === '/Users/jonwinton/clay/amphora/test/api/_users/post.js') {
+    require(test);
+  // }
 });
 
 after(function () {

@@ -23,7 +23,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/users', function () {
+    describe('/_users', function () {
       const path = this.title;
 
       beforeEach(function () {
