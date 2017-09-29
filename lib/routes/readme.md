@@ -121,7 +121,7 @@ module.exports.put = function (ref, data) {
 
 ### Overview
 ```
-/pages
+/_pages
 /_pages/:name
 /_pages/:name.html
 /_pages/:name.json

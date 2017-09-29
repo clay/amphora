@@ -342,6 +342,8 @@ function stubFiles(sandbox) {
   files.getComponentPath.withArgs('missing').returns('missingThing');
   files.getComponentPath.withArgs('invalid').returns(null);
 
+  sandbox.stub(files, 'getComponents').returns(['clay-c5', 'clay-c3', 'clay-c4']);
+
   sandbox.stub(files, 'fileExists');
   files.fileExists.withArgs(`${process.cwd()}/public`).returns(true);
 }
