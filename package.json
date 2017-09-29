@@ -53,7 +53,7 @@
     "coveralls": "^2.11.2",
     "eslint": "^4.3.0",
     "istanbul": "^0.4.5",
-    "mocha": "3.5.0",
+    "mocha": "^3.5.0",
     "sinon": "^1.14.0",
     "supertest": "^3.0.0"
   },
