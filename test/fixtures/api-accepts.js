@@ -142,7 +142,8 @@ function acceptsJsonBody(method) {
  */
 function acceptsJson(method) {
   return function (path, replacements, status, data) {
-    createTest({
+
+    return createTest({
       description: JSON.stringify(replacements) + ' accepts json',
       path,
       method,
@@ -342,7 +343,7 @@ function stubFiles(sandbox) {
   files.getComponentPath.withArgs('invalid').returns(null);
 
   sandbox.stub(files, 'fileExists');
-  files.fileExists.withArgs('public').returns(true);
+  files.fileExists.withArgs(`${process.cwd()}/public`).returns(true);
 }
 
 function stubSchema(sandbox) {
@@ -351,7 +352,7 @@ function stubSchema(sandbox) {
 
   stubGet.withArgs('validThing').returns({some: 'schema', thatIs: 'valid'});
   stubGet.withArgs('missingThing').throws(new Error('File not found.'));
-  stubGetPath.withArgs('validThing').returns('components/validThing/schema.yml');
+  stubGetPath.withArgs('validThing').returns('_components/validThing/schema.yml');
   stubGetPath.withArgs('missingThing').throws(new Error('File not found.'));
   return sandbox;
 }
@@ -425,6 +426,7 @@ function beforeTesting(suite, options) {
   stubRenderPage(options.sandbox);
   stubLogging(options.sandbox);
   stubUid(options.sandbox);
+  routes.setLog(_.noop);
   routes.addHost({
     router: app,
     hostname: host,
@@ -465,15 +467,17 @@ function beforeEachTest(options) {
   stubRenderPage(options.sandbox);
   stubLogging(options.sandbox);
   stubUid(options.sandbox);
+  routes.setLog(_.noop);
   routes.addHost({
     router: app,
     hostname: host,
     providers: ['apikey']
   });
 
-
   return db.clear().then(function () {
+
     if (options.pathsAndData) {
+
       return bluebird.all(_.map(options.pathsAndData, function (data, path) {
         let ignoreHost = path.indexOf(ignoreString) > -1;
 
@@ -503,6 +507,7 @@ function beforeRenderTest(options) {
   stubRenderPage(options.sandbox);
   stubLogging(options.sandbox);
   stubUid(options.sandbox);
+  routes.setLog(_.noop);
   routes.addHost({
     router: app,
     hostname: host,
