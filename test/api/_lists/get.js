@@ -17,8 +17,7 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-
-      return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {'/_lists/valid': data} })
+      return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {'/_lists/valid': data} });
     });
 
     afterEach(function () {
@@ -28,20 +27,20 @@ describe(endpointName, function () {
     describe('/_lists', function () {
       const path = this.title;
 
-      // acceptsJson(path, {}, 200, '["localhost.example.com/_lists/valid"]');
+      acceptsJson(path, {}, 200, '["localhost.example.com/_lists/valid"]');
       acceptsHtml(path, {}, 406);
     });
 
-    // describe('/_lists/:name', function () {
-    //   const path = this.title;
-    //
-    //   acceptsJson(path, {name: 'invalid'}, 404);
-    //   acceptsJson(path, {name: 'valid'}, 200, '["item1","item2"]');
-    //   acceptsJson(path, {name: 'missing'}, 404);
-    //
-    //   acceptsHtml(path, {name: 'invalid'}, 406);
-    //   acceptsHtml(path, {name: 'valid'}, 406);
-    //   acceptsHtml(path, {name: 'missing'}, 406);
-    // });
+    describe('/_lists/:name', function () {
+      const path = this.title;
+
+      acceptsJson(path, {name: 'invalid'}, 404);
+      acceptsJson(path, {name: 'valid'}, 200, '["item1","item2"]');
+      acceptsJson(path, {name: 'missing'}, 404);
+
+      acceptsHtml(path, {name: 'invalid'}, 406);
+      acceptsHtml(path, {name: 'valid'}, 406);
+      acceptsHtml(path, {name: 'missing'}, 406);
+    });
   });
 });
