@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Log In - Clay</title>
+    <style>
+      .flash-error,
+      .header,
+      .details,
+      .button {
+        font-family: Arial, sans-serif;
+      }
+
+      .login-page {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .flash-error {
+        background-color: #ff9696;
+        border: 1px solid #ff2e2e;
+        border-radius: 4px;
+        max-width: 90vw;
+        padding: 10px;
+        position: absolute;
+        top: 10px;
+      }
+
+      .login-options {
+        max-width: 600px;
+        min-height: 60vh;
+        width: 90vw;
+      }
+
+      .clay-logo {
+        margin: 30px auto 0;
+        max-width: 100%;
+        width: 300px;
+      }
+
+      .header,
+      .details {
+        text-align: center;
+      }
+
+      .buttons {
+        align-items: flex-start;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+      }
+
+      .button {
+        align-items: center;
+        background-color: #fff;
+        border: 1px solid #aaa;
+        border-radius: 4px;
+        display: flex;
+        flex: 1 0 150px;
+        flex-direction: column;
+        justify-content: flex-start;
+        margin: 10px;
+        padding: 20px 10px;
+        transition: background-color 150ms ease-out;
+      }
+
+      .button:hover {
+        background-color: #fafafa;
+      }
+
+      .button,
+      .button:hover,
+      .button:active,
+      .button:visited {
+        color: #666;
+        text-decoration: none;
+      }
+
+      .button-icon,
+      .button-icon svg {
+        fill: #666;
+        max-height: 50px;
+        max-width: 50px;
+      }
+
+      .button-text {
+        margin-top: 10px;
+      }
+    </style>
+</head>
+<body class="login-page">
+  {{#each flash.error}}
+    <div class="flash-error">{{ this }}</div>
+  {{/each}}
+  <div class="login-options">
+    <div class="clay-logo">
+      <a href="{{path}}" title="Back to site">{{> clay-logo }}</a>
+    </div>
+    {{#with user }}
+      {{#if name}}
+        <h1 class="header">Welcome, {{ name }}</h1>
+      {{else}}
+        <h1 class="header">Welcome, {{ username }}</h1>
+      {{/if}}
+      <p class="details">You are currently logged in to Clay</p>
+    {{else}}
+      <h1 class="header">Log in to Clay</h1>
+      <p class="details">Please choose the provider attached to your account</p>
+    {{/with}}
+    <div class="buttons">
+      {{#if user}}
+        <a class="button logout" href="{{ logoutLink }}" title="Log Out">
+          <div class="button-icon">{{> logout }}</div>
+          <span class="button-text">Log out</span>
+        </a>
+      {{else}}
+        {{#each currentProviders }}
+          <a class="button {{this.name}}" href="{{ this.url }}" title="{{ this.title }}">
+            <div class="button-icon">{{> ( icon ) }}</div>
+            <span class="button-text">{{ this.title }}</span>
+          </a>
+        {{/each}}
+      {{/if}}
+    </div>
+  </div>
+</body>
+</html>

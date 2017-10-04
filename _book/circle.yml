@@ -1,0 +1,9 @@
+machine:
+  timezone:
+    America/New_York
+  node:
+    version: 6.11.0
+test:
+  post:
+    - cp -r ./coverage/* $CIRCLE_ARTIFACTS
+    - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js

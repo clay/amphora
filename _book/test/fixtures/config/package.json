@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@a/clay-c5": "v1.1.1",
+    "clay-c3": "v1.1.1",
+    "clay-c4": "v1.1.1"
+  }
+}

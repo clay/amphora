@@ -1,0 +1,21 @@
+.DS_Store
+.idea
+
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.iml
+
+npm-debug.log
+node_modules
+coverage.html
+coverage
+
+# config
+config/*.yaml
+!config/default.yaml

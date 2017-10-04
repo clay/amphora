@@ -1,0 +1,14 @@
+{
+  "gitbook": "3.2.3",
+  "title": "Amphora",
+  "root": "./",
+  "structure": {
+    "summary": "SUMMARY.md"
+  },
+  "plugins": ["github", "anchorjs"],
+  "pluginsConfig": {
+    "github": {
+      "url": "https://github.com/clay/amphora/"
+    }
+  }
+}
