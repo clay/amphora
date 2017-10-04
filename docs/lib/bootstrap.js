@@ -1,5 +1,4 @@
 'use strict';
-
 const path = require('path'),
   files = require('./files'),
   _ = require('lodash'),
@@ -10,9 +9,7 @@ const path = require('path'),
   references = require('./services/references'),
   db = require('./services/db'),
   log = require('./services/log').withStandardPrefix(__filename),
-  chalk = require('chalk'),
-  highland = require('highland');
-var ERRORING_COMPONENTS = [];
+  chalk = require('chalk');
 
 /**
  * Get yaml file as object
@@ -213,17 +210,11 @@ function load(data, site) {
   _.each(compData.uris, function (page, uri) {
     log('info', 'bootstrapped: ' + chalk.blue(uri) + chalk.dim(' => ') + chalk.dim(page));
   });
-
-
-
-  promiseComponentsOps = saveWithInstances(`${prefix}/components/`, compData.components, function (name, item) {
+  promiseComponentsOps = saveWithInstances(prefix + '/components/', compData.components, function (name, item) {
     return bluebird.join(
       components.getPutOperations(name, _.cloneDeep(item))
     ).then(_.flatten);
   });
-
-
-
   promisePagesOps = saveObjects(prefix + '/pages/', compData.pages, function (name, item) {
     return [
       getPutOperation(name, item)
@@ -267,53 +258,20 @@ function bootstrapComponents(site) {
   return bluebird.all(_.map(components, function (component) {
     const componentPath = files.getComponentPath(component);
 
-    return bootstrapPath(componentPath, site).catch(bootstrapError(component));
+    return bootstrapPath(componentPath, site).catch(function () {});
   }));
 }
 
-function bootstrapError(component) {
-  return function (e) {
-    if (ERRORING_COMPONENTS.indexOf(component) > -1) {
-      return false;
-    }
-
-    ERRORING_COMPONENTS.push(component);
-    log('error', `Error bootstrapping component ${component}: ${e.message}`);
-    return false;
-  }
-}
-
 module.exports = function () {
-  const sites = siteService.sites(),
-    sitesArray = _.map(Object.keys(sites), site => sites[site]);
+  const sites = siteService.sites();
 
-  return highland(sitesArray)
-    .flatMap(site => {
-      return highland(
-        bootstrapPath(site.dir, site)
-          .then(resp => {
-            return site;
-          })
-          .catch(e => {
-            log('debug', `No bootstrap file found for site: ${site.slug}`);
-          })
-      )
-    })
-    .map(site => {
-      return highland(
-        bootstrapComponents(site)
-          .then(function () {
-            return { site: site.slug, errors: false };
-          })
-          .catch(function () {
-            return { site: site.slug, errors: true };
-          })
-      );
-    })
-    .merge()
-    .filter(siteStatus => siteStatus.errors )
-    .collect()
-    .toPromise(bluebird);
+  return bluebird.all(_.map(sites, function (site) {
+    return bootstrapComponents(site).then(function () {
+      return bootstrapPath(site.dir, site).catch(function (ex) {
+        log('error', 'bootstrap error:', ex);
+      });
+    });
+  }));
 };
 
 module.exports.bootstrapPath = bootstrapPath;

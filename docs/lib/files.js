@@ -17,11 +17,6 @@ let _ = require('lodash'),
   temp2env = require('template2env'),
   req = require,
   allowedEnvFiles = ['local', 'config'];
-const IGNORED_CLAY_MODULES = [
-    'clay-kiln',
-    'clay-log',
-    'clay-sitemaps'
-];
 
 /**
  * @param {string} filename
@@ -104,7 +99,7 @@ function getFolders(dir) {
  */
 function getComponents() {
   const npmComponents = _(pkg.dependencies).map(function (version, name) {
-    if (_.includes(name, 'clay-') && !_.includes(IGNORED_CLAY_MODULES, name)) {
+    if (_.includes(name, 'clay-')) {
       // this is a clay component
       if (_.includes(name, path.sep)) {
         // this is a scoped npm component!

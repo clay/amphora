@@ -48,8 +48,7 @@ module.exports = function (options = {}) {
   }
 
   // look for bootstraps in components
-  return bootstrap().then(function (resp) {
-    console.log(`womp`, resp);
+  return bootstrap().then(function () {
     return router;
   });
 };

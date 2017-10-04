@@ -1,10 +1,10 @@
 {
   "gitbook": "3.2.3",
   "title": "Amphora",
-  "root": "./",
   "structure": {
     "summary": "SUMMARY.md"
   },
+  "root": "./",
   "plugins": ["github", "anchorjs"],
   "pluginsConfig": {
     "github": {

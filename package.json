@@ -7,8 +7,10 @@
     "test": "npm run eslint && npm run mocha",
     "eslint": "eslint --max-warnings 0 lib test",
     "mocha": "istanbul cover _mocha",
+    "docs:clean": "rimraf ./docs",
     "docs:prepare": "gitbook install",
-    "docs:watch": "npm run docs:prepare && gitbook serve"
+    "docs:watch": "npm run docs:prepare && gitbook serve",
+    "docs:build": "gitbook build ./ ./docs"
   },
   "repository": {
     "type": "git",
