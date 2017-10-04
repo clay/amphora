@@ -9,14 +9,16 @@ const _ = require('lodash'),
   db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
   render = require('../../lib/render'),
-  log = require('../../lib/services/log'),
   schema = require('../../lib/schema'),
   siteService = require('../../lib/services/sites'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
   uid = require('../../lib/uid'),
   ignoreString = '(ignoreHost)';
-let app, host;
+var app, host,
+  log = require('../../lib/services/logger').setup({
+    file: __filename
+  });
 
 /**
  * @param {object} replacements
