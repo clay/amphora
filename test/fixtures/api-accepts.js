@@ -9,14 +9,13 @@ const _ = require('lodash'),
   db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
   render = require('../../lib/render'),
-  log = require('../../lib/services/log'),
   schema = require('../../lib/schema'),
   siteService = require('../../lib/services/sites'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
   uid = require('../../lib/uid'),
   ignoreString = '(ignoreHost)';
-let app, host;
+var app, host;
 
 /**
  * @param {object} replacements
@@ -341,6 +340,8 @@ function stubFiles(sandbox) {
   files.getComponentPath.withArgs('missing').returns('missingThing');
   files.getComponentPath.withArgs('invalid').returns(null);
 
+  sandbox.stub(files, 'getComponents').returns(['clay-c5', 'clay-c3', 'clay-c4']);
+
   sandbox.stub(files, 'fileExists');
   files.fileExists.withArgs('public').returns(true);
 }
@@ -394,11 +395,6 @@ function stubRenderPage(sandbox) {
   return sandbox;
 }
 
-function stubLogging(sandbox) {
-  sandbox.stub(log);
-  return sandbox;
-}
-
 function stubUid(sandbox) {
   sandbox.stub(uid);
   uid.get.returns('some-uid');
@@ -423,7 +419,6 @@ function beforeTesting(suite, options) {
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
-  stubLogging(options.sandbox);
   stubUid(options.sandbox);
   routes.addHost({
     router: app,
@@ -463,7 +458,6 @@ function beforeEachTest(options) {
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
-  stubLogging(options.sandbox);
   stubUid(options.sandbox);
   routes.addHost({
     router: app,
@@ -501,7 +495,6 @@ function beforeRenderTest(options) {
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
-  stubLogging(options.sandbox);
   stubUid(options.sandbox);
   routes.addHost({
     router: app,
