@@ -47,7 +47,6 @@
     "passport-ldapauth": "^0.6.0",
     "passport-slack": "0.0.6",
     "passport-twitter": "^1.0.4",
-    "rimraf": "^2.6.2",
     "template2env": "^1.0.4",
     "through2-filter": "^2.0.0",
     "through2-map": "^3.0.0",
@@ -62,6 +61,7 @@
     "gitbook-cli": "^2.3.2",
     "istanbul": "^0.4.0",
     "mocha": "^3.5.0",
+    "rimraf": "^2.6.2",
     "sinon": "^1.14.0",
     "supertest": "^3.0.0"
   },
