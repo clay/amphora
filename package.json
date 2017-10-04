@@ -19,6 +19,12 @@
   "homepage": "https://github.com/nymag/amphora",
   "author": "New York Media",
   "license": "MIT",
+  "files": [
+    "lib",
+    "views",
+    "index.js",
+    "amphora-logo.svg"
+  ],
   "dependencies": {
     "basic-auth": "^1.0.4",
     "bluebird": "^3.0.0",
