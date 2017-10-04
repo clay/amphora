@@ -1,12 +1,17 @@
 {
   "name": "amphora",
-  "version": "4.1.0",
+  "version": "4.1.1-beta.1",
   "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
   "scripts": {
     "test": "npm run eslint && npm run mocha",
     "eslint": "eslint --max-warnings 0 lib test",
-    "mocha": "istanbul cover _mocha"
+    "mocha": "istanbul cover _mocha",
+    "docs:clean": "rimraf ./_book",
+    "docs:prepare": "gitbook install",
+    "docs:watch": "npm run docs:prepare && gitbook serve",
+    "docs:build": "gitbook build ./",
+    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:clay/amphora gh-pages --force"
   },
   "repository": {
     "type": "git",
@@ -52,8 +57,12 @@
     "chai": "^3.4.0",
     "coveralls": "^2.11.2",
     "eslint": "^4.3.0",
+    "gitbook-cli": "^2.3.2",
+    "gitbook-plugin-anchorjs": "^1.1.1",
+    "gitbook-plugin-github": "^2.0.0",
     "istanbul": "^0.4.0",
     "mocha": "^3.5.0",
+    "rimraf": "^2.6.2",
     "sinon": "^1.14.0",
     "supertest": "^3.0.0"
   },
