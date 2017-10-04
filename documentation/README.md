@@ -6,5 +6,5 @@
 * [Life Cycle](documentation/lifecycle/README.md)
   * [Startup Cycle](documentation/lifecycle/startup.md)
     * [Bootstrap](documentation/lifecycle/startup/bootstrap.md)
-  * Request Cycle
+  * Request Cycle (Coming Soon!)
 * Publishing (Coming Soon!)
