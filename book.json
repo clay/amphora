@@ -5,7 +5,7 @@
     "summary": "SUMMARY.md"
   },
   "root": "./",
-  "plugins": ["github", "anchorjs"],
+  "plugins": ["github", "anchorjs", "accordion"],
   "pluginsConfig": {
     "github": {
       "url": "https://github.com/clay/amphora/"
