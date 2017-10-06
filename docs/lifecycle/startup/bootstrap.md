@@ -1,6 +1,8 @@
-# Bootstrap [ Work In Progress ]
+# Bootstrap
 
-Bootstrapping is the process by which Amphora will look for specific files in your implementation to use add to the database. Whenever the server first starts up, Amphora will look into each component directory and each site directory for a `bootstrap.(yml|yaml)` file. This YAML file will be converted into JSON and then the values will be written to the database for _each site_ and _each component in a site_.
+Bootstrapping is the process by which Amphora will look for specific data in your implementation to add to the database. This process runs _EVERYTIME_ the server restarts.
+
+Whenever the process first starts up, Amphora will look into each component directory and each site directory for a `bootstrap.(yml|yaml)` file. This YAML file will be converted into JSON and then the values will be written to the database for each site.
 
 ## Why is this necessary?
 
@@ -8,6 +10,21 @@ Bootstrapping is a great time for taking care of two actions:
 
 - Adding default data to a component
 - Adding component instances to the database _that will never change_ from user input
+
+## Skipping Bootstrapping
+
+As of [Amphora 4.2.0](https://github.com/clay/amphora/releases/tag/v4.2.0) the bootstrapping process can be skipped. This is useful when developing server-side services for your implementation as it allows for more rapid startups on larger Clay instances, but this can be dangerous.
+
+As mentioned above, bootstrapping is great for seeding the default data for a component or site. If bootstrapping is turned off and you add a new component to your instance, the default data will not be added to your local database. For this reason it's encouraged to only use this feature when you know you won't need to the bootstrap process to run **and never in production environments**.
+
+To turn off bootstrapping, simply pass the `boostrap` property into Amphora at instantiation time with a `false` value:
+
+```javascript
+amphora({
+  // ...some other args
+  bootstrap: false
+})
+```
 
 ### Default Data
 

@@ -15,4 +15,4 @@ All of these processes are coordinated in [`setup.js`](https://github.com/clay/a
 * Registering Plugins (Coming Soon!)
 * Add Site(s) (Coming Soon!)
 * Register Renderers/Environment Variables (Coming Soon!)
-* [Bootstrap](./startup/bootstrap.md)
+* [Bootstrap](startup/bootstrap.md)
