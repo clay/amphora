@@ -13,11 +13,11 @@ chai.config.truncateThreshold = 0;
 // make sure the index file can be loaded at least
 require('..');
 
-_.each(tests, function (test) {
-  require(test);
-});
+// _.each(apiTests, function (test) {
+//   require(test);
+// });
 
-_.each(apiTests, function (test) {
+_.each(tests, function (test) {
   require(test);
 });
 

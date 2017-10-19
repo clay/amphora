@@ -5,7 +5,7 @@ Amphora
 
 _"A new way to organize, edit, and deliver the web, one component at a time."_
 
-[![Circle CI](https://circleci.com/gh/nymag/amphora/tree/master.svg?style=svg)](https://circleci.com/gh/nymag/amphora/tree/master) [![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&service=github&t=WhTOg8)](https://coveralls.io/github/nymag/amphora?branch=master)
+[![CircleCI](https://circleci.com/gh/clay/amphora.svg?style=svg)](https://circleci.com/gh/clay/amphora) [![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&service=github&t=WhTOg8)](https://coveralls.io/github/nymag/amphora?branch=master)
 
 Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://www,thecut.com/), [Grub Street](http://www.grubstreet.com/).  
 Created by New York Media.
@@ -81,7 +81,7 @@ return amphora({
     default: 'html',
     html: amphoraHtml
   }
-}).then(function (s erver) {
+}).then(function (server) {
   server.listen(port);
 });
 ```
