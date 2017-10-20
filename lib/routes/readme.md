@@ -94,29 +94,6 @@ module.exports.save = function (ref, data, locals) {
 
 You may pass `componenthooks=false` as a query param when doing API calls if you want to completely bypass the `model.js` (e.g. if you've already run through the logic client-side).
 
-### Legacy Server Logic
-
-This feature is deprecated as of amphora v2.11.0 and will be removed in the next major version (it is supplanted by the isomorphic `model.js` files). Legacy server-side logic lives in a `server.js` or `index.js` file in the component's folder, and has a few differences from the `model.js`:
-
-* the default exported function (run on `GET`) does not automatically receive data from the database, and must fetch it manually
-* the `put()` should return a database operation or array of operations (which may be wrapped in promises), rather than the component data itself
-* these files are _only_ run server-side, and will not be optimised to work in kiln
-
-```js
-module.exports = function (ref, locals) {
-  //return Promise with data
-  return Promise.resolve({"hey": "hey"});
-};
-module.exports.put = function (ref, data) {
-  //return Promise with operations to be performed in a batch
-  return Promise.resolve([{
-    type: 'put',
-    key: '/_components/text',
-    value:'{"hey": "hey"}'}
-  ]);
-};
-```
-
 ## Pages
 
 ### Overview

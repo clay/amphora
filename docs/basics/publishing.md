@@ -1,7 +1,7 @@
 # Publishing
 
 > #### danger::API Notice
-> These docs refer to Amphora 4.3 and above. Amphora versions pre-4.3 used the `resolvePublishing` API which required returning the entire page data object with `url`, `customUrl`, `urlHistory` properties attached. The `resolvePublishing` API will be completely deprecated in Amphora 5.
+> These docs refer to Amphora 4.3 and above. Amphora versions pre-4.3 used the `resolvePublishing` API which required returning the entire page data object with `url`, `customUrl`, `urlHistory` properties attached. The `resolvePublishing` API are completely deprecated in Amphora 5.
 
 When setting up a site in your Clay instance you add a controller (`index.js` file) to define the rules around your sites. One of the rules you can define is _how to determine what url to publish a page to_. This can be done in a number of ways, whether it's just using the current date or analyzing the data in the content of the page. The implementation is your decision (as long as the url matches a defined Express route).
 
