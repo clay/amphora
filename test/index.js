@@ -21,7 +21,6 @@ _.each(tests, function (test) {
   require(test);
 });
 
-
 after(function () {
   require('./fixtures/enforce-performance')(this);
 });
