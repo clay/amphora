@@ -37,7 +37,7 @@ describe(endpointName, function () {
 
       acceptsJsonBody(path, {}, {}, 400, { message: 'Missing "at" property as number.', code: 400 });
       acceptsJsonBody(path, {}, {at: time}, 400, { message: 'Missing "publish" property as valid url.', code: 400 });
-      acceptsJsonBody(path, {}, {at: time, publish: 'http://abc'}, 201, { _ref: 'localhost.example.com/schedule/some-uid', at: time, publish: 'http://abc' });
+      acceptsJsonBody(path, {}, {at: time, publish: 'http://abc'}, 201, { _ref: 'localhost.example.com/schedule/YWJj', at: time, publish: 'http://abc' });
     });
 
     describe('/schedule/:name', function () {
