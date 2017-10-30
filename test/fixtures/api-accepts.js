@@ -5,6 +5,7 @@ const _ = require('lodash'),
   request = require('supertest'),
   files = require('../../lib/files'),
   components = require('../../lib/services/components'),
+  references = require('../../lib/services/references'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
@@ -281,7 +282,10 @@ function createsNewVersion(method) {
 function cascades(method) {
   // eslint-disable-next-line
   return function (path, replacements, data, cascadingTarget, cascadingData) {
-    const realPath = getRealPath(replacements, path);
+    const realPath = getRealPath(replacements, path),
+      exSite = {slug: 'example', host: 'localhost.example.com', path: '/', prefix: 'localhost.example.com/'};
+
+    data = JSON.parse(references.refPrefixToSlug(JSON.stringify(data), exSite, true));
 
     it(realPath + ' cascades to ' + cascadingTarget, function () {
       return request(app)[method](realPath)
@@ -293,7 +297,7 @@ function cascades(method) {
         .expect(200)
         .then(function () {
           // expect cascading data to now exist
-          return db.get(cascadingTarget).then(JSON.parse).then(function (result) {
+          return db.get(references.uriSwapInSlug(cascadingTarget, exSite)).then(JSON.parse).then(function (result) {
             expect(result).to.deep.equal(cascadingData);
           });
         });
@@ -328,6 +332,7 @@ function stubSiteConfig(sandbox) {
       host,
       path: '/',
       slug: 'example',
+      prefix: 'localhost.example.com/',
       assetDir: 'public',
       assetPath: '/'
     }
@@ -429,10 +434,12 @@ function beforeTesting(suite, options) {
   });
 
   return db.clear().then(function () {
+    const exSite = {slug: 'example', host, path: '/'};
+
     return bluebird.all([
-      request(app).put('/_components/valid', JSON.stringify(options.data)),
+      request(app).put('/_components/valid', references.refPrefixToSlug(JSON.stringify(options.data), exSite)),
       request(app).get('/_components/valid'),
-      request(app).post('/_components/valid', JSON.stringify(options.data)),
+      request(app).post('/_components/valid', references.refPrefixToSlug(JSON.stringify(options.data), exSite)),
       request(app).delete('/_components/valid')
     ]);
   });
@@ -480,10 +487,10 @@ function beforeEachTest(options) {
         }
 
         if (typeof data === 'object') {
-          data = JSON.stringify(data);
+          data = references.refPrefixToSlug(JSON.stringify(data), {slug: 'example', host, path: '/'});
         }
 
-        return db.put(`${ignoreHost ? '' : host}${path}`, data);
+        return db.put(`${ignoreHost ? '' : 'example'}${path}`, data);
       }));
     }
   });
