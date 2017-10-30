@@ -28,6 +28,7 @@
     "chain-of-promises": "^1.0.0",
     "chalk": "^2.1.0",
     "clay-log": "^1.2.0",
+    "clayutils": "^1.0.0",
     "cuid": "^1.2.5",
     "eventify": "^2.0.0",
     "express": "^4.16.1",

@@ -4,7 +4,7 @@ const _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
-  replaceVersion = require('../../../lib/services/references').replaceVersion,
+  replaceVersion = require('clayutils').replaceVersion,
   sinon = require('sinon');
 
 describe(endpointName, function () {
