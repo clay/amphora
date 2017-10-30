@@ -14,6 +14,7 @@ const _ = require('lodash'),
   siteService = require('../../lib/services/sites'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
+  clayUtils = require('clayutils'),
   uid = require('../../lib/uid'),
   ignoreString = '(ignoreHost)';
 var app, host;
@@ -297,7 +298,7 @@ function cascades(method) {
         .expect(200)
         .then(function () {
           // expect cascading data to now exist
-          return db.get(references.uriSwapInSlug(cascadingTarget, exSite)).then(JSON.parse).then(function (result) {
+          return db.get(clayUtils.uriPrefixToSlug(cascadingTarget, exSite)).then(JSON.parse).then(function (result) {
             expect(result).to.deep.equal(cascadingData);
           });
         });
