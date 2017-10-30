@@ -17,7 +17,7 @@ describe(endpointName, function () {
       pageData = {
         layout: 'localhost.example.com/_components/layout',
         center: 'localhost.example.com/_components/valid',
-        side: ['localhost.example.com/_components/valid@valid']
+        side: ['localhost.example.com/_components/valid']
       },
       deepData = { deep: {_ref: 'localhost.example.com/_components/validDeep'} },
       layoutData = { someArea: ['center'] },
@@ -42,7 +42,7 @@ describe(endpointName, function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
           '/_components/layout': data.layout,
           '/_components/valid': data.firstLevelComponent,
-          '/_components/valid@valid': data.firstLevelComponent,
+          '/_components/valid': data.firstLevelComponent,
           '/_pages/valid': data.page
         }});
       });
