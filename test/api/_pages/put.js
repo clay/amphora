@@ -40,7 +40,7 @@ describe(endpointName, function () {
         };
       },
       versionedDeepData = function (version) {
-        return { deep: {_ref: 'localhost.example.com/_components/validDeep@' + version} };
+        return { deep: {_ref: 'example/_components/validDeep@' + version} };
       },
       cascadingReturnData = function (version) {
         return {
