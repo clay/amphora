@@ -5,7 +5,6 @@ const _ = require('lodash'),
   request = require('supertest'),
   files = require('../../lib/files'),
   components = require('../../lib/services/components'),
-  references = require('../../lib/services/references'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
@@ -286,7 +285,7 @@ function cascades(method) {
     const realPath = getRealPath(replacements, path),
       exSite = {slug: 'example', host: 'localhost.example.com', path: '/', prefix: 'localhost.example.com/'};
 
-    data = JSON.parse(references.refPrefixToSlug(JSON.stringify(data), exSite, true));
+    data = JSON.parse(clayUtils.jsonPrefixToSlug(JSON.stringify(data), exSite, true));
 
     it(realPath + ' cascades to ' + cascadingTarget, function () {
       return request(app)[method](realPath)
@@ -438,9 +437,9 @@ function beforeTesting(suite, options) {
     const exSite = {slug: 'example', host, path: '/'};
 
     return bluebird.all([
-      request(app).put('/_components/valid', references.refPrefixToSlug(JSON.stringify(options.data), exSite)),
+      request(app).put('/_components/valid', clayUtils.jsonPrefixToSlug(JSON.stringify(options.data), exSite)),
       request(app).get('/_components/valid'),
-      request(app).post('/_components/valid', references.refPrefixToSlug(JSON.stringify(options.data), exSite)),
+      request(app).post('/_components/valid', clayUtils.jsonPrefixToSlug(JSON.stringify(options.data), exSite)),
       request(app).delete('/_components/valid')
     ]);
   });
@@ -488,7 +487,7 @@ function beforeEachTest(options) {
         }
 
         if (typeof data === 'object') {
-          data = references.refPrefixToSlug(JSON.stringify(data), {slug: 'example', host, path: '/'});
+          data = clayUtils.jsonPrefixToSlug(JSON.stringify(data), {slug: 'example', host, path: '/'});
         }
 
         return db.put(`${ignoreHost ? '' : 'example'}${path}`, data);
