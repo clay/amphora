@@ -283,7 +283,7 @@ function cascades(method) {
   // eslint-disable-next-line
   return function (path, replacements, data, cascadingTarget, cascadingData) {
     const realPath = getRealPath(replacements, path),
-      exSite = {slug: 'example', host: 'localhost.example.com', path: '/', prefix: 'localhost.example.com/'};
+      exSite = {slug: 'example', host: 'localhost.example.com', path: '/', prefix: 'localhost.example.com'};
 
     data = JSON.parse(clayUtils.jsonPrefixToSlug(JSON.stringify(data), exSite, true));
 
