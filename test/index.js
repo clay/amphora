@@ -10,6 +10,10 @@ const glob = require('glob'),
 chai.config.showDiff = true;
 chai.config.truncateThreshold = 0;
 
+// Swallow unhandled reject errors. They're triggered a lot in testing
+// when as byproducts of stubbing.
+process.on('unhandledRejection', () => {});
+
 // make sure the index file can be loaded at least
 require('..');
 

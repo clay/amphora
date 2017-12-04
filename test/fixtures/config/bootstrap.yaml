@@ -1,5 +1,5 @@
 # designed to get 100% coverage, even the error cases
-components:
+_components:
   this-one: does-not-save
   image:
     instances:
@@ -7,22 +7,22 @@ components:
         src: http://placekitten.com/400/600
         alt: adorable kittens
       -
-        _ref: /components/image2
+        _ref: /_components/image2
       -
-        _ref: localhost/components/what
+        _ref: localhost/_components/what
       # this next one does not save either
       -
   image2:
     src: http://placekitten.com/400/600
     alt: adorable kittens
-pages:
+_pages:
   -
     layout: /a/b
     url: /x/y
     body: /c/d
     head:
       - /e/f
-uris:
+_uris:
   a: b
   c: /d
   /e: f

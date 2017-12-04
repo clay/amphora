@@ -13,6 +13,7 @@ const _ = require('lodash'),
   siteService = require('../../lib/services/sites'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
+  clayUtils = require('clayutils'),
   uid = require('../../lib/uid'),
   ignoreString = '(ignoreHost)';
 var app, host;
@@ -141,7 +142,8 @@ function acceptsJsonBody(method) {
  */
 function acceptsJson(method) {
   return function (path, replacements, status, data) {
-    createTest({
+
+    return createTest({
       description: JSON.stringify(replacements) + ' accepts json',
       path,
       method,
@@ -280,7 +282,10 @@ function createsNewVersion(method) {
 function cascades(method) {
   // eslint-disable-next-line
   return function (path, replacements, data, cascadingTarget, cascadingData) {
-    const realPath = getRealPath(replacements, path);
+    const realPath = getRealPath(replacements, path),
+      exSite = {slug: 'example', host: 'localhost.example.com', path: '/', prefix: 'localhost.example.com'};
+
+    data = JSON.parse(clayUtils.jsonPrefixToSlug(JSON.stringify(data), exSite, true));
 
     it(realPath + ' cascades to ' + cascadingTarget, function () {
       return request(app)[method](realPath)
@@ -292,7 +297,7 @@ function cascades(method) {
         .expect(200)
         .then(function () {
           // expect cascading data to now exist
-          return db.get(cascadingTarget).then(JSON.parse).then(function (result) {
+          return db.get(clayUtils.uriPrefixToSlug(cascadingTarget, exSite)).then(JSON.parse).then(function (result) {
             expect(result).to.deep.equal(cascadingData);
           });
         });
@@ -327,6 +332,7 @@ function stubSiteConfig(sandbox) {
       host,
       path: '/',
       slug: 'example',
+      prefix: 'localhost.example.com/',
       assetDir: 'public',
       assetPath: '/'
     }
@@ -343,7 +349,7 @@ function stubFiles(sandbox) {
   sandbox.stub(files, 'getComponents').returns(['clay-c5', 'clay-c3', 'clay-c4']);
 
   sandbox.stub(files, 'fileExists');
-  files.fileExists.withArgs('public').returns(true);
+  files.fileExists.withArgs(`${process.cwd()}/public`).returns(true);
 }
 
 function stubSchema(sandbox) {
@@ -352,7 +358,7 @@ function stubSchema(sandbox) {
 
   stubGet.withArgs('validThing').returns({some: 'schema', thatIs: 'valid'});
   stubGet.withArgs('missingThing').throws(new Error('File not found.'));
-  stubGetPath.withArgs('validThing').returns('components/validThing/schema.yml');
+  stubGetPath.withArgs('validThing').returns('_components/validThing/schema.yml');
   stubGetPath.withArgs('missingThing').throws(new Error('File not found.'));
   return sandbox;
 }
@@ -420,6 +426,7 @@ function beforeTesting(suite, options) {
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
   stubUid(options.sandbox);
+  routes.setLog(_.noop);
   routes.addHost({
     router: app,
     hostname: host,
@@ -427,11 +434,13 @@ function beforeTesting(suite, options) {
   });
 
   return db.clear().then(function () {
+    const exSite = {slug: 'example', host, path: '/'};
+
     return bluebird.all([
-      request(app).put('/components/valid', JSON.stringify(options.data)),
-      request(app).get('/components/valid'),
-      request(app).post('/components/valid', JSON.stringify(options.data)),
-      request(app).delete('/components/valid')
+      request(app).put('/_components/valid', clayUtils.jsonPrefixToSlug(JSON.stringify(options.data), exSite)),
+      request(app).get('/_components/valid'),
+      request(app).post('/_components/valid', clayUtils.jsonPrefixToSlug(JSON.stringify(options.data), exSite)),
+      request(app).delete('/_components/valid')
     ]);
   });
 }
@@ -459,15 +468,17 @@ function beforeEachTest(options) {
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
   stubUid(options.sandbox);
+  routes.setLog(_.noop);
   routes.addHost({
     router: app,
     hostname: host,
     providers: ['apikey']
   });
 
-
   return db.clear().then(function () {
+
     if (options.pathsAndData) {
+
       return bluebird.all(_.map(options.pathsAndData, function (data, path) {
         let ignoreHost = path.indexOf(ignoreString) > -1;
 
@@ -476,10 +487,10 @@ function beforeEachTest(options) {
         }
 
         if (typeof data === 'object') {
-          data = JSON.stringify(data);
+          data = clayUtils.jsonPrefixToSlug(JSON.stringify(data), {slug: 'example', host, path: '/'});
         }
 
-        return db.put(`${ignoreHost ? '' : host}${path}`, data);
+        return db.put(`${ignoreHost ? '' : 'example'}${path}`, data);
       }));
     }
   });
@@ -496,6 +507,7 @@ function beforeRenderTest(options) {
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
   stubUid(options.sandbox);
+  routes.setLog(_.noop);
   routes.addHost({
     router: app,
     hostname: host,

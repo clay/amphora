@@ -23,26 +23,26 @@ For a broader and less specific overview of routing, please see the [project's r
 ### Overview
 
 ```
-/components
-/components/:name
-/components/:name@:version
-/components/:name.html
-/components/:name.json
-/components/:name@:version.html
-/components/:name@:version.json
-/components/:name/instances
-/components/:name/instances/:id
-/components/:name/intsances/:id.html
-/components/:name/intsances/:id.json
-/components/:name/instances/:id@:version
-/components/:name/instances/:id@:version.html
-/components/:name/instances/:id@:version.json
+/_components
+/_components/:name
+/_components/:name@:version
+/_components/:name.html
+/_components/:name.json
+/_components/:name@:version.html
+/_components/:name@:version.json
+/_components/:name/instances
+/_components/:name/instances/:id
+/_components/:name/intsances/:id.html
+/_components/:name/intsances/:id.json
+/_components/:name/instances/:id@:version
+/_components/:name/instances/:id@:version.html
+/_components/:name/instances/:id@:version.json
 ```
 
 ### List of components
-`GET /components` will return a list of the available known components.  This will be all the components defined in the `/components` folder of the current application, and also any components installed through the node package manager (npm).  
+`GET /_components` will return a list of the available known components.  This will be all the components defined in the `/_components` folder of the current application, and also any components installed through the node package manager (npm).  
 
-Example: `GET /components`
+Example: `GET /_components`
 ```json
 [
   "text",
@@ -52,14 +52,14 @@ Example: `GET /components`
 ]
 ```
 
-`GET /components/:name/instances` will return a list of the available instances within a particular component type.
+`GET /_components/:name/instances` will return a list of the available instances within a particular component type.
 
-Example: `GET /components/text/instances`
+Example: `GET /_components/text/instances`
 ```json
 [
-  "/components/text/instances/abc",
-  "/components/text/instances/def",
-  "/components/text/instances/def@published"
+  "/_components/text/instances/abc",
+  "/_components/text/instances/def",
+  "/_components/text/instances/def@published"
 ]
 ```
 
@@ -68,11 +68,11 @@ Example: `GET /components/text/instances`
 You can grab the default data for a component, data for a specific instance, or even data for a specific version (of an instance). GETs and PUTs to these endpoints behave as you would expect from a RESTful api (they return what you send them). GETs and PUTs to the `.json` and `.html` extensions also work, but they'll return the composed (i.e. a component and its children) JSON and HTML, respectively.
 
 ### Modifying components
-`GET /components/:name[/instances/:id][@:version[.:extension]]` will return a component.  The form the data is based on the extension (.html, .json, .yaml), or the Accepts header of the request.  
+`GET /_components/:name[/instances/:id][@:version[.:extension]]` will return a component.  The form the data is based on the extension (.html, .json, .yaml), or the Accepts header of the request.  
 
 Requesting data without a version will return the latest saved version.  Some versions have special rules (see [Propagating Versions](#propagating-versions)), but any other version name can be used to specially tag any particular version.
 
-`PUT /components/:name[/instances/:id][@version]` will save the data such that `GET`ing the same uri will return exactly what was put there.
+`PUT /_components/:name[/instances/:id][@version]` will save the data such that `GET`ing the same uri will return exactly what was put there.
 
 ### Component Logic
 
@@ -94,50 +94,27 @@ module.exports.save = function (ref, data, locals) {
 
 You may pass `componenthooks=false` as a query param when doing API calls if you want to completely bypass the `model.js` (e.g. if you've already run through the logic client-side).
 
-### Legacy Server Logic
-
-This feature is deprecated as of amphora v2.11.0 and will be removed in the next major version (it is supplanted by the isomorphic `model.js` files). Legacy server-side logic lives in a `server.js` or `index.js` file in the component's folder, and has a few differences from the `model.js`:
-
-* the default exported function (run on `GET`) does not automatically receive data from the database, and must fetch it manually
-* the `put()` should return a database operation or array of operations (which may be wrapped in promises), rather than the component data itself
-* these files are _only_ run server-side, and will not be optimised to work in kiln
-
-```js
-module.exports = function (ref, locals) {
-  //return Promise with data
-  return Promise.resolve({"hey": "hey"});
-};
-module.exports.put = function (ref, data) {
-  //return Promise with operations to be performed in a batch
-  return Promise.resolve([{
-    type: 'put',
-    key: '/components/text',
-    value:'{"hey": "hey"}'}
-  ]);
-};
-```
-
 ## Pages
 
 ### Overview
 ```
-/pages
-/pages/:name
-/pages/:name.html
-/pages/:name.json
-/pages/:name@:version
-/pages/:name@:version.html
-/pages/:name@:version.json
+/_pages
+/_pages/:name
+/_pages/:name.html
+/_pages/:name.json
+/_pages/:name@:version
+/_pages/:name@:version.html
+/_pages/:name@:version.json
 ```
 
 Pages consist of a layout and a list of areas.  Each area defined in a page maps to a area in the layout template.  For example:
 ```json
 {
-  "layout": "/components/feature-layout",
-  "center": ["/components/article/instances/3vf3"],
+  "layout": "/_components/feature-layout",
+  "center": ["/_components/article/instances/3vf3"],
   "side": [
-    "/components/share",
-    "/components/newsletter"
+    "/_components/share",
+    "/_components/newsletter"
   ]
 }
 ```
@@ -154,13 +131,13 @@ Publishing a page has a special convenience behavior where all components refere
 ## URIs
 
 ```
-/uris/<base64(:path)>
+/_uris/<base64(:path)>
 ```
 
 A URI is used to redirect some slug or URI to another page or component.  They can also redirect to other uris (establishing a 301 redirect), or several uris can point to the same resource.  URIs are stored as Base64, so:
 
-- `example.com` is `/uris/ZXhhbXBsZS5jb20=` => `/pages/jdskla@published`
-- `example.com/other/` is `/uris/ZXhhbXBsZS5jb20vb3RoZXI=` => `/pages/4revd3s@published`
+- `example.com` is `/_uris/ZXhhbXBsZS5jb20=` => `/_pages/jdskla@published`
+- `example.com/other/` is `/_uris/ZXhhbXBsZS5jb20vb3RoZXI=` => `/_pages/4revd3s@published`
 
 A URI is assumed to be pointing at the `@published` version if another version is not provided.  Therefore, only published content or specially tagged versions can be publicly exposed through URIs.
 
@@ -168,7 +145,7 @@ A URI is assumed to be pointing at the `@published` version if another version i
 
 ```
 /lists
-/lists/:id
+/_lists/:id
 ```
 
 Lists are a _temporary_ solution until search functionality is discussed.  It is currently used for the tags component and the autocomplete behavior as a temporary place to store lists of information.  It can store any list of data on a `PUT`, and return back the same list of data with a `GET`.
@@ -178,7 +155,7 @@ Lists are a _temporary_ solution until search functionality is discussed.  It is
 ### Overview
 ```
 /users
-/users/:id
+/_users/:id
 ```
 
 Each user has a `username` and `provider`, which determines how they authenticate over oauth. Users can also have other data, including `name`, `imageUrl`, and `title`.
@@ -186,8 +163,8 @@ Each user has a `username` and `provider`, which determines how they authenticat
 ## Schedule
 
 ```
-/schedule
-/schedule/:id
+/_schedule
+/_schedule/:id
 ```
 
 Schedule is a list of pages or components that will be published in the future.  Items in this list will be published when the time passes.  Each item has two properties: `at`, which is a UNIX timestamp, and the `publish` property that is a reference to what will be published after that time.
@@ -196,11 +173,11 @@ When an item is scheduled, a `@scheduled` version is created on the item that wi
 
 ### List of scheduled items
 
-`GET /schedule` will return a list of scheduled items, such as:
+`GET /_schedule` will return a list of scheduled items, such as:
 ```json
 [
   {
-    "_ref": "domain.com/some-path/schedule/3f-abc",
+    "_ref": "domain.com/some-path/_schedule/3f-abc",
     "at": 44392893402093,
     "publish": "abc"
   }
@@ -209,7 +186,7 @@ When an item is scheduled, a `@scheduled` version is created on the item that wi
 
 ### Add a scheduled item
 
-`POST /schedule` will add an item to be published in the future. The format of the item should be of
+`POST /_schedule` will add an item to be published in the future. The format of the item should be of
 ```json
 {
   "at": 44392893402093,
@@ -221,7 +198,7 @@ where the `at` is a UNIX timestamp and the `publish` is a ref to a page or compo
 
 ### Remove a scheduled item
 
-`DELETE /schedule/:some-id` will remove the scheduling of a publish in the future.  On success, it will return a 200 with
+`DELETE /_schedule/:some-id` will remove the scheduling of a publish in the future.  On success, it will return a 200 with
 ```json
 {
   "at": 44392893402093,
