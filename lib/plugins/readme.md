@@ -59,24 +59,24 @@ Note that `publish` and `unpublish` are used by certain plugins, but they will b
 `module.exports.createPage`
   - hook triggered on page creation
   - _note:_ when `createPage` is triggered, `save` is also triggered
-  - given one param with uri, data, and user: `{ uri: pageUri, data, pageData, user: req.user }`
+  - given one param with uri, data, and user: `{ uri: pageUri, data: pageData, user: req.user }`
 
 `module.exports.publishPage`
   - hook triggered on page publish (db batch with page@published)
   - _note:_ when `publishPage` is triggered, `save` and `publish` are also triggered
-  - given one param with uri, data, and user: `{ uri: pageUri, data, pageData, user: req.user }`
+  - given one param with uri, data, and user: `{ uri: pageUri, data: pageData, user: req.user }`
 
 `module.exports.unpublishPage`
   - hook triggered on page unpublish
   - _note:_ when `unpublishPage` is triggered, `delete` and `unpublish` are also triggered
-  - given one param with uri, data, and user: `{ uri: pageUri, data, pageData, user: req.user }`
+  - given one param with uri, url (that was just removed), and user: `{ uri: pageUri, url: pageURL, user: req.user }`
 
 `module.exports.schedulePage`
   - hook triggered on page scheduling
   - _note:_ when `schedulePage` is triggered, `save` is also triggered
-  - given one param with uri, data, and user: `{ uri: scheduledItemUri, data, { at: timestamp, publish: pageUri }, user: req.user }`
+  - given one param with uri, data, and user: `{ uri: scheduledItemUri, data: { at: timestamp, publish: pageUri }, user: req.user }`
 
 `module.exports.unschedulePage`
   - hook triggered on page unscheduling
   - _note:_ when `unschedulePage` is triggered, `save` is also triggered
-  - given one param with uri, data, and user: `{ uri: scheduledItemUri, data, { at: timestamp, publish: pageUri }, user: req.user }`
+  - given one param with uri, data, and user: `{ uri: scheduledItemUri, data: { at: timestamp, publish: pageUri }, user: req.user }`
