@@ -24,7 +24,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/components', function () {
+    describe('/_components', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -35,7 +35,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 405);
     });
 
-    describe('/components/:name', function () {
+    describe('/_components/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -51,7 +51,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
-    describe('/components/:name/schema', function () {
+    describe('/_components/:name/schema', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -67,7 +67,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 405, '405 Method POST not allowed');
     });
 
-    describe('/components/:name/instances', function () {
+    describe('/_components/:name/instances', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -90,7 +90,7 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
-    describe('/components/:name/instances/:id', function () {
+    describe('/_components/:name/instances/:id', function () {
       const path = this.title;
 
       beforeEach(function () {

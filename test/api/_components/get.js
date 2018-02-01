@@ -16,10 +16,10 @@ describe(endpointName, function () {
       // todo: Stop putting internal information into something we're going to open-source
       componentList = ['clay-c5', 'clay-c3', 'clay-c4'],
       cascadingData = function (ref) {
-        return {a: 'b', c: {_ref: `localhost.example.com/components/${ref}`}};
+        return {a: 'b', c: {_ref: `localhost.example.com/_components/${ref}`}};
       },
       cascadingReturnData = function (ref) {
-        return {a: 'b', c: {_ref: `localhost.example.com/components/${ref}`, d: 'e'}};
+        return {a: 'b', c: {_ref: `localhost.example.com/_components/${ref}`, d: 'e'}};
       };
 
     beforeEach(function () {
@@ -30,7 +30,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/components', function () {
+    describe('/_components', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -40,12 +40,12 @@ describe(endpointName, function () {
       acceptsJson(path, {}, 200, componentList);
     });
 
-    describe('/components/:name', function () {
+    describe('/_components/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid': data
+          '/_components/valid': data
         }});
       });
 
@@ -57,13 +57,13 @@ describe(endpointName, function () {
       acceptsJson(path + '/', {name: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
-    describe('/components/:name.json', function () {
+    describe('/_components/:name.json', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid': cascadingData('valid-deep'),
-          '/components/valid-deep': deepData
+          '/_components/valid': cascadingData('valid-deep'),
+          '/_components/valid-deep': deepData
         }});
       });
 
@@ -72,7 +72,7 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'missing'}, 404);
     });
 
-    describe('/components/:name/schema', function () {
+    describe('/_components/:name/schema', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -84,12 +84,12 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'missing'}, 404);
     });
 
-    describe('/components/:name@:version', function () {
+    describe('/_components/:name@:version', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid@valid': data
+          '/_components/valid@valid': data
         }});
       });
 
@@ -102,45 +102,45 @@ describe(endpointName, function () {
       acceptsJson(path + '/', {name: 'valid', version: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
-    describe('/components/:name/instances', function () {
+    describe('/_components/:name/instances', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid': data,
-          '/components/valid/instances/valid': data,
-          '/components/valid/instances/valid@valid': data
+          '/_components/valid': data,
+          '/_components/valid/instances/valid': data,
+          '/_components/valid/instances/valid@valid': data
         }});
       });
 
       acceptsJson(path, {name: 'invalid'}, 404);
       // no versioned or base instances in list
-      acceptsJson(path, {name: 'valid'}, 200, '["localhost.example.com/components/valid/instances/valid"]');
+      acceptsJson(path, {name: 'valid'}, 200, '["localhost.example.com/_components/valid/instances/valid"]');
       acceptsJson(path, {name: 'missing'}, 200, '[]');
     });
 
-    describe('/components/:name/instances/@published', function () {
+    describe('/_components/:name/instances/@published', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid': data,
-          '/components/valid/instances/valid': data,
-          '/components/valid/instances/valid@published': data
+          '/_components/valid': data,
+          '/_components/valid/instances/valid': data,
+          '/_components/valid/instances/valid@published': data
         }});
       });
 
       acceptsJson(path, {name: 'invalid'}, 404);
-      acceptsJson(path, {name: 'valid'}, 200, '["localhost.example.com/components/valid/instances/valid@published"]');
+      acceptsJson(path, {name: 'valid'}, 200, '["localhost.example.com/_components/valid/instances/valid@published"]');
       acceptsJson(path, {name: 'missing'}, 200, '[]');
     });
 
-    describe('/components/:name/instances/:id', function () {
+    describe('/_components/:name/instances/:id', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid/instances/valid': data
+          '/_components/valid/instances/valid': data
         }});
       });
 
@@ -152,13 +152,13 @@ describe(endpointName, function () {
       acceptsJson(path + '/', {name: 'valid', id: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
 
-    describe('/components/:name/instances/:id.json', function () {
+    describe('/_components/:name/instances/:id.json', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid/instances/valid': cascadingData('valid-deep/instances/valid-deep'),
-          '/components/valid-deep/instances/valid-deep': deepData
+          '/_components/valid/instances/valid': cascadingData('valid-deep/instances/valid-deep'),
+          '/_components/valid-deep/instances/valid-deep': deepData
         }});
       });
 
@@ -167,12 +167,12 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'valid', id: 'missing'}, 404);
     });
 
-    describe('/components/:name/instances/:id@:version', function () {
+    describe('/_components/:name/instances/:id@:version', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid/instances/valid@valid': data
+          '/_components/valid/instances/valid@valid': data
         }});
       });
 

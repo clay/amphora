@@ -12,19 +12,8 @@ describe(endpointName, function () {
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      data = { name: 'Manny', species: 'cat' };
-
-    before(function () {
-      sandbox = sinon.sandbox.create();
-      this.timeout(500);
-      return apiAccepts.beforeTesting(this, {
-        hostname,
-        data,
-        sandbox
-      }).then(function () {
-        sandbox.restore();
-      });
-    });
+      data = { username: 'manny', provider: 'google', auth: 'admin' },
+      message406 = '406 text/html not acceptable';
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
@@ -34,33 +23,36 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/users', function () {
+    describe('/_users', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname });
       });
 
-      acceptsJson(path, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method DELETE not allowed' });
-      acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
+      acceptsJson(path, {}, 200, []);
+      acceptsHtml(path, {}, 406, message406);
     });
 
-    describe('/users/:name', function () {
+    describe('/_users/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '(ignoreHost)/users/valid': data
+          '(ignoreHost)/_users/valid': data
         }});
       });
 
-      acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
+      acceptsJson(path, {name: 'invalid'}, 404);
       acceptsJson(path, {name: 'valid'}, 200, data);
-      acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
+      acceptsJson(path, {name: 'missing'}, 404);
 
-      acceptsHtml(path, {name: 'invalid'}, 406, '406 text/html not acceptable');
-      acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
-      acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'invalid'}, 406, message406);
+      acceptsHtml(path, {name: 'valid'}, 406, message406);
+      acceptsHtml(path, {name: 'missing'}, 406, message406);
+
+      // deny trailing slash
+      acceptsJson(path + '/', {name: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
   });
 });

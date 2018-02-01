@@ -13,21 +13,18 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      pageData = {
-        layout: 'localhost.example.com/components/layout',
-        center: 'localhost.example.com/components/valid',
-        side: ['localhost.example.com/components/valid@valid']
-      };
+      scheduleData = { at: new Date('2015-01-01').getTime(), publish: 'http://localhost.example.com/_pages/valid' };
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
+      sandbox.useFakeTimers();
     });
 
     afterEach(function () {
       sandbox.restore();
     });
 
-    describe('/pages', function () {
+    describe('/_schedule', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -39,42 +36,23 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
     });
 
-    describe('/pages/:name', function () {
+    describe('/_schedule/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/pages/valid': pageData
+          '/_schedule/valid': scheduleData
         }});
       });
 
-      acceptsJson(path, {name: 'valid'}, 200, pageData);
+      acceptsJson(path, {name: 'valid'}, 200, scheduleData);
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
 
-      acceptsJsonBody(path, {name: 'valid'}, pageData, 200, pageData);
-      acceptsJsonBody(path, {name: 'missing'}, pageData, 404, { message: 'Not Found', code: 404 });
+      acceptsJsonBody(path, {name: 'valid'}, scheduleData, 200, scheduleData);
+      acceptsJsonBody(path, {name: 'missing'}, scheduleData, 404, { message: 'Not Found', code: 404 });
 
       acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
-    });
-
-    describe('/pages/:name@:version', function () {
-      const path = this.title;
-
-      beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/pages/valid@valid': pageData
-        }});
-      });
-
-      acceptsJson(path, {name: 'valid', version: 'valid'}, 200, pageData);
-      acceptsJson(path, {name: 'valid', version: 'missing'}, 404, { message: 'Not Found', code: 404 });
-
-      acceptsJsonBody(path, {name: 'valid', version: 'valid'}, pageData, 200, pageData);
-      acceptsJsonBody(path, {name: 'valid', version: 'missing'}, pageData, 404, { message: 'Not Found', code: 404 });
-
-      acceptsHtml(path, {name: 'valid', version: 'valid'}, 406, '406 text/html not acceptable');
-      acceptsHtml(path, {name: 'valid', version: 'missing'}, 406, '406 text/html not acceptable');
     });
   });
 });

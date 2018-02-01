@@ -11,10 +11,9 @@ describe(endpointName, function () {
     let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
-      acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
-      acceptsTextBody = apiAccepts.acceptsTextBody(_.camelCase(filename)),
+      acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       acceptsText = apiAccepts.acceptsText(_.camelCase(filename)),
-      data = 'mock data';
+      data = 'mock uri';
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
@@ -24,35 +23,39 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/uris', function () {
+    describe('/_uris', function () {
       const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname });
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: { '/_uris/valid': data }});
       });
 
-      acceptsJson(path, {}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
-      acceptsJsonBody(path, {}, {}, 405, { allow:['get'], code: 405, message: 'Method DELETE not allowed' });
-      acceptsText(path, {}, 405, '405 Method DELETE not allowed');
+      acceptsJson(path, {}, 200, '["localhost.example.com/_uris/valid"]');
+      acceptsHtml(path, {}, 406, '406 text/html not acceptable');
+      acceptsText(path, {}, 406, '406 text/plain not acceptable');
     });
 
-    describe('/uris/:name', function () {
+    describe('/_uris/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
-        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/uris/valid': data
-        }});
+        return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: { '/_uris/valid': data }});
       });
 
+      acceptsJson(path, {name: 'invalid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });
       acceptsJson(path, {name: 'valid'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });
       acceptsJson(path, {name: 'missing'}, 406, { message: 'application/json not acceptable', code: 406, accept: ['text/plain'] });
 
+      acceptsHtml(path, {name: 'invalid'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');
+      acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
+
+      acceptsText(path, {name: 'invalid'}, 404, '404 Not Found');
       acceptsText(path, {name: 'valid'}, 200, data);
       acceptsText(path, {name: 'missing'}, 404, '404 Not Found');
 
-      acceptsTextBody(path, {name: 'valid'}, data, 200, data);
-      acceptsTextBody(path, {name: 'missing'}, data, 404, '404 Not Found');
+      // deny trailing slashes
+      acceptsText(path + '/', {name: 'valid'}, 400, '400 Trailing slash on RESTful id in URL is not acceptable');
     });
   });
 });

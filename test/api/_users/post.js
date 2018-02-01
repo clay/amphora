@@ -26,7 +26,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/users', function () {
+    describe('/_users', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -46,7 +46,7 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid'}, _.assign({_ref: 'whatever'}, data), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
     });
 
-    describe('/users/:name', function () {
+    describe('/_users/:name', function () {
       const path = this.title;
 
       beforeEach(function () {

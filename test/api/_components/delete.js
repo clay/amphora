@@ -34,7 +34,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/components', function () {
+    describe('/_components', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -45,12 +45,12 @@ describe(endpointName, function () {
       acceptsHtml(path, {}, 405, '405 Method DELETE not allowed');
     });
 
-    describe('/components/:name', function () {
+    describe('/_components/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid': data
+          '/_components/valid': data
         }});
       });
 
@@ -63,7 +63,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
-    describe('/components/:name/schema', function () {
+    describe('/_components/:name/schema', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -79,7 +79,7 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 405, '405 Method DELETE not allowed');
     });
 
-    describe('/components/:name/instances', function () {
+    describe('/_components/:name/instances', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -95,12 +95,12 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'missing'}, 406, '406 text/html not acceptable');
     });
 
-    describe('/components/:name/instances/:id', function () {
+    describe('/_components/:name/instances/:id', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid/instances/valid': data
+          '/_components/valid/instances/valid': data
         }});
       });
 
@@ -113,12 +113,12 @@ describe(endpointName, function () {
       acceptsHtml(path, {name: 'valid', id: 'missing'}, 406, '406 text/html not acceptable');
     });
 
-    describe('/components/:name/instances/:id@:version', function () {
+    describe('/_components/:name/instances/:id@:version', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid/instances/valid@valid': data
+          '/_components/valid/instances/valid@valid': data
         }});
       });
 

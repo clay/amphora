@@ -16,21 +16,21 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {'/lists/valid': data} });
+      return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {'/_lists/valid': data} });
     });
 
     afterEach(function () {
       sandbox.restore();
     });
 
-    describe('/lists', function () {
+    describe('/_lists', function () {
       const path = this.title;
 
-      acceptsJson(path, {}, 200, '["localhost.example.com/lists/valid"]');
+      acceptsJson(path, {}, 200, '["localhost.example.com/_lists/valid"]');
       acceptsHtml(path, {}, 406);
     });
 
-    describe('/lists/:name', function () {
+    describe('/_lists/:name', function () {
       const path = this.title;
 
       acceptsJson(path, {name: 'invalid'}, 404);

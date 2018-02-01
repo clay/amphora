@@ -25,7 +25,7 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/schedule', function () {
+    describe('/_schedule', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -37,10 +37,10 @@ describe(endpointName, function () {
 
       acceptsJsonBody(path, {}, {}, 400, { message: 'Missing "at" property as number.', code: 400 });
       acceptsJsonBody(path, {}, {at: time}, 400, { message: 'Missing "publish" property as valid url.', code: 400 });
-      acceptsJsonBody(path, {}, {at: time, publish: 'http://abc'}, 201, { _ref: 'localhost.example.com/schedule/YWJj', at: time, publish: 'http://abc' });
+      acceptsJsonBody(path, {}, {at: time, publish: 'http://abc'}, 201, { _ref: 'localhost.example.com/_schedule/YWJj', at: time, publish: 'http://abc' });
     });
 
-    describe('/schedule/:name', function () {
+    describe('/_schedule/:name', function () {
       const path = this.title;
 
       beforeEach(function () {

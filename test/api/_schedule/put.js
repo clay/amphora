@@ -12,18 +12,18 @@ describe(endpointName, function () {
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
-      acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
-      data = { username: 'manny', provider: 'google', auth: 'admin' };
+      acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename));
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
+      sandbox.useFakeTimers();
     });
 
     afterEach(function () {
       sandbox.restore();
     });
 
-    describe('/users', function () {
+    describe('/_schedule', function () {
       const path = this.title;
 
       beforeEach(function () {
@@ -32,27 +32,19 @@ describe(endpointName, function () {
 
       acceptsJson(path, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
       acceptsJsonBody(path, {}, {}, 405, { allow:['get', 'post'], code: 405, message: 'Method PUT not allowed' });
-      acceptsHtml(path, {}, 405);
+      acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
     });
 
-    describe('/users/:name', function () {
+    describe('/_schedule/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname });
       });
 
-      acceptsJson(path, {name: 'valid'}, 200, {});
-      acceptsJson(path, {name: 'missing'}, 200, {});
-
-      acceptsJsonBody(path, {name: 'valid'}, data, 200, data);
-      acceptsJsonBody(path, {name: 'missing'}, data, 200, data);
-
-      acceptsHtml(path, {name: 'valid'}, 406);
-      acceptsHtml(path, {name: 'missing'}, 406);
-
-      // deny trailing slashes
-      acceptsJsonBody(path + '/', {name: 'valid'}, data, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
+      acceptsJson(path, {}, 405, { allow:['get', 'delete'], code: 405, message: 'Method PUT not allowed' });
+      acceptsJsonBody(path, {}, {}, 405, { allow:['get', 'delete'], code: 405, message: 'Method PUT not allowed' });
+      acceptsHtml(path, {}, 405, '405 Method PUT not allowed');
     });
   });
 });

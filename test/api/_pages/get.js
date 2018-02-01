@@ -11,9 +11,9 @@ describe(endpointName, function () {
     let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
-      pageData = { layout: 'localhost.example.com/components/layout', center: ['localhost.example.com/components/valid'] },
-      layoutData = { center: 'center', deep: [{_ref: 'localhost.example.com/components/validDeep'}] },
-      deepData = { _ref: 'localhost.example.com/components/validDeep' },
+      pageData = { layout: 'localhost.example.com/_components/layout', center: ['localhost.example.com/_components/valid'] },
+      layoutData = { center: 'center', deep: [{_ref: 'localhost.example.com/_components/validDeep'}] },
+      deepData = { _ref: 'localhost.example.com/_components/validDeep' },
       componentData = { name: 'Manny', species: 'cat' },
       data = {
         page: pageData,
@@ -22,9 +22,9 @@ describe(endpointName, function () {
         secondLevelComponent: componentData
       },
       deepPageData = {
-        center: [{ _ref: 'localhost.example.com/components/valid' }],
+        center: [{ _ref: 'localhost.example.com/_components/valid' }],
         deep: [{
-          _ref: 'localhost.example.com/components/validDeep',
+          _ref: 'localhost.example.com/_components/validDeep',
           name: 'Manny',
           species: 'cat'
         }]
@@ -38,42 +38,42 @@ describe(endpointName, function () {
       sandbox.restore();
     });
 
-    describe('/pages', function () {
+    describe('/_pages', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid': data.firstLevelComponent,
-          '/pages/valid': data.page,
-          '/pages/valid@valid': data.page
+          '/_components/valid': data.firstLevelComponent,
+          '/_pages/valid': data.page,
+          '/_pages/valid@valid': data.page
         }});
       });
 
       // only pages, and only unversioned
-      acceptsJson(path, {}, 200, '["localhost.example.com/pages/valid"]');
+      acceptsJson(path, {}, 200, '["localhost.example.com/_pages/valid"]');
     });
 
-    describe('/pages/@published', function () {
+    describe('/_pages/@published', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/valid': data.firstLevelComponent,
-          '/pages/valid': data.page,
-          '/pages/valid@published': data.page
+          '/_components/valid': data.firstLevelComponent,
+          '/_pages/valid': data.page,
+          '/_pages/valid@published': data.page
         }});
       });
 
       // only pages, and only unversioned
-      acceptsJson(path, {}, 200, '["localhost.example.com/pages/valid@published"]');
+      acceptsJson(path, {}, 200, '["localhost.example.com/_pages/valid@published"]');
     });
 
-    describe('/pages/:name', function () {
+    describe('/_pages/:name', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/pages/valid': data.page
+          '/_pages/valid': data.page
         }});
       });
 
@@ -81,17 +81,17 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
     });
 
-    describe('/pages/:name.json', function () {
+    describe('/_pages/:name.json', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/components/layout': data.layout,
-          '/components/layoutCascading': data.firstLevelComponent,
-          '/components/valid': data.firstLevelComponent,
-          '/components/validCascading': data.firstLevelComponent,
-          '/components/validDeep': data.secondLevelComponent,
-          '/pages/valid': data.page
+          '/_components/layout': data.layout,
+          '/_components/layoutCascading': data.firstLevelComponent,
+          '/_components/valid': data.firstLevelComponent,
+          '/_components/validCascading': data.firstLevelComponent,
+          '/_components/validDeep': data.secondLevelComponent,
+          '/_pages/valid': data.page
         }});
       });
 
@@ -99,12 +99,12 @@ describe(endpointName, function () {
       acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
     });
 
-    describe('/pages/:name@:version', function () {
+    describe('/_pages/:name@:version', function () {
       const path = this.title;
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/pages/valid@valid': data.page
+          '/_pages/valid@valid': data.page
         }});
       });
 
