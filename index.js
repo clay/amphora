@@ -9,4 +9,3 @@ module.exports.schedule = require('./lib/services/schedule');
 module.exports.pages = require('./lib/services/pages');
 module.exports.sites = require('./lib/services/sites');
 module.exports.references = require('./lib/services/references');
-module.exports.log = require('./lib/services/log');
