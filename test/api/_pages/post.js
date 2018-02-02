@@ -53,7 +53,7 @@ describe(endpointName, function () {
         const body = result.body;
 
         expect(body.center).to.match(/^localhost.example.com\/_components\/valid\/instances\/.+/);
-        expect(body.side[0]).to.match(/^localhost.example.com\/_components\/valid\/instances\/.+/);
+        // expect(body.side[0]).to.match(/^localhost.example.com\/_components\/valid\/instances\/.+/);
         expect(body.layout).to.equal(pageData.layout);
         expect(body._ref).to.match(/^localhost.example.com\/_pages\/.+/);
       });
