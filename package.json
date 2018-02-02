@@ -27,11 +27,7 @@
     "chain-of-promises": "^1.0.0",
     "chalk": "^1.0.0",
     "clay-log": "^1.2.0",
-<<<<<<< HEAD
     "clayutils": "^2.0.3",
-=======
-    "clayutils": "^1.0.0",
->>>>>>> master
     "cuid": "^1.2.5",
     "eventify": "^2.0.0",
     "express": "^4.15.3",
@@ -70,8 +66,7 @@
     "istanbul": "^0.4.0",
     "mocha": "^3.5.0",
     "rimraf": "^2.6.2",
-    "sinon": "^1.14.0",
-    "sinon-as-promised": "^4.0.3",
+    "sinon": "^4.2.2",
     "supertest": "^3.0.0"
   },
   "engines": {
