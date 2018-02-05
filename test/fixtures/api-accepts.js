@@ -4,7 +4,6 @@ const _ = require('lodash'),
   express = require('express'),
   request = require('supertest'),
   files = require('../../lib/files'),
-  components = require('../../lib/services/components'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
@@ -357,14 +356,6 @@ function stubSchema(sandbox) {
   return sandbox;
 }
 
-function stubGetTemplate(sandbox) {
-  const stub = sandbox.stub(components, 'getTemplate');
-
-  stub.withArgs('valid').returns('some/valid/template.nunjucks');
-  stub.withArgs('layout').returns('some/valid/template.for.layout.nunjucks');
-  return sandbox;
-}
-
 function stubRenderExists(sandbox) {
   const rendererExists = sandbox.stub(render, 'rendererExists');
 
@@ -415,7 +406,6 @@ function beforeTesting(suite, options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
-  // stubGetTemplate(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
@@ -454,7 +444,6 @@ function beforeEachTest(options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
-  // stubGetTemplate(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
@@ -491,7 +480,6 @@ function beforeRenderTest(options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
-  // stubGetTemplate(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
