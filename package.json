@@ -25,7 +25,6 @@
     "bluebird": "^3.5.1",
     "body-parser": "^1.12",
     "chain-of-promises": "^1.0.0",
-    "chalk": "^1.0.0",
     "clay-log": "^1.2.0",
     "clayutils": "^2.0.3",
     "cuid": "^1.2.5",
@@ -56,6 +55,7 @@
   },
   "devDependencies": {
     "chai": "^3.4.0",
+    "chalk": "^1.0.0",
     "coveralls": "^2.11.2",
     "eslint": "^4.3.0",
     "gitbook-cli": "^2.3.2",
