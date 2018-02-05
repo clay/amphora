@@ -415,7 +415,7 @@ function beforeTesting(suite, options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
-  stubGetTemplate(options.sandbox);
+  // stubGetTemplate(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
@@ -454,7 +454,7 @@ function beforeEachTest(options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
-  stubGetTemplate(options.sandbox);
+  // stubGetTemplate(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
@@ -491,7 +491,7 @@ function beforeRenderTest(options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
-  stubGetTemplate(options.sandbox);
+  // stubGetTemplate(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
