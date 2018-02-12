@@ -4,8 +4,7 @@ const _ = require('lodash'),
   apiAccepts = require('../../fixtures/api-accepts'),
   endpointName = _.startCase(__dirname.split('/').pop()),
   filename = _.startCase(__filename.split('/').pop().split('.').shift()),
-  sinon = require('sinon'),
-  winston = require('winston');
+  sinon = require('sinon');
 
 describe(endpointName, function () {
   describe(filename, function () {
@@ -19,7 +18,6 @@ describe(endpointName, function () {
 
     beforeEach(function () {
       sandbox = sinon.sandbox.create();
-      sandbox.stub(winston);
     });
 
     afterEach(function () {
