@@ -13,7 +13,6 @@ const _ = require('lodash'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
   uid = require('../../lib/uid'),
-  { getComponents } = require('amphora-fs'),
   ignoreString = '(ignoreHost)';
 var app, host;
 
@@ -340,7 +339,7 @@ function stubFiles(sandbox) {
   files.getComponentPath.withArgs('missing').returns('missingThing');
   files.getComponentPath.withArgs('invalid').returns(null);
 
-  sandbox.stub('getComponents').returns(['clay-c5', 'clay-c3', 'clay-c4']);
+  sandbox.stub(files, 'getComponents').returns(['clay-c5', 'clay-c3', 'clay-c4']);
 
   sandbox.stub(files, 'fileExists');
   files.fileExists.withArgs('public').returns(true);
