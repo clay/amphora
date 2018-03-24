@@ -2,6 +2,7 @@
 #
 # Check https://circleci.com/docs/2.0/language-javascript/ for more details
 #
+#
 version: 2
 jobs:
   build:
@@ -28,3 +29,5 @@ jobs:
 
       # run tests!
       - run: npm test
+      - run: cp -r ./coverage/* $CIRCLE_ARTIFACTS
+      - run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
