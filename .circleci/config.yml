@@ -4,6 +4,9 @@
 #
 #
 version: 2
+general:
+  artifacts:
+    - coverage
 jobs:
   build:
     docker:
@@ -29,5 +32,5 @@ jobs:
 
       # run tests!
       - run: npm test
-      - run: cp -r ./coverage/* $CIRCLE_ARTIFACTS
-      - run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+    post:
+      - cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
