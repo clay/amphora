@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:8.10
+      - image: node:8.10.0
     working_directory: ~/repo
     steps:
       - checkout
@@ -28,5 +28,3 @@ jobs:
 
       # run tests!
       - run: npm test
-      # - run: cp -r ./coverage/* $CIRCLE_ARTIFACTS
-      # - run: cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
