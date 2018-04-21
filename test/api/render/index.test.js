@@ -2,8 +2,8 @@
 
 const sinon = require('sinon'),
   render = require('../../../lib/render'),
-  componentsRoutes = require('../../../lib/routes/components'),
-  pagesRoutes = require('../../../lib/routes/pages');
+  componentsRoutes = require('../../../lib/routes/_components'),
+  pagesRoutes = require('../../../lib/routes/_pages');
 
 describe('Custom Rendering', function () {
   let sandbox;

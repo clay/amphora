@@ -1,6 +1,6 @@
 {
   "name": "amphora",
-  "version": "4.9.0",
+  "version": "6.1.0",
   "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
   "scripts": {
@@ -21,13 +21,13 @@
   "author": "New York Media",
   "license": "MIT",
   "dependencies": {
+    "amphora-fs": "^0.1.0",
     "basic-auth": "^1.0.4",
     "bluebird": "^3.5.1",
     "body-parser": "^1.12",
     "chain-of-promises": "^1.0.0",
-    "chalk": "^1.0.0",
     "clay-log": "^1.2.0",
-    "clayutils": "^1.0.0",
+    "clayutils": "^2.1.0",
     "cuid": "^1.2.5",
     "eventify": "^2.0.0",
     "express": "^4.15.3",
@@ -50,28 +50,26 @@
     "template2env": "^1.0.4",
     "through2-filter": "^2.0.0",
     "through2-map": "^3.0.0",
-    "vhost": "^3.0.0",
-    "winston": "^2.1.0",
-    "winston-logstash": "^0.2.11"
+    "vhost": "^3.0.0"
   },
   "devDependencies": {
     "chai": "^3.4.0",
+    "chalk": "^1.0.0",
     "coveralls": "^2.11.2",
     "eslint": "^4.3.0",
     "gitbook-cli": "^2.3.2",
     "gitbook-plugin-accordion": "^1.1.3",
-    "gitbook-plugin-anchorjs": "^1.1.1",
+    "gitbook-plugin-anchorjs": "^2.0.0",
     "gitbook-plugin-bootstrap-callout": "^0.1.2",
     "gitbook-plugin-github": "^2.0.0",
     "istanbul": "^0.4.0",
     "mocha": "^3.5.0",
     "rimraf": "^2.6.2",
-    "sinon": "^1.14.0",
-    "sinon-as-promised": "^4.0.3",
+    "sinon": "^4.4.8",
     "supertest": "^3.0.0"
   },
   "engines": {
-    "node": "^6.0.0"
+    "node": "^8.9.0"
   },
   "engine-strict": true
 }

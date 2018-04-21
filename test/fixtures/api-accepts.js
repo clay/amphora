@@ -4,7 +4,6 @@ const _ = require('lodash'),
   express = require('express'),
   request = require('supertest'),
   files = require('../../lib/files'),
-  components = require('../../lib/services/components'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
@@ -347,21 +346,10 @@ function stubFiles(sandbox) {
 }
 
 function stubSchema(sandbox) {
-  const stubGet = sandbox.stub(schema, 'getSchema'),
-    stubGetPath = sandbox.stub(schema, 'getSchemaPath');
+  const stubGet = sandbox.stub(schema, 'getSchema');
 
   stubGet.withArgs('validThing').returns({some: 'schema', thatIs: 'valid'});
   stubGet.withArgs('missingThing').throws(new Error('File not found.'));
-  stubGetPath.withArgs('validThing').returns('components/validThing/schema.yml');
-  stubGetPath.withArgs('missingThing').throws(new Error('File not found.'));
-  return sandbox;
-}
-
-function stubGetTemplate(sandbox) {
-  const stub = sandbox.stub(components, 'getTemplate');
-
-  stub.withArgs('valid').returns('some/valid/template.nunjucks');
-  stub.withArgs('layout').returns('some/valid/template.for.layout.nunjucks');
   return sandbox;
 }
 
@@ -415,7 +403,6 @@ function beforeTesting(suite, options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
-  stubGetTemplate(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
@@ -428,10 +415,10 @@ function beforeTesting(suite, options) {
 
   return db.clear().then(function () {
     return bluebird.all([
-      request(app).put('/components/valid', JSON.stringify(options.data)),
-      request(app).get('/components/valid'),
-      request(app).post('/components/valid', JSON.stringify(options.data)),
-      request(app).delete('/components/valid')
+      request(app).put('/_components/valid', JSON.stringify(options.data)),
+      request(app).get('/_components/valid'),
+      request(app).post('/_components/valid', JSON.stringify(options.data)),
+      request(app).delete('/_components/valid')
     ]);
   });
 }
@@ -454,7 +441,6 @@ function beforeEachTest(options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
-  stubGetTemplate(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
@@ -491,7 +477,6 @@ function beforeRenderTest(options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
-  stubGetTemplate(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
