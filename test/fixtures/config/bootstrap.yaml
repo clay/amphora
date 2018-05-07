@@ -1,4 +1,9 @@
 # designed to get 100% coverage, even the error cases
+_users:
+  -
+    username: foo@bar.com
+    provider: baz
+    auth: foobarbaz
 _components:
   this-one: does-not-save
   image:
