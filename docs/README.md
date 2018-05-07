@@ -11,4 +11,8 @@
   * [Publishing](docs/basics/publishing.md)
 * Advanced
   * [Data Versioning (Upgrades)](docs/upgrade.md)
+* [Plugins](docs/plugins/README.md)
+  * [Hooks](docs/plugins/hooks.md)
+  * [Writing A Plugin](docs/plugins/writing-a-plugin.md)
+  * [Plugin vs. Renderer](docs/plugins/plugin-vs-renderer.md)
 * [Glossary](docs/GLOSSARY.md)
