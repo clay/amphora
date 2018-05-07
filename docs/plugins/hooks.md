@@ -6,7 +6,7 @@ Below are details about the plugin hooks in Amphora. Plugin hooks are fired on e
 
 ### Routes (`routes`)
 
-A hook that gets called with the argument of the [Express Router](https://expressjs.com/en/4x/api.html#express.router) for each site in a Clay instance. This hooks allows a plugin to attach a route to a site that can then be called from a client.
+A hook that gets called with the argument of the [Express Router](https://expressjs.com/en/4x/api.html#express.router) for each site in a Clay instance. This hook allows a plugin to attach a route to a site that can then be called from a client.
 
 **Arguments:**
   - `router`. An instance of the [Express Router](https://expressjs.com/en/4x/api.html#express.router) for a site
