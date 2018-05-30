@@ -80,3 +80,7 @@ Note that `publish` and `unpublish` are used by certain plugins, but they will b
   - hook triggered on page unscheduling
   - _note:_ when `unschedulePage` is triggered, `save` is also triggered
   - given one param with uri, data, and user: `{ uri: scheduledItemUri, data: { at: timestamp, publish: pageUri }, user: req.user }`
+
+### Layout-specific Methods
+
+Layouts only have one hook, called `publishLayout`. It is called with the same arguments as `publishPage`, namely `{ uri, data, user }`.
