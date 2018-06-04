@@ -31,7 +31,7 @@ module.exports.routes = [
 ];
 ```
 
-# Dynamic Pages
+## Dynamic Pages
 
 One of the problems the router aims to solve is `dynamic pages`. In Clay there is a 1-1 relationship between a `_uri` and a a `_page`, which makes it extremely hard to build a dynamic system which doesn't require a single page for every piece of content.
 
@@ -47,4 +47,4 @@ module.exports.routes = [
 ];
 ```
 
-By adding this path object into your `routes` object you'll be able to create one page to handle all the requests to the `/archive/*` route.
+By adding this path object into your `routes` object you'll be able to create one page to handle all the requests to the `/archive/*` route. **Make sure your [dynamic page is published](/docs/basics/publishing.md#dynamic-pages--publishing) or else this won't work!**

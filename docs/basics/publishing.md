@@ -1,8 +1,5 @@
 # Publishing
 
-> #### danger::API Notice
-> These docs refer to Amphora 4.3 and above. Amphora versions pre-4.3 used the `resolvePublishing` API which required returning the entire page data object with `url`, `customUrl`, `urlHistory` properties attached. The `resolvePublishing` API will be completely deprecated in Amphora 5.
-
 When setting up a site in your Clay instance you add a controller (`index.js` file) to define the rules around your sites. One of the rules you can define is _how to determine what url to publish a page to_. This can be done in a number of ways, whether it's just using the current date or analyzing the data in the content of the page. The implementation is your decision (as long as the url matches a defined Express route).
 
 ## Setting Publish Rules
@@ -32,6 +29,22 @@ module.exports.resolvePublishUrl = [
 ```
 
 The value that the functions return should be the full url (protocol, host, path, etc). This value will be used when creating `uris` to map vanity urls to proper instances of `pages`.
+
+## Dynamic Pages & Publishing
+
+[Dynamic pages](/docs/basics/routes.md#dynamic-pages) allow one page template to render data in a variety of ways by letting you build pages that take an input a url and use that to render data. Because a dynamic page's url can be anything the usual 1-to-1 relationship of uri to page instance cannot work. For that reason, publishing a dynamic page is slightly different than other pages. All you have to do is make sure that your page has the `_dynamic` property set to `true` and Amphora will handle the rest. For example:
+
+```json
+{
+  "_dynamic": true,
+  "layout": "domain.com/_components/layout/instances/example",
+  "main": [
+    ...
+  ]
+}
+```
+
+With this property set Amphora will publish the page without generating a uri. As long as your router properly defines the page to use for the route, the page will render its dynamic content.
 
 ## Modifying Page Data
 
