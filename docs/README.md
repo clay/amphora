@@ -10,6 +10,7 @@
   * [Renderers](docs/topics/renderers.md)
     * [Building Custom Renderers](docs/topics/custom-renderers.md)
     * [Renderer Models](docs/topics/renderer-models.md)
+  * [Event Bus](docs/topics/event-bus.md)
 * Advanced
   * [Data Versioning (Upgrades)](docs/upgrade.md)
 * [Plugins](docs/plugins/README.md)
