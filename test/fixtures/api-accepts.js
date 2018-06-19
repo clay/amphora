@@ -208,7 +208,7 @@ function updatesOther(method) {
         .set('Host', host)
         .set('Authorization', 'token testKey')
         .then(function () {
-          return db.get(host + realOtherPath).then(JSON.parse).then(function (result) {
+          return db.get(host + realOtherPath).then(function (result) {
             expect(result).to.deep.equal(data);
           });
         });
@@ -291,7 +291,7 @@ function cascades(method) {
         .expect(200)
         .then(function () {
           // expect cascading data to now exist
-          return db.get(cascadingTarget).then(JSON.parse).then(function (result) {
+          return db.get(cascadingTarget).then(function (result) {
             expect(result).to.deep.equal(cascadingData);
           });
         });
