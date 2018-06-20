@@ -14,12 +14,21 @@ chai.config.truncateThreshold = 0;
 require('..');
 
 _.each(apiTests, function (test) {
-  require(test);
+  if (_.includes(test, '/_components/get.js')) require(test);
+  // console.log(test);
+  // require(test);
 });
 
-_.each(tests, function (test) {
-  require(test);
-});
+// process.on('unhandledRejection', (reason, p) => {
+//   console.log('Unhandled Rejection at:', p, 'reason:', reason);
+//   // application specific logging, throwing an error, or other logic here
+// });
+
+
+// _.each(tests, function (test) {
+//   // if (_.includes(test, '/responses.test')) require(test);
+//   require(test);
+// });
 
 after(function () {
   require('./fixtures/enforce-performance')(this);
