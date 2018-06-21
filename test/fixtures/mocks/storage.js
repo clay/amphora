@@ -1,57 +1,51 @@
 'use strict';
 
 const sinon = require('sinon'),
-  h = require('highland'),
-  db = require('../../../lib/services/db'),
-  promiseDefer = require('../../../lib/utils/defer');
+  db = require('../../../lib/services/db');
 
-/**
- * Use ES6 promises
- * @returns {{apply: function}}
- */
-function defer() {
-  const def = promiseDefer();
+class Storage {
+  constructor() {
+    this.inMem = require('levelup')('whatever', { db: require('memdown') });
+    this.setup = sinon.stub().returns(Promise.resolve());
+    this.get   = sinon.stub();
+    this.put   = sinon.stub();
+    this.del   = sinon.stub();
+    this.batch = sinon.stub();
+    this.list  = db.list;
+    this.clearMem = this.clear;
+    this.pipeToPromise = db.pipeToPromise;
+    this.createReadStream = (ops) => this.inMem.createReadStream(ops);
 
-  def.apply = function (err, result) {
-    if (err) {
-      def.reject(err);
-    } else {
-      def.resolve(result);
-    }
-  };
+    db.registerStorage(this);
+  }
 
-  return def;
-}
+  defer() {
+    return db.defer();
+  }
 
-function initDB() {
-  let inMem = require('levelup')('whatever', { db: require('memdown') }),
-    storage = {
-      setup: sinon.stub().returns(Promise.resolve()),
-      get: sinon.stub(),
-      put: sinon.stub(),
-      del: sinon.stub(),
-      batch: sinon.stub(),
-      pipeToPromise: db.pipeToPromise,
-      createReadStream: (ops) => inMem.createReadStream(ops),
-      writeToInMem: put,
-      batchToInMem: batch,
-      getFromInMem: get,
-      delFromInMem: del,
-      closeStream: () => stream.write(h.nil),
-      clearMem: clear
-    };
+  /**
+   * Save to inMemDb
+   *
+   * @param  {String} key
+   * @param  {String} value
+   * @return {Promise}
+   */
+  writeToInMem(key, value) {
+    const deferred = this.defer();
 
-  function put(key, value) {
-    const deferred = defer();
-
-    inMem.put(key, value, deferred.apply);
+    this.inMem.put(key, value, deferred.apply);
     return deferred.promise;
   }
 
-  function get(key) {
-    const deferred = defer();
+  /**
+   * Get from the inMemDb
+   * @param  {String} key
+   * @return {Promise}
+   */
+  getFromInMem(key) {
+    const deferred = this.defer();
 
-    inMem.get(key, deferred.apply);
+    this.inMem.get(key, deferred.apply);
     return deferred.promise.then(resp => {
       var returnVal;
 
@@ -65,48 +59,58 @@ function initDB() {
     }); // Parse because storage modules are expected to
   }
 
-  function del(key) {
-    const deferred = defer();
+  /**
+   * Delete to inMemDb
+   * @param  {String} key
+   * @return {Promise}
+   */
+  delFromInMem(key) {
+    const deferred = this.defer();
 
-    inMem.del(key, deferred.apply);
+    this.inMem.del(key, deferred.apply);
     return deferred.promise;
   }
 
-  function batch(ops, options) {
-    const deferred = defer();
+  /**
+   * Process a batch
+   * @param  {Array} ops
+   * @param  {Object} options
+   * @return {Promise}
+   */
+  batchToInMem(ops, options) {
+    const deferred = this.defer();
 
-    inMem.batch(ops, options || {}, deferred.apply);
+    this.inMem.batch(ops, options || {}, deferred.apply);
 
     return deferred.promise;
   }
 
-  function clear() {
+  /**
+   * Clear the Db
+   * @return {Promise}
+   */
+  clear() {
     const errors = [],
       ops = [],
-      deferred = defer();
+      deferred = this.defer();
 
-    inMem.createReadStream({
+    this.inMem.createReadStream({
       keys:true,
       fillCache: false,
       limit: -1
-    }).on('data', function (data) {
-      ops.push({ type: 'del', key: data.key});
-    }).on('error', function (error) {
-      errors.push(error);
-    }).on('end', function () {
-      if (errors.length) {
-        deferred.apply(_.head(errors));
-      } else {
-        inMem.batch(ops, deferred.apply);
-      }
-    });
+    })
+      .on('data', data => ops.push({ type: 'del', key: data.key}))
+      .on('error', error => errors.push(error))
+      .on('end', () => {
+        if (errors.length) {
+          deferred.apply(_.head(errors));
+        } else {
+          this.inMem.batch(ops, deferred.apply);
+        }
+      });
 
     return deferred.promise;
   }
-
-  db.registerStorage(storage);
-
-  return db;
 }
 
-module.exports = initDB;
+module.exports = () => new Storage();

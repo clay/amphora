@@ -18,9 +18,10 @@ _.each(apiTests, (test) => {
 });
 
 _.each(tests, (test) => {
+  // if (_.includes(test, 'db.test'))
   require(test);
 });
 
-after(() => {
+after(function () {
   require('./fixtures/enforce-performance')(this);
 });
