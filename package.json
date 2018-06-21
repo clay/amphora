@@ -1,6 +1,6 @@
 {
   "name": "amphora",
-  "version": "6.5.0",
+  "version": "6.6.0",
   "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
   "scripts": {
@@ -47,6 +47,7 @@
     "passport-ldapauth": "^0.6.0",
     "passport-slack": "0.0.6",
     "passport-twitter": "^1.0.4",
+    "redis": "^2.8.0",
     "template2env": "^1.0.4",
     "through2-filter": "^2.0.0",
     "through2-map": "^3.0.0",
