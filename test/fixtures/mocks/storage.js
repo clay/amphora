@@ -31,10 +31,12 @@ function initDB() {
       put: sinon.stub(),
       del: sinon.stub(),
       batch: sinon.stub(),
-      pipeToPromise: sinon.stub(),
+      pipeToPromise: db.pipeToPromise,
       createReadStream: (ops) => inMem.createReadStream(ops),
       writeToInMem: put,
+      batchToInMem: batch,
       getFromInMem: get,
+      delFromInMem: del,
       closeStream: () => stream.write(h.nil),
       clearMem: clear
     };
@@ -50,6 +52,31 @@ function initDB() {
     const deferred = defer();
 
     inMem.get(key, deferred.apply);
+    return deferred.promise.then(resp => {
+      var returnVal;
+
+      try {
+        returnVal = JSON.parse(resp);
+      } catch (e) {
+        returnVal = resp;
+      }
+
+      return returnVal;
+    }); // Parse because storage modules are expected to
+  }
+
+  function del(key) {
+    const deferred = defer();
+
+    inMem.del(key, deferred.apply);
+    return deferred.promise;
+  }
+
+  function batch(ops, options) {
+    const deferred = defer();
+
+    inMem.batch(ops, options || {}, deferred.apply);
+
     return deferred.promise;
   }
 

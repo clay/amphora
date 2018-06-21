@@ -13,23 +13,14 @@ chai.config.truncateThreshold = 0;
 // make sure the index file can be loaded at least
 require('..');
 
-_.each(apiTests, function (test) {
-  if (_.includes(test, '/_components/get.js')) require(test);
-  // console.log(test);
-  // require(test);
+_.each(apiTests, (test) => {
+  require(test);
 });
 
-// process.on('unhandledRejection', (reason, p) => {
-//   console.log('Unhandled Rejection at:', p, 'reason:', reason);
-//   // application specific logging, throwing an error, or other logic here
-// });
+_.each(tests, (test) => {
+  require(test);
+});
 
-
-// _.each(tests, function (test) {
-//   // if (_.includes(test, '/responses.test')) require(test);
-//   require(test);
-// });
-
-after(function () {
+after(() => {
   require('./fixtures/enforce-performance')(this);
 });
