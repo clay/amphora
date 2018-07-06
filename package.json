@@ -27,7 +27,7 @@
     "body-parser": "^1.12",
     "chain-of-promises": "^1.0.0",
     "clay-log": "^1.2.0",
-    "clayutils": "^2.1.0",
+    "clayutils": "^2.5.0",
     "cuid": "^1.2.5",
     "eventify": "^2.0.0",
     "express": "^4.15.3",
