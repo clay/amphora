@@ -42,8 +42,4 @@ At instantiation time Amphora accepts a config object which contains properties 
 
 - `env`: an accommodation for renderers to expose environment variables used in `model.js` files on the client-side for [Kiln](https://github.com/clay/clay-kiln). These are only rendered in edit mode for a page. For a more thorough understanding of when/how these values are gathered and used, please see the [Component Models](models.md) documentation.
 
-- `cacheControl`: an Object with one argument: `staticMaxAge`, a Number which is passed through to the [`Express.static`](http://expressjs.com/en/4x/api.html#express.static) function as `maxAge`. Used for controlling `Cache-Control` headers for static assets. See the Express docs for more information about this argument.
-  * _Note: this argument will be added to soon, which is why it's an Object_
-
-
 - `bootstrap`: a Boolean value which defaults to `true`. When set to `false` the internal [bootstrapping process](./bootstrap.md#skipping-bootstrapping) will be skipped entirely. **It's advised not to set the value to `false` for production instances.**
