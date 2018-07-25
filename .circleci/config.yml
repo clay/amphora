@@ -1,27 +1,61 @@
 version: 2
-general:
-  artifacts:
-    - coverage
+
+# Set defaults to reuse
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:8.9.1
+
 jobs:
-  build:
-    docker:
-      # specify the version you desire here
-      - image: node:8.10.0
-    working_directory: ~/repo
+  test:
+    <<: *defaults
     steps:
       - checkout
-      # Download and cache dependencies
+
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
+
       - run: npm install
+      - run:
+          name: Run tests
+          command: npm test
+
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
-      # run tests
-      - run: npm test
-      # send to coveralls
-      - run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+          key: v1-dependencies-
+
+      - persist_to_workspace:
+          root: ~/repo
+          paths: .
+  deploy:
+    <<: *defaults
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - run:
+          name: Send to Coveralls
+          command: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+      - run:
+          name: Put To Pages
+          command: npm run docs:publish
+
+workflows:
+  version: 2
+  test-deploy:
+    jobs:
+      - test:
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+      - deploy:
+          requires:
+            - test
+          filters:
+            tags:
+              only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+            branches:
+              ignore: /.*/
