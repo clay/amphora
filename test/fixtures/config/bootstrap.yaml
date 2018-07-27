@@ -5,7 +5,6 @@ _users:
     provider: baz
     auth: foobarbaz
 _components:
-  this-one: does-not-save
   image:
     instances:
       -
