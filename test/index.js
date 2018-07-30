@@ -16,7 +16,8 @@ require('..');
 // _.each(apiTests, test => require(test));
 
 _.each(tests, test => {
-  if (_.includes(test, 'routes.test')) require(test)
+  if (_.includes(test, 'services/composer.test')) require(test);
+  // require(test);
 });
 
 after(function () {
