@@ -5,15 +5,17 @@ const sinon = require('sinon'),
 
 class Storage {
   constructor() {
-    this.inMem = require('levelup')('whatever', { db: require('memdown') });
-    this.setup = sinon.stub().returns(Promise.resolve());
-    this.get   = sinon.stub();
-    this.put   = sinon.stub();
-    this.del   = sinon.stub();
-    this.batch = sinon.stub();
-    this.list  = db.list;
-    this.clearMem = this.clear;
-    this.pipeToPromise = db.pipeToPromise;
+    this.inMem            = require('levelup')('whatever', { db: require('memdown') });
+    this.setup            = sinon.stub().returns(Promise.resolve());
+    this.get              = sinon.stub();
+    this.put              = sinon.stub();
+    this.del              = sinon.stub();
+    this.batch            = sinon.stub();
+    this.getMeta          = sinon.stub();
+    this.putMeta          = sinon.stub();
+    this.list             = db.list;
+    this.clearMem         = this.clear;
+    this.pipeToPromise    = db.pipeToPromise;
     this.createReadStream = (ops) => this.inMem.createReadStream(ops);
 
     db.registerStorage(this);

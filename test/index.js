@@ -1,4 +1,5 @@
 'use strict';
+
 const glob = require('glob'),
   _ = require('lodash'),
   chai = require('chai'),
@@ -16,7 +17,7 @@ require('..');
 // _.each(apiTests, test => require(test));
 
 _.each(tests, test => {
-  if (_.includes(test, 'services/composer.test')) require(test);
+  if (_.includes(test, 'services/lists.test')) require(test);
   // require(test);
 });
 
