@@ -13,6 +13,8 @@ class Storage {
     this.batch            = sinon.stub();
     this.getMeta          = sinon.stub();
     this.putMeta          = sinon.stub();
+    this.patchMeta        = sinon.stub();
+    this.getLists         = sinon.stub();
     this.list             = db.list;
     this.clearMem         = this.clear;
     this.pipeToPromise    = db.pipeToPromise;
