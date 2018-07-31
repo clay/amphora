@@ -17,7 +17,7 @@ require('..');
 // _.each(apiTests, test => require(test));
 
 _.each(tests, test => {
-  if (_.includes(test, 'services/metadata.test')) require(test);
+  if (_.includes(test, 'services/pages.test')) require(test);
   // require(test);
 });
 
