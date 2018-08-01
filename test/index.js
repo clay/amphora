@@ -7,7 +7,7 @@ const glob = require('glob'),
   tests = glob.sync([__dirname, '..', 'lib', '**', '*.test.js'].join(path.sep)),
   apiTests = glob.sync([__dirname, 'api', '**', '*.js'].join(path.sep));
 
-// defaults for chai
+// defaults for chai1
 chai.config.showDiff = true;
 chai.config.truncateThreshold = 0;
 
@@ -17,8 +17,8 @@ require('..');
 // _.each(apiTests, test => require(test));
 
 _.each(tests, test => {
-  if (_.includes(test, 'services/pages.test')) require(test);
-  // require(test);
+  // if (_.includes(test, 'services/uris.test')) require(test);
+  require(test);
 });
 
 after(function () {
