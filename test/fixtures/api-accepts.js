@@ -11,6 +11,7 @@ const _ = require('lodash'),
   render = require('../../lib/render'),
   schema = require('../../lib/schema'),
   siteService = require('../../lib/services/sites'),
+  meta = require('../../lib/services/metadata'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
   uid = require('../../lib/uid'),
@@ -23,7 +24,7 @@ var app, host;
  * @returns {string}
  */
 function getRealPath(replacements, path) {
-  return _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
+  return _.reduce(replacements, (str, value, key) => str.replace(`:${key}`, value), path);
 }
 
 /**
@@ -331,6 +332,14 @@ function stubSiteConfig(sandbox) {
       assetPath: '/'
     }
   });
+
+  sandbox.stub(siteService, 'getSiteFromPrefix').returns({
+    host,
+    path: '/',
+    slug: 'example',
+    assetDir: 'public',
+    assetPath: '/'
+  });
 }
 
 function stubFiles(sandbox) {
@@ -390,6 +399,20 @@ function stubUid(sandbox) {
   return sandbox;
 }
 
+function stubMeta(sandbox) {
+  sandbox.stub(meta, 'createPage').returns(Promise.resolve());
+  sandbox.stub(meta, 'publishPage').returns(Promise.resolve());
+  sandbox.stub(meta, 'unpublishPage').returns(Promise.resolve());
+  return sandbox;
+}
+
+function stubLoggers(sandbox) {
+  const fakeLog = sandbox.stub();
+
+  require('../../lib/services/pages').setLog(fakeLog);
+  require('../../lib/responses').setLog(fakeLog);
+}
+
 /**
  * Before starting testing at all, prepare certain things to make sure our performance testing is accurate.
  */
@@ -403,6 +426,7 @@ function beforeTesting(suite, options) {
   process.env.CLAY_ACCESS_KEY = 'testKey';
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
+  stubMeta(options.sandbox);
   stubSchema(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
@@ -442,9 +466,11 @@ function beforeEachTest(options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
+  stubMeta(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
+  stubLoggers(options.sandbox);
   stubUid(options.sandbox);
   routes.addHost({
     router: app,
@@ -456,6 +482,11 @@ function beforeEachTest(options) {
   db.put.callsFake(storage.writeToInMem);
   db.batch.callsFake(storage.batchToInMem);
   db.del.callsFake(storage.delFromInMem);
+  db.getLatestData.callsFake(storage.getLatestFromInMem);
+
+  // TODO: finish metadata work
+  db.putMeta.callsFake(storage.putMetaInMem);
+  db.getMeta.callsFake(storage.getMetaInMem);
 
   return storage.clearMem().then(function () {
     if (options.pathsAndData) {

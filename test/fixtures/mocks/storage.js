@@ -1,7 +1,8 @@
 'use strict';
 
 const sinon = require('sinon'),
-  db = require('../../../lib/services/db');
+  db = require('../../../lib/services/db'),
+  { replaceVersion } = require('clayutils');
 
 class Storage {
   constructor() {
@@ -40,6 +41,23 @@ class Storage {
 
     this.inMem.put(key, value, deferred.apply);
     return deferred.promise;
+  }
+
+  getLatestFromInMem(key) {
+    const deferred = this.defer();
+
+    this.inMem.get(replaceVersion(key), deferred.apply);
+    return deferred.promise.then(resp => {
+      var returnVal;
+
+      try {
+        returnVal = JSON.parse(resp);
+      } catch (e) {
+        returnVal = resp;
+      }
+
+      return returnVal;
+    }); // Parse because storage modules are expected to
   }
 
   /**
@@ -88,6 +106,21 @@ class Storage {
     this.inMem.batch(ops, options || {}, deferred.apply);
 
     return deferred.promise;
+  }
+
+  putMetaInMem(key, value) {
+    const deferred = this.defer();
+
+    this.inMem.put(`${key}/meta`, value, deferred.apply);
+    return deferred.promise;
+  }
+
+  getMetaInMem(key) {
+    const deferred = this.defer();
+
+    this.inMem.get(`${key}/meta`, deferred.apply)
+    return deferred.promise
+      .catch(() => ({}));
   }
 
   /**

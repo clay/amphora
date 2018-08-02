@@ -17,13 +17,13 @@ describe(endpointName, function () {
       cascades = apiAccepts.cascades(_.camelCase(filename)),
       pageData = {
         url: 'http://localhost.example.com',
-        layout: 'localhost.example.com/_components/layout',
+        layout: 'localhost.example.com/_layouts/layout',
         center: 'localhost.example.com/_components/valid',
         side: ['localhost.example.com/_components/valid@valid']
       },
       cascadingPageData = {
         url: 'http://localhost.example.com',
-        layout: 'localhost.example.com/_components/layoutCascading',
+        layout: 'localhost.example.com/_layouts/layoutCascading',
         center: 'localhost.example.com/_components/validCascading',
         side: ['localhost.example.com/_components/validCascading@valid']
       },
@@ -34,20 +34,20 @@ describe(endpointName, function () {
       versionedPageData = function (version) {
         return {
           url: 'http://localhost.example.com',
-          layout: 'localhost.example.com/_components/layout@' + version,
-          center: 'localhost.example.com/_components/valid@' + version,
-          side: ['localhost.example.com/_components/valid@' + version]
+          layout: `localhost.example.com/_layouts/layout@${version}`,
+          center: `localhost.example.com/_components/valid@${version}`,
+          side: [`localhost.example.com/_components/valid@${version}`]
         };
       },
       versionedDeepData = function (version) {
-        return { deep: {_ref: 'localhost.example.com/_components/validDeep@' + version} };
+        return { deep: {_ref: `localhost.example.com/_components/validDeep@${version}`} };
       },
       cascadingReturnData = function (version) {
         return {
           url: 'http://localhost.example.com',
-          layout: 'localhost.example.com/_components/layoutCascading@' + version,
-          center: 'localhost.example.com/_components/validCascading@' + version,
-          side: ['localhost.example.com/_components/validCascading@' + version]
+          layout: `localhost.example.com/_layouts/layoutCascading@${version}`,
+          center: `localhost.example.com/_components/validCascading@${version}`,
+          side: [`localhost.example.com/_components/validCascading@${version}`]
         };
       },
       data = {
@@ -84,8 +84,9 @@ describe(endpointName, function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname });
       });
 
-      acceptsJson(path, {name: 'valid'}, 200, {});
-      acceptsJson(path, {name: 'missing'}, 200, {});
+      // Can't send an empty page object
+      acceptsJson(path, {name: 'valid'}, 500, {message: 'Page must contain a `layout` property whose value is a `_layouts` instance', code: 500});
+      acceptsJson(path, {name: 'missing'}, 500, {message: 'Page must contain a `layout` property whose value is a `_layouts` instance', code: 500});
 
       acceptsJsonBody(path, {name: 'valid'}, pageData, 200, pageData);
       acceptsJsonBody(path, {name: 'missing'}, pageData, 200, pageData);
@@ -103,9 +104,9 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/_components/layout': data.layout,
-          '/_components/layout@valid': data.layout,
-          '/_components/layoutCascading': data.firstLevelComponent,
+          '/_layouts/layout': data.layout,
+          '/_layouts/layout@valid': data.layout,
+          '/_layouts/layoutCascading': data.firstLevelComponent,
           '/_components/valid': data.firstLevelComponent,
           '/_components/valid@valid': data.firstLevelComponent,
           '/_components/validCascading': data.firstLevelComponent,
@@ -139,7 +140,7 @@ describe(endpointName, function () {
 
       // block with _ref at root of object
       acceptsJsonBody(path, {name: 'valid', version}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
-      acceptsJsonBody(path + '/', {name: 'valid', version}, pageData, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
+      acceptsJsonBody(`${path}/`, {name: 'valid', version}, pageData, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
   });
 });

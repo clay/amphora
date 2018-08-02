@@ -15,7 +15,7 @@ describe(endpointName, function () {
       acceptsJsonBody = apiAccepts.acceptsJsonBody(_.camelCase(filename)),
       acceptsHtml = apiAccepts.acceptsHtml(_.camelCase(filename)),
       pageData = {
-        layout: 'localhost.example.com/_components/layout',
+        layout: 'localhost.example.com/_layouts/layout',
         center: 'localhost.example.com/_components/valid',
         side: ['localhost.example.com/_components/valid@valid']
       },
@@ -40,7 +40,7 @@ describe(endpointName, function () {
 
       beforeEach(function () {
         return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {
-          '/_components/layout': data.layout,
+          '/_layouts/layout': data.layout,
           '/_components/valid': data.firstLevelComponent,
           '/_components/valid@valid': data.firstLevelComponent,
           '/_pages/valid': data.page
@@ -53,7 +53,6 @@ describe(endpointName, function () {
         const body = result.body;
 
         expect(body.center).to.match(/^localhost.example.com\/_components\/valid\/instances\/.+/);
-        // expect(body.side[0]).to.match(/^localhost.example.com\/_components\/valid\/instances\/.+/);
         expect(body.layout).to.equal(pageData.layout);
         expect(body._ref).to.match(/^localhost.example.com\/_pages\/.+/);
       });
