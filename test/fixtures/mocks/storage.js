@@ -60,6 +60,15 @@ class Storage {
     }); // Parse because storage modules are expected to
   }
 
+
+  patchMetaInMem(key, value) {
+    const deferred = this.defer();
+
+    this.inMem.put(`${key}/meta`, value, deferred.apply);
+    return deferred.promise
+      .then(() => value);
+  }
+
   /**
    * Get from the inMemDb
    * @param  {String} key
@@ -112,13 +121,14 @@ class Storage {
     const deferred = this.defer();
 
     this.inMem.put(`${key}/meta`, value, deferred.apply);
-    return deferred.promise;
+    return deferred.promise
+      .then(() => value);
   }
 
   getMetaInMem(key) {
     const deferred = this.defer();
 
-    this.inMem.get(`${key}/meta`, deferred.apply)
+    this.inMem.get(`${key}/meta`, deferred.apply);
     return deferred.promise
       .catch(() => ({}));
   }

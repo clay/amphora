@@ -116,5 +116,15 @@ describe(endpointName, function () {
       // blocks trailing slash
       acceptsJson(path + '/', {name: 'valid', version: 'valid'}, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
+
+    describe('/_pages/:name/meta', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
+      });
+
+      acceptsJson(path, { name: 'valid' }, 200, {});
+    });
   });
 });

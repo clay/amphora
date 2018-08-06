@@ -344,12 +344,18 @@ function stubSiteConfig(sandbox) {
 
 function stubFiles(sandbox) {
   sandbox.stub(files, 'getComponentPath');
+  sandbox.stub(files, 'getLayoutPath');
 
   files.getComponentPath.withArgs('valid').returns('validThing');
   files.getComponentPath.withArgs('missing').returns('missingThing');
   files.getComponentPath.withArgs('invalid').returns(null);
 
+  files.getLayoutPath.withArgs('valid').returns('validThing');
+  files.getLayoutPath.withArgs('missing').returns('missingThing');
+  files.getLayoutPath.withArgs('invalid').returns(null);
+
   sandbox.stub(files, 'getComponents').returns(['clay-c5', 'clay-c3', 'clay-c4']);
+  sandbox.stub(files, 'getLayouts').returns(['layout1', 'layout2', 'layout3']);
 
   sandbox.stub(files, 'fileExists');
   files.fileExists.withArgs('public').returns(true);
@@ -483,9 +489,8 @@ function beforeEachTest(options) {
   db.batch.callsFake(storage.batchToInMem);
   db.del.callsFake(storage.delFromInMem);
   db.getLatestData.callsFake(storage.getLatestFromInMem);
-
-  // TODO: finish metadata work
   db.putMeta.callsFake(storage.putMetaInMem);
+  db.patchMeta.callsFake(storage.patchMetaInMem);
   db.getMeta.callsFake(storage.getMetaInMem);
 
   return storage.clearMem().then(function () {

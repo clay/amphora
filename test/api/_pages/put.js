@@ -142,5 +142,15 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {name: 'valid', version}, _.assign({_ref: 'whatever'}, pageData), 400, {message: 'Reference (_ref) at root of object is not acceptable', code: 400});
       acceptsJsonBody(`${path}/`, {name: 'valid', version}, pageData, 400, { message: 'Trailing slash on RESTful id in URL is not acceptable', code: 400 });
     });
+
+    describe('/_pages/:name/meta', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
+      });
+
+      acceptsJsonBody(path, { name: 'valid' }, {name: 'foo'}, 200, {name: 'foo'});
+    });
   });
 });

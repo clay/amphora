@@ -3,7 +3,8 @@
 const sinon = require('sinon'),
   render = require('../../../lib/render'),
   componentsRoutes = require('../../../lib/routes/_components'),
-  pagesRoutes = require('../../../lib/routes/_pages');
+  pagesRoutes = require('../../../lib/routes/_pages'),
+  layoutRoutes = require('../../../lib/routes/_layouts');
 
 describe('Custom Rendering', function () {
   let sandbox;
@@ -58,6 +59,27 @@ describe('Custom Rendering', function () {
       render.renderPage.returns(Promise.resolve({type: 'text/html', output: 'some html' }));
       fn({}, { type: typeSpy, send: sendSpy });
       sinon.assert.calledOnce(render.renderPage);
+    });
+  });
+
+  describe('Layout Render', function () {
+    it('calls the render function if a renderer is found to match the extension', function () {
+      const fn = layoutRoutes.route.getExtension;
+
+      render.rendererExists.returns(true);
+      sandbox.stub(layoutRoutes.route, 'render');
+      fn({ params: {ext: 'html' }});
+      sinon.assert.calledOnce(layoutRoutes.route.render);
+    });
+
+    it('calls the `renderComponent` function', function () {
+      const fn = layoutRoutes.route.render,
+        typeSpy = sinon.spy(),
+        sendSpy = sinon.spy();
+
+      render.renderComponent.returns(Promise.resolve({type: 'text/html', output: 'some html' }));
+      fn({}, { type: typeSpy, send: sendSpy });
+      sinon.assert.calledOnce(render.renderComponent);
     });
   });
 });
