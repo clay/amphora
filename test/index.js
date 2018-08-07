@@ -21,7 +21,7 @@ require('../lib/services/db.test');
 
 _.each(apiTests, test => {
   // if (_.includes(test, 'api/_layouts/patch')) require(test);
-  require(test)
+  require(test);
 });
 
 _.each(tests, test => {
