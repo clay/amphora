@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run eslint && npm run mocha",
-    "eslint": "npm run docs:clean && eslint --max-warnings 0 lib test",
-    "mocha": "npm run docs:clean && istanbul cover _mocha"
+    "eslint": "eslint --max-warnings 0 lib test",
+    "mocha": "istanbul cover _mocha"
   },
   "repository": {
     "type": "git",
