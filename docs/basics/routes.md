@@ -1,11 +1,5 @@
 # Routing
 
-{% hint style='info' %}
-
-These docs describe an API for routes that is current as of `v6.2.0`. Documentation for routing prior to this version will not be included because it will be deprecated in the future.
-
-{% endhint %}
-
 ## Basic Routing
 
 The `routes` API allows you to define routes to for your site within the site's controller (`index.js`) file. By exporting an array of route objects, Amphora will attach each route to the Express Router under a `get` handler. Previous versions of Amphora exposed the whole router to a developer to attach routes, but this has been updated in favor of greater stability/feature set in Amphora.
