@@ -1,7 +1,10 @@
 # Hooks
 
-> #### warning::API Notice
-> Plugin functionality will change in Amphora v7.0.0, with many of the methods being deprecated in favor of using the [Event Bus](../topics/event-bus.md). Please upgrade to Amphora v6.6.0 as soon as possible and transition to using Event Bus topics.
+{% hint style='danger' %}
+
+Plugin functionality will change in Amphora v7.0.0, with many of the methods being deprecated in favor of using the [Event Bus](../topics/event-bus.md). Please upgrade to Amphora v6.6.0 as soon as possible and transition to using Event Bus topics.
+
+{% endhint %}
 
 Below are details about the plugin hooks in Amphora. Plugin hooks are fired on each plugin supplied to Amphora at instantiation time. A plugin should expose a property whose name corresponds to one of the hooks below and is a function that expects the arguments detailed below.
 

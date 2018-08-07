@@ -1,0 +1,6 @@
+root: ./docs/
+
+structure:
+  readme: ./INTRO.md
+  summary: ./README.md
+  glossary: ./GLOSSARY.md

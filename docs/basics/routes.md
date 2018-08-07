@@ -1,7 +1,10 @@
 # Routing
 
-> #### warning::API Notice
-> These docs describe an API for routes that is current as of `v6.2.0`. Documentation for routing prior to this version will not be included because it will be deprecated in the future.
+{% hint style='info' %}
+
+These docs describe an API for routes that is current as of `v6.2.0`. Documentation for routing prior to this version will not be included because it will be deprecated in the future.
+
+{% endhint %}
 
 ## Basic Routing
 
