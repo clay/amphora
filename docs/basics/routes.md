@@ -1,7 +1,10 @@
 # Routing
 
-> #### warning::API Notice
-> These docs describe an API for routes that is current as of `v6.2.0`. Documentation for routing prior to this version will not be included because it will be deprecated in the future.
+{% hint style='info' %}
+
+These docs describe an API for routes that is current as of `v6.2.0`. Documentation for routing prior to this version will not be included because it will be deprecated in the future.
+
+{% endhint %}
 
 ## Basic Routing
 
@@ -33,7 +36,7 @@ module.exports.routes = [
 
 ## Dynamic Pages
 
-One of the problems the router aims to solve is `dynamic pages`. In Clay there is a 1-1 relationship between a `_uri` and a a `_page`, which makes it extremely hard to build a dynamic system which doesn't require a single page for every piece of content.
+One of the problems the router aims to solve is `dynamic pages`. In Clay there is a 1-1 relationship between a `_uri` and a a `_page`, which makes it extremely hard to build a dynamic system which doesn't require a single page for every public url.
 
 An example of this would be building an archive page of blog posts that have a certain characteristic or tag. Ideally you'd have one page who would parse the url, find the value the user expects and then render a page with that value filled in all the places you would expect.
 

@@ -1,7 +1,10 @@
 # Custom Renderers
 
-> #### warning::API Notice
-> The docs address the renderer API as of Amphora v6.x. For information on the version 4.x and 5.x API's please [submit an issue](github.com/clay/amphora/issues/new).
+{% hint style='info' %}
+
+The docs address the renderer API as of Amphora v6.x.
+
+{% endhint %}
 
 A custom renderer can do anything your needs might require when it comes to transforming JSON data from Amphora. All that is required is that your renderer export a `render` function. This function will receive a the arguments described below:
 

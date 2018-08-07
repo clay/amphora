@@ -5,13 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "npm run eslint && npm run mocha",
-    "eslint": "npm run docs:clean && eslint --max-warnings 0 lib test",
-    "mocha": "npm run docs:clean && istanbul cover _mocha",
-    "docs:clean": "rimraf ./_book",
-    "docs:prepare": "gitbook install",
-    "docs:watch": "npm run docs:prepare && gitbook serve",
-    "docs:build": "gitbook build ./",
-    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git checkout -b gh-pages && touch .nojekyll && git add . && git commit -am 'update book' && git push git@github.com:clay/amphora gh-pages --force"
+    "eslint": "eslint --max-warnings 0 lib test",
+    "mocha": "istanbul cover _mocha"
   },
   "repository": {
     "type": "git",
@@ -58,11 +53,6 @@
     "chalk": "^1.0.0",
     "coveralls": "^2.11.2",
     "eslint": "^4.3.0",
-    "gitbook-cli": "^2.3.2",
-    "gitbook-plugin-accordion": "^1.1.3",
-    "gitbook-plugin-anchorjs": "^2.0.0",
-    "gitbook-plugin-bootstrap-callout": "^0.1.2",
-    "gitbook-plugin-github": "^2.0.0",
     "istanbul": "^0.4.0",
     "levelup": "^1.3.9",
     "memdown": "^1.4.0",

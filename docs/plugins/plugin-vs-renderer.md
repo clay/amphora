@@ -1,7 +1,10 @@
 # Plugin vs. Renderer
 
-> #### warning::API Notice
-> Plugin functionality will change in Amphora v7.0.0, with many of the methods being deprecated in favor of using the [Event Bus](../topics/event-bus.md). Please upgrade to Amphora v6.6.0 as soon as possible and transition to using Event Bus topics.
+{% hint style='danger' %}
+
+Plugin functionality will change in Amphora v7.0.0, with many of the methods being deprecated in favor of using the [Event Bus](../topics/event-bus.md). Please upgrade to Amphora v6.6.0 as soon as possible and transition to using Event Bus topics.
+
+{% endhint %}
 
 While both plugins and renderers can be passed to Amphora, one key difference:
 
