@@ -1,7 +1,7 @@
 # Renderers
 
 {% hint style="info" %}
-This page discusses renderer purpose and affordances, but once a renderer is written it enables you to write renderer specific `model.js` files. If you already have a functional renderer and are looking for information on renderer models, see this page.
+This page discusses renderer purpose and affordances, but once a renderer is written it enables you to write renderer specific `model.js` files. If you already have a functional renderer and are looking for information on renderer models, [see this page](https://claycms.gitbook.io/amphora/advanced/renderer-models).
 {% endhint %}
 
 The main concern of Amphora is JSON, but to serve content on the web we need to support HTML, XML and any other format that might arise in the future.
