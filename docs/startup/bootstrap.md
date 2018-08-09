@@ -1,4 +1,4 @@
-# Bootstrap
+# Bootstrapping
 
 Bootstrapping is the process by which Amphora will look for specific data in your implementation to add to the database. This process runs _EVERYTIME_ the server restarts.
 
@@ -8,8 +8,8 @@ Whenever the process first starts up, Amphora will look into each component dire
 
 Bootstrapping is a great time for taking care of two actions:
 
-- Adding default data to a component
-- Adding component instances to the database _that will never change_ from user input
+* Adding default data to a component
+* Adding component instances to the database _that will never change_ from user input
 
 ## Skipping Bootstrapping
 
@@ -28,7 +28,7 @@ amphora({
 
 ### Default Data
 
-Since components and the data they hold will change and grow (or shrink) over time, it's necessary to update the default data that a component is created with anytime the server restarts. By including a bootstrap file in each component directory, you'll be able to make sure that changes to all aspects of the component can be changed within a single directory and that every time the server restarts you'll be working with the default data you expect.
+Since components and the data they hold will change and grow \(or shrink\) over time, it's necessary to update the default data that a component is created with anytime the server restarts. By including a bootstrap file in each component directory, you'll be able to make sure that changes to all aspects of the component can be changed within a single directory and that every time the server restarts you'll be working with the default data you expect.
 
 ### Slow/Never Changing Component Instances
 
@@ -37,3 +37,4 @@ Bootstrapping is also very handy for adding values which a user should never be 
 ## Word of Caution
 
 The affordances around bootstrapping mean that you can have a `bootstrap.(yml|yaml)` file in each site and each component. At startup time Amphora will try to read all of these and write the values to the database. Because of this, the more bootstrap files you have, the longer the startup time will be.
+

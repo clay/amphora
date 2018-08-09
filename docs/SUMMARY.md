@@ -1,19 +1,21 @@
-# Summary
+# Table of contents
 
-* [On Startup](lifecycle/startup.md)
-    * [Instantiation Arguments](lifecycle/startup/instantiation.md)
-    * [Bootstrapping](lifecycle/startup/bootstrap.md)
-* Basics
-    * [Routing](basics/routes.md)
-    * [Publishing](basics/publishing.md)
-    * [Renderers](topics/renderers.md)
-        * [Building Custom Renderers](topics/custom-renderers.md)
-        * [Renderer Models](topics/renderer-models.md)
-    * [Event Bus](topics/event-bus.md)
-* Advanced
-    * [Data Versioning (Upgrades)](upgrade.md)
+* [Introduction](../README.md)
+* [On Startup](startup/README.md)
+  * [Instantiation Arguments](startup/instantiation.md)
+  * [Bootstrapping](startup/bootstrap.md)
+* [Basics](basics/README.md)
+  * [Routing](basics/routes.md)
+  * [Publishing](basics/publishing.md)
+  * [Renderers](basics/renderers/README.md)
+    * [Building Custom Renderers](basics/renderers/custom-renderers.md)
+  * [Event Bus](basics/event-bus.md)
+* [Advanced](advanced/README.md)
+  * [Data Versioning \(Upgrades\)](advanced/upgrade.md)
+  * [Renderer Models](advanced/renderer-models.md)
 * [Plugins](plugins/README.md)
-    * [Hooks](plugins/hooks.md)
-    * [Writing A Plugin](plugins/writing-a-plugin.md)
-    * [Plugin vs. Renderer](plugins/plugin-vs-renderer.md)
-* [Glossary](GLOSSARY.md)
+  * [Hooks](plugins/hooks.md)
+  * [Writing A Plugin](plugins/writing-a-plugin.md)
+  * [Plugin vs. Renderer](plugins/plugin-vs-renderer.md)
+* [Glossary](glossary.md)
+

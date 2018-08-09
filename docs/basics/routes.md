@@ -1,14 +1,12 @@
 # Routing
 
-{% hint style='info' %}
-
+{% hint style="info" %}
 These docs describe an API for routes that is current as of `v6.2.0`. Documentation for routing prior to this version will not be included because it will be deprecated in the future.
-
 {% endhint %}
 
 ## Basic Routing
 
-The `routes` API allows you to define routes to for your site within the site's controller (`index.js`) file. By exporting an array of route objects, Amphora will attach each route to the Express Router under a `get` handler. Previous versions of Amphora exposed the whole router to a developer to attach routes, but this has been updated in favor of greater stability/feature set in Amphora.
+The `routes` API allows you to define routes to for your site within the site's controller \(`index.js`\) file. By exporting an array of route objects, Amphora will attach each route to the Express Router under a `get` handler. Previous versions of Amphora exposed the whole router to a developer to attach routes, but this has been updated in favor of greater stability/feature set in Amphora.
 
 To assign routes for your site, export an Array like the one below at the `routes` property of your site's controller. Routing patterns should be [Express compatible](https://expressjs.com/en/guide/routing.html#route-paths).
 
@@ -23,7 +21,6 @@ module.exports.routes = [
 ## Redirects
 
 The router can handle redirects if you choose to handle these in Clay. Simply add the `redirect` property to your path object with the destination being the path you'd like to redirect users to. Make sure the destination path exists before adding in a redirect.
-
 
 ```javascript
 // Redirects to the trailing slash of version of the `/blog/` path
@@ -50,4 +47,5 @@ module.exports.routes = [
 ];
 ```
 
-By adding this path object into your `routes` object you'll be able to create one page to handle all the requests to the `/archive/*` route. **Make sure your [dynamic page is published](/docs/basics/publishing.md#dynamic-pages--publishing) or else this won't work!**
+By adding this path object into your `routes` object you'll be able to create one page to handle all the requests to the `/archive/*` route. **Make sure your** [**dynamic page is published**](publishing.md#dynamic-pages--publishing) **or else this won't work!**
+
