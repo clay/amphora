@@ -4,6 +4,7 @@
     * [Instantiation Arguments](lifecycle/startup/instantiation.md)
     * [Bootstrapping](lifecycle/startup/bootstrap.md)
 * Basics
+    * [Storage](basics/storage.md)
     * [Routing](basics/routes.md)
     * [Publishing](basics/publishing.md)
     * [Plugins](basics/plugins.md)
