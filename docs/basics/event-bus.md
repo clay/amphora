@@ -1,21 +1,21 @@
 # Event Bus
 
-As of Amphora version `6.6.0` the option of using [Redis as an event bus](https://redis.io/topics/pubsub) has been introduced. This event bus is intended to make it easier to a destructure a Clay instance and supporting platform packages (i.e. Amphora Search). By default the Bus module is not instantiated. Only by setting the [Redis Bus Host env var](#redis-bus-host) will the Bus module be active.
+As of Amphora version `6.6.0` the option of using [Redis as an event bus](https://redis.io/topics/pubsub) has been introduced. This event bus is intended to make it easier to a destructure a Clay instance and supporting platform packages \(i.e. Amphora Search\). By default the Bus module is not instantiated. Only by setting the [Redis Bus Host env var](event-bus.md#redis-bus-host) will the Bus module be active.
 
-The Event Bus is also intended to replace the plugin system in the next major version of Amphora (v7). On top of replacing the plugin system, the event bus will see some small changes to the payload of certain events as the plugin system is rearchitected. The end goal is to expose specific hooks in the Amphora lifecycle to the Bus as quickly as possible.
+The Event Bus is also intended to replace the plugin system in the next major version of Amphora \(v7\). On top of replacing the plugin system, the event bus will see some small changes to the payload of certain events as the plugin system is rearchitected. The end goal is to expose specific hooks in the Amphora lifecycle to the Bus as quickly as possible.
 
 ## Bus Topics
 
 The following topics are published to the bus by Amphora:
 
-- `clay:publishLayout`
-- `clay:publishPage`
-- `clay:createPage`
-- `clay:unschedulePage`
-- `clay:schedulePage`
-- `clay:unpublishPage`
-- `clay:save`
-- `clay:delete`
+* `clay:publishLayout`
+* `clay:publishPage`
+* `clay:createPage`
+* `clay:unschedulePage`
+* `clay:schedulePage`
+* `clay:unpublishPage`
+* `clay:save`
+* `clay:delete`
 
 ## Configuring the Bus
 
@@ -23,7 +23,7 @@ The Bus module has two configurations options which are both controlled by envir
 
 ### Redis Bus Host
 
-As mentioned, the Bus module is turned off by default. Only by setting the `REDIS_BUS_HOST` env var to a valid Redis url (`redis://<HOST>:<PORT>`) will the module be instantiated and events will be published to the instance.
+As mentioned, the Bus module is turned off by default. Only by setting the `REDIS_BUS_HOST` env var to a valid Redis url \(`redis://<HOST>:<PORT>`\) will the module be instantiated and events will be published to the instance.
 
 ### Namespace
 
@@ -57,3 +57,4 @@ SUBSCRIBER.on('message', (channel, payload) => {
   console.log(`Channel: ${channel}\n\n\n${payload}`);
 });
 ```
+

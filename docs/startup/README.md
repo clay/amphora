@@ -1,4 +1,4 @@
-# Startup Life Cycle
+# On Startup
 
 The startup life cycle is meant to do a few main things:
 
@@ -8,11 +8,10 @@ The startup life cycle is meant to do a few main things:
 
 All of these processes are coordinated in [`setup.js`](https://github.com/clay/amphora/blob/master/lib/setup.js).
 
-- - -
-
 ## Actions
 
-* Registering Plugins (Coming Soon!)
-* Add Site(s) (Coming Soon!)
-* Register Renderers/Environment Variables (Coming Soon!)
-* [Bootstrap](startup/bootstrap.md)
+* Registering Plugins \(Coming Soon!\)
+* Add Site\(s\) \(Coming Soon!\)
+* Register Renderers/Environment Variables \(Coming Soon!\)
+* [Bootstrap](bootstrap.md)
+
