@@ -1,4 +1,17 @@
 # designed to get 100% coverage, even the error cases
+_pages:
+  -
+    layout: /a/b
+    url: /x/y
+    body: /c/d
+    head:
+      - /e/f
+
+_uris:
+  a: b
+  c: /d
+  /e: f
+  /g: /h
 _users:
   -
     username: foo@bar.com
@@ -19,15 +32,3 @@ _components:
   image2:
     src: http://placekitten.com/400/600
     alt: adorable kittens
-_pages:
-  -
-    layout: /a/b
-    url: /x/y
-    body: /c/d
-    head:
-      - /e/f
-_uris:
-  a: b
-  c: /d
-  /e: f
-  /g: /h
