@@ -15,7 +15,10 @@ require('..');
 
 _.each(apiTests, test => require(test));
 
-_.each(tests, test => require(test));
+// _.each(tests, test => {
+//   if (_.includes(test, 'models.test')) require(test);
+// });
+_.each(tests, test =>  require(test));
 
 after(function () {
   require('./fixtures/enforce-performance')(this);
