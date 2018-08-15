@@ -4,7 +4,6 @@ const _ = require('lodash'),
   express = require('express'),
   request = require('supertest'),
   files = require('../../lib/files'),
-  amphoraFs = require('amphora-fs'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
   bluebird = require('bluebird'),
@@ -340,7 +339,7 @@ function stubFiles(sandbox) {
   files.getComponentPath.withArgs('missing').returns('missingThing');
   files.getComponentPath.withArgs('invalid').returns(null);
 
-  sandbox.stub(amphoraFs, 'getComponents').returns(['clay-c5', 'clay-c3', 'clay-c4']);
+  sandbox.stub(files, 'getComponents').returns(['clay-c5', 'clay-c3', 'clay-c4']);
 
   sandbox.stub(files, 'fileExists');
   files.fileExists.withArgs('public').returns(true);
