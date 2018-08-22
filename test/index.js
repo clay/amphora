@@ -13,9 +13,10 @@ chai.config.truncateThreshold = 0;
 // make sure the index file can be loaded at least
 require('..');
 
-_.each(apiTests, test => require(test));
+// _.each(apiTests, test => require(test));
 
-_.each(tests, test => require(test));
+// _.each(tests, test => require(test));
+_.each(tests, test => { if (_.includes(test, 'bootstrap')) require(test); });
 
 after(function () {
   require('./fixtures/enforce-performance')(this);
