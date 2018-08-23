@@ -18,6 +18,7 @@ _users:
     provider: baz
     auth: foobarbaz
 _components:
+  foo:
   image:
     instances:
       -
