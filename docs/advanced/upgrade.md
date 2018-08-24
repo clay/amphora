@@ -42,21 +42,17 @@ module.exports['1.0'] = function (uri, data, locals) {
 
 ## FAQ
 
-%accordion%So all the upgrades for a component run every time a component is requested? %accordion%
+### So all the upgrades for a component run every time a component is requested? 
 
 An upgrade is only run **once** per component instance. The `_version` property is used to track the version of the data and then upgrades are reduced through, make sure that a upgrades are run in ascending order.
 
 For example, if your component data is on version `1.0` and your schema version is at `1.6`, Amphora will run your data through each upgrade \(from `1.1` to `1.6`\) and return the data expected for `1.6`. In this way, even the oldest data in your system is up-to-date with `model.js` and template expectations.
 
-%/accordion%
-
-%accordion% Why not just use an external script or render function? %accordion%
+### Why not just use an external script or render function?
 
 Transforming data in a `model.js` `render` function will lead to bloat of the file which will require more development time as devs must keep all of the possible permutations of the data in mind when making changes.
 
 Using an external script will require careful coordination when releasing new features and updating data.
 
 Data versioning allows you iterate and release without fear that your data needs to undergo its own migration.
-
-%/accordion%
 

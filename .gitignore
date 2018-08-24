@@ -1,6 +1,5 @@
 .DS_Store
 .idea
-package-lock.json
 
 lib-cov
 *.seed
