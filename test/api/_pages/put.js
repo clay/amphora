@@ -33,6 +33,9 @@ describe(endpointName, function () {
       cascadingTarget = 'localhost.example.com/_components/validDeep',
       versionedPageData = function (version) {
         return {
+          urlHistory: [
+            'http://localhost.example.com'
+          ],
           url: 'http://localhost.example.com',
           layout: 'localhost.example.com/_components/layout@' + version,
           center: 'localhost.example.com/_components/valid@' + version,
@@ -44,6 +47,9 @@ describe(endpointName, function () {
       },
       cascadingReturnData = function (version) {
         return {
+          urlHistory: [
+            'http://localhost.example.com'
+          ],
           url: 'http://localhost.example.com',
           layout: 'localhost.example.com/_components/layoutCascading@' + version,
           center: 'localhost.example.com/_components/validCascading@' + version,
