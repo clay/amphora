@@ -54,8 +54,11 @@ function createTest(options) {
       .set('Host', host)
       .set('Authorization', 'token testKey');
 
-    promise = promise.expect('Content-Type', options.contentType)
-      .expect(options.status);
+    if (options.contentType) {
+      promise = promise.expect('Content-Type', options.contentType);
+    }
+
+    promise = promise.expect(options.status);
 
     if (options.data !== undefined) {
       promise = promise.expect(options.data);
@@ -151,6 +154,25 @@ function acceptsJson(method) {
       status,
       accept: 'application/json',
       contentType: /json/
+    });
+  };
+}
+
+/**
+ * Create a generic test that accepts JSON
+ * @param {String} method
+ * @returns {Function}
+ */
+function acceptRedirect(method) {
+  return function (path, replacements, status, data) {
+    createTest({
+      description: JSON.stringify(replacements) + ' receives a redirect',
+      path,
+      method,
+      replacements,
+      data,
+      status,
+      accept: '*/*'
     });
   };
 }
@@ -533,6 +555,7 @@ module.exports.setApp = setApp;
 module.exports.setHost = setHost;
 module.exports.acceptsHtml = acceptsHtml;
 module.exports.acceptsHtmlBody = acceptsHtmlBody;
+module.exports.acceptRedirect = acceptRedirect;
 module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.acceptsText = acceptsText;
