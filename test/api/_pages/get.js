@@ -11,6 +11,7 @@ describe(endpointName, function () {
     let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
+      acceptRedirect = apiAccepts.acceptRedirect(_.camelCase(filename)),
       pageData = { layout: 'localhost.example.com/_components/layout', center: ['localhost.example.com/_components/valid'] },
       layoutData = { center: 'center', deep: [{_ref: 'localhost.example.com/_components/validDeep'}] },
       deepData = { _ref: 'localhost.example.com/_components/validDeep' },
@@ -125,6 +126,16 @@ describe(endpointName, function () {
       });
 
       acceptsJson(path, { name: 'valid' }, 200, {});
+    });
+
+    describe('/_pages/:name@published/meta', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
+      });
+
+      acceptRedirect(path, { name: 'valid' }, 303, {});
     });
   });
 });
