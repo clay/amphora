@@ -11,6 +11,7 @@ describe(endpointName, function () {
     let sandbox,
       hostname = 'localhost.example.com',
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
+      acceptRedirect = apiAccepts.acceptRedirect(_.camelCase(filename)),
       data = { main: 'main' },
       deepData = { d: 'e' },
       cascadingData = ref => {
@@ -146,6 +147,16 @@ describe(endpointName, function () {
       });
 
       acceptsJson(path, { name: 'valid', id: 'valid' }, 200, {});
+    });
+
+    describe('/_layouts/:name/instances/:id@published/meta', function () {
+      const path = this.title;
+
+      beforeEach(function () {
+        return apiAccepts.beforeEachTest({ sandbox, hostname });
+      });
+
+      acceptRedirect(path, { name: 'valid', id: 'valid' }, 303, {});
     });
   });
 });
