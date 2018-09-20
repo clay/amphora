@@ -6,10 +6,12 @@ const _ = require('lodash'),
   files = require('../../lib/files'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
+  storage = require('./mocks/storage')(),
   bluebird = require('bluebird'),
   render = require('../../lib/render'),
   schema = require('../../lib/schema'),
   siteService = require('../../lib/services/sites'),
+  meta = require('../../lib/services/metadata'),
   expect = require('chai').expect,
   filter = require('through2-filter'),
   uid = require('../../lib/uid'),
@@ -22,7 +24,7 @@ var app, host;
  * @returns {string}
  */
 function getRealPath(replacements, path) {
-  return _.reduce(replacements, function (str, value, key) { return str.replace(':' + key, value); }, path);
+  return _.reduce(replacements, (str, value, key) => str.replace(`:${key}`, value), path);
 }
 
 /**
@@ -52,8 +54,11 @@ function createTest(options) {
       .set('Host', host)
       .set('Authorization', 'token testKey');
 
-    promise = promise.expect('Content-Type', options.contentType)
-      .expect(options.status);
+    if (options.contentType) {
+      promise = promise.expect('Content-Type', options.contentType);
+    }
+
+    promise = promise.expect(options.status);
 
     if (options.data !== undefined) {
       promise = promise.expect(options.data);
@@ -154,6 +159,25 @@ function acceptsJson(method) {
 }
 
 /**
+ * Create a generic test that accepts JSON
+ * @param {String} method
+ * @returns {Function}
+ */
+function acceptRedirect(method) {
+  return function (path, replacements, status, data) {
+    createTest({
+      description: JSON.stringify(replacements) + ' receives a redirect',
+      path,
+      method,
+      replacements,
+      data,
+      status,
+      accept: '*/*'
+    });
+  };
+}
+
+/**
  * Create a generic test that accepts JSON with a BODY
  * @param {string} method
  * @returns {Function}
@@ -208,7 +232,7 @@ function updatesOther(method) {
         .set('Host', host)
         .set('Authorization', 'token testKey')
         .then(function () {
-          return db.get(host + realOtherPath).then(JSON.parse).then(function (result) {
+          return storage.getFromInMem(host + realOtherPath).then(function (result) {
             expect(result).to.deep.equal(data);
           });
         });
@@ -226,7 +250,7 @@ function getVersions(ref) {
     deferred = bluebird.defer(),
     prefix = ref.split('@')[0];
 
-  db.list({prefix, values: false, transforms: [filter({wantStrings: true}, function (str) {
+  storage.list({prefix, values: false, transforms: [filter({wantStrings: true}, function (str) {
     return str.indexOf('@') !== -1;
   })]})
     .on('data', function (data) {
@@ -291,7 +315,7 @@ function cascades(method) {
         .expect(200)
         .then(function () {
           // expect cascading data to now exist
-          return db.get(cascadingTarget).then(JSON.parse).then(function (result) {
+          return storage.getFromInMem(cascadingTarget).then(function (result) {
             expect(result).to.deep.equal(cascadingData);
           });
         });
@@ -330,16 +354,30 @@ function stubSiteConfig(sandbox) {
       assetPath: '/'
     }
   });
+
+  sandbox.stub(siteService, 'getSiteFromPrefix').returns({
+    host,
+    path: '/',
+    slug: 'example',
+    assetDir: 'public',
+    assetPath: '/'
+  });
 }
 
 function stubFiles(sandbox) {
   sandbox.stub(files, 'getComponentPath');
+  sandbox.stub(files, 'getLayoutPath');
 
   files.getComponentPath.withArgs('valid').returns('validThing');
   files.getComponentPath.withArgs('missing').returns('missingThing');
   files.getComponentPath.withArgs('invalid').returns(null);
 
+  files.getLayoutPath.withArgs('valid').returns('validThing');
+  files.getLayoutPath.withArgs('missing').returns('missingThing');
+  files.getLayoutPath.withArgs('invalid').returns(null);
+
   sandbox.stub(files, 'getComponents').returns(['clay-c5', 'clay-c3', 'clay-c4']);
+  sandbox.stub(files, 'getLayouts').returns(['layout1', 'layout2', 'layout3']);
 
   sandbox.stub(files, 'fileExists');
   files.fileExists.withArgs('public').returns(true);
@@ -389,6 +427,20 @@ function stubUid(sandbox) {
   return sandbox;
 }
 
+function stubMeta(sandbox) {
+  sandbox.stub(meta, 'createPage').returns(Promise.resolve());
+  sandbox.stub(meta, 'publishPage').returns(Promise.resolve());
+  sandbox.stub(meta, 'unpublishPage').returns(Promise.resolve());
+  return sandbox;
+}
+
+function stubLoggers(sandbox) {
+  const fakeLog = sandbox.stub();
+
+  require('../../lib/services/pages').setLog(fakeLog);
+  require('../../lib/responses').setLog(fakeLog);
+}
+
 /**
  * Before starting testing at all, prepare certain things to make sure our performance testing is accurate.
  */
@@ -402,6 +454,7 @@ function beforeTesting(suite, options) {
   process.env.CLAY_ACCESS_KEY = 'testKey';
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
+  stubMeta(options.sandbox);
   stubSchema(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
@@ -413,7 +466,7 @@ function beforeTesting(suite, options) {
     sites: null
   });
 
-  return db.clear().then(function () {
+  return storage.clearMem().then(function () {
     return bluebird.all([
       request(app).put('/_components/valid', JSON.stringify(options.data)),
       request(app).get('/_components/valid'),
@@ -441,9 +494,11 @@ function beforeEachTest(options) {
   stubSiteConfig(options.sandbox);
   stubFiles(options.sandbox);
   stubSchema(options.sandbox);
+  stubMeta(options.sandbox);
   stubRenderExists(options.sandbox);
   stubRenderComponent(options.sandbox);
   stubRenderPage(options.sandbox);
+  stubLoggers(options.sandbox);
   stubUid(options.sandbox);
   routes.addHost({
     router: app,
@@ -451,8 +506,16 @@ function beforeEachTest(options) {
     providers: ['apikey']
   });
 
+  db.get.callsFake(storage.getFromInMem);
+  db.put.callsFake(storage.writeToInMem);
+  db.batch.callsFake(storage.batchToInMem);
+  db.del.callsFake(storage.delFromInMem);
+  db.getLatestData.callsFake(storage.getLatestFromInMem);
+  db.putMeta.callsFake(storage.putMetaInMem);
+  db.patchMeta.callsFake(storage.patchMetaInMem);
+  db.getMeta.callsFake(storage.getMetaInMem);
 
-  return db.clear().then(function () {
+  return storage.clearMem().then(function () {
     if (options.pathsAndData) {
       return bluebird.all(_.map(options.pathsAndData, function (data, path) {
         let ignoreHost = path.indexOf(ignoreString) > -1;
@@ -465,7 +528,7 @@ function beforeEachTest(options) {
           data = JSON.stringify(data);
         }
 
-        return db.put(`${ignoreHost ? '' : host}${path}`, data);
+        return storage.writeToInMem(`${ignoreHost ? '' : host}${path}`, data);
       }));
     }
   });
@@ -492,6 +555,7 @@ module.exports.setApp = setApp;
 module.exports.setHost = setHost;
 module.exports.acceptsHtml = acceptsHtml;
 module.exports.acceptsHtmlBody = acceptsHtmlBody;
+module.exports.acceptRedirect = acceptRedirect;
 module.exports.acceptsJson = acceptsJson;
 module.exports.acceptsJsonBody = acceptsJsonBody;
 module.exports.acceptsText = acceptsText;

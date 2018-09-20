@@ -11,6 +11,7 @@
     * [Building Custom Renderers](basics/renderers/custom-renderers.md)
   * [Event Bus](basics/event-bus.md)
 * [Advanced](advanced/README.md)
+  * [Storage API](advanced/storage.md)
   * [Data Versioning \(Upgrades\)](advanced/upgrade.md)
   * [Renderer Models](advanced/renderer-models.md)
 * [Plugins](plugins/README.md)
@@ -18,4 +19,3 @@
   * [Writing A Plugin](plugins/writing-a-plugin.md)
   * [Plugin vs. Renderer](plugins/plugin-vs-renderer.md)
 * [Glossary](glossary.md)
-
