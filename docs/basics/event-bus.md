@@ -23,7 +23,7 @@ The Bus module has two configurations options which are both controlled by envir
 
 ### Redis Bus Host
 
-As mentioned, the Bus module is turned off by default. Only by setting the `REDIS_BUS_HOST` env var to a valid Redis url \(`redis://<HOST>:<PORT>`\) will the module be instantiated and events will be published to the instance.
+As mentioned, the Bus module is turned off by default. Only by setting the `CLAY_BUS_HOST` env var to a valid Redis url \(`redis://<HOST>:<PORT>`\) will the module be instantiated and events will be published to the instance.
 
 ### Namespace
 
@@ -37,7 +37,7 @@ Provided you have setup Amphora to pub to a Redis instance, the following code w
 'use strict';
 
 var redis = require('redis'),
-  SUBSCRIBER = redis.createClient(process.env.REDIS_BUS_HOST),
+  SUBSCRIBER = redis.createClient(process.env.CLAY_BUS_HOST),
   CLAY_TOPICS = [
     'publishLayout',
     'publishPage',
@@ -57,4 +57,3 @@ SUBSCRIBER.on('message', (channel, payload) => {
   console.log(`Channel: ${channel}\n\n\n${payload}`);
 });
 ```
-
