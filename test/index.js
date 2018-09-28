@@ -20,12 +20,10 @@ require('..');
 require('../lib/services/db.test');
 
 _.each(apiTests, test => {
-  // if (_.includes(test, 'api/_pages/put')) require(test);
   require(test);
 });
 
 _.each(tests, test => {
-  // if (_.includes(test, 'services/publish.test')) require(test);
   require(test);
 });
 
