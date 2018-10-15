@@ -22,7 +22,7 @@ class Storage {
     this.createReadStream = (ops) => this.inMem.createReadStream(ops);
     this.getLatestData    = sinon.stub();
 
-    db.registerStorage(this);
+    db.registerStorage(this, true);
   }
 
   defer() {

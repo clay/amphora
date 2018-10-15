@@ -6,7 +6,7 @@ const _ = require('lodash'),
   files = require('../../lib/files'),
   routes = require('../../lib/routes'),
   db = require('../../lib/services/db'),
-  storage = require('./mocks/storage')(),
+  storage = require('./mocks/storage'),
   bluebird = require('bluebird'),
   render = require('../../lib/render'),
   schema = require('../../lib/schema'),
@@ -232,7 +232,7 @@ function updatesOther(method) {
         .set('Host', host)
         .set('Authorization', 'token testKey')
         .then(function () {
-          return storage.getFromInMem(host + realOtherPath).then(function (result) {
+          return storage().getFromInMem(host + realOtherPath).then(function (result) {
             expect(result).to.deep.equal(data);
           });
         });
@@ -250,7 +250,7 @@ function getVersions(ref) {
     deferred = bluebird.defer(),
     prefix = ref.split('@')[0];
 
-  storage.list({prefix, values: false, transforms: [filter({wantStrings: true}, function (str) {
+  storage().list({prefix, values: false, transforms: [filter({wantStrings: true}, function (str) {
     return str.indexOf('@') !== -1;
   })]})
     .on('data', function (data) {
@@ -315,7 +315,7 @@ function cascades(method) {
         .expect(200)
         .then(function () {
           // expect cascading data to now exist
-          return storage.getFromInMem(cascadingTarget).then(function (result) {
+          return storage().getFromInMem(cascadingTarget).then(function (result) {
             expect(result).to.deep.equal(cascadingData);
           });
         });
@@ -466,7 +466,7 @@ function beforeTesting(suite, options) {
     sites: null
   });
 
-  return storage.clearMem().then(function () {
+  return storage().clearMem().then(function () {
     return bluebird.all([
       request(app).put('/_components/valid', JSON.stringify(options.data)),
       request(app).get('/_components/valid'),
@@ -488,6 +488,8 @@ function beforeTesting(suite, options) {
  * @returns {Promise}
  */
 function beforeEachTest(options) {
+  const mockStorage = storage();
+
   app = express();
   host = options.hostname;
   process.env.CLAY_ACCESS_KEY = 'testKey';
@@ -506,16 +508,16 @@ function beforeEachTest(options) {
     providers: ['apikey']
   });
 
-  db.get.callsFake(storage.getFromInMem);
-  db.put.callsFake(storage.writeToInMem);
-  db.batch.callsFake(storage.batchToInMem);
-  db.del.callsFake(storage.delFromInMem);
-  db.getLatestData.callsFake(storage.getLatestFromInMem);
-  db.putMeta.callsFake(storage.putMetaInMem);
-  db.patchMeta.callsFake(storage.patchMetaInMem);
-  db.getMeta.callsFake(storage.getMetaInMem);
+  db.get.callsFake(mockStorage.getFromInMem);
+  db.put.callsFake(mockStorage.writeToInMem);
+  db.batch.callsFake(mockStorage.batchToInMem);
+  db.del.callsFake(mockStorage.delFromInMem);
+  db.getLatestData.callsFake(mockStorage.getLatestFromInMem);
+  db.putMeta.callsFake(mockStorage.putMetaInMem);
+  db.patchMeta.callsFake(mockStorage.patchMetaInMem);
+  db.getMeta.callsFake(mockStorage.getMetaInMem);
 
-  return storage.clearMem().then(function () {
+  return mockStorage.clearMem().then(function () {
     if (options.pathsAndData) {
       return bluebird.all(_.map(options.pathsAndData, function (data, path) {
         let ignoreHost = path.indexOf(ignoreString) > -1;
@@ -528,7 +530,7 @@ function beforeEachTest(options) {
           data = JSON.stringify(data);
         }
 
-        return storage.writeToInMem(`${ignoreHost ? '' : host}${path}`, data);
+        return mockStorage.writeToInMem(`${ignoreHost ? '' : host}${path}`, data);
       }));
     }
   });
