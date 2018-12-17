@@ -21,7 +21,7 @@ module.exports = function (options) {
   // mock these methods
   res.status = _.constant(res);
   res.send = _.constant(res);
-  res.redirect = _.noop;
+  res.redirect = _.constant(res);
   res.json = function (json) {
     res.type('json');
     res.send(json);
