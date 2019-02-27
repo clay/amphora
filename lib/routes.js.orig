@@ -19,12 +19,7 @@ const _ = require('lodash'),
   },
   routesPath = 'routes',
   reservedRoutes = _.map(files.getFiles([__dirname, routesPath].join(path.sep)), responses.removeExtension);
-<<<<<<< HEAD
 let log = require('./services/logger').setup({ file: __filename }),
-=======
-var log = require('./services/logger').setup({ file: __filename }),
-  db = require('./services/db'),
->>>>>>> Fixes test cases
   amphoraPassport = require('amphora-passport');
 
 attachRoutes.setReservedRoutes(reservedRoutes);
@@ -153,7 +148,11 @@ function addAuthenticationRoutes(router) {
 
   authRouter.use(require('body-parser').json({ strict: true, type: 'application/json', limit: '50mb' }));
   authRouter.use(require('body-parser').text({ type: 'text/*' }));
+<<<<<<< HEAD
   amphoraPassport.addRoutes(authRouter);
+=======
+  amphoraPassport.addRoutes(authRouter)
+>>>>>>> trying something new
   router.use('/_users', authRouter);
 }
 
