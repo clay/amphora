@@ -16,8 +16,8 @@
   "author": "New York Media",
   "license": "MIT",
   "dependencies": {
+    "amphora-authentication": "0.0.1",
     "amphora-fs": "^1.0.1",
-    "amphora-passport": "0.0.1",
     "basic-auth": "^1.0.4",
     "bluebird": "^3.5.1",
     "body-parser": "^1.12",
