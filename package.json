@@ -1,6 +1,6 @@
 {
   "name": "amphora",
-  "version": "7.4.0-beta.5",
+  "version": "7.4.0-beta.6",
   "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
   "scripts": {
