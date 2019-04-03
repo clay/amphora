@@ -7,7 +7,7 @@ const glob = require('glob'),
   tests = glob.sync([__dirname, '..', 'lib', '**', '*.test.js'].join(path.sep)),
   apiTests = glob.sync([__dirname, 'api', '**', '*.js'].join(path.sep));
 
-// defaults for chai1
+// defaults for chai
 chai.config.showDiff = true;
 chai.config.truncateThreshold = 0;
 
@@ -20,6 +20,7 @@ require('..');
 require('../lib/services/db.test');
 
 _.each(apiTests, test => {
+  console.log('API TEST', test);
   require(test);
 });
 
