@@ -20,7 +20,6 @@ require('..');
 require('../lib/services/db.test');
 
 _.each(apiTests, test => {
-  console.log('API TEST', test);
   require(test);
 });
 
