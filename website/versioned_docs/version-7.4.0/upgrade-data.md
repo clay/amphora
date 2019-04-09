@@ -1,5 +1,5 @@
 ---
-id: version-7.3.2-data_versioning
+id: version-7.4.0-data_versioning
 title: Data Versioning (Upgrades)
 sidebar_label: Data Versioning (Upgrades)
 original_id: data_versioning

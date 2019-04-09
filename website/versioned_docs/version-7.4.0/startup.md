@@ -1,5 +1,5 @@
 ---
-id: version-7.3.2-startup
+id: version-7.4.0-startup
 title: Startup
 sidebar_label: Startup
 original_id: startup

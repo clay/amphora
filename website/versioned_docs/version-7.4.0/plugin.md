@@ -1,5 +1,5 @@
 ---
-id: version-7.3.2-plugin
+id: version-7.4.0-plugin
 title: Plugin
 sidebar_label: Plugin
 original_id: plugin
