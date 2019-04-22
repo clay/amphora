@@ -10,6 +10,7 @@
     "Basics": [
       "routes",
       "publish",
+      "plugin",
       {
         "type": "subcategory",
         "label": "Renderers",

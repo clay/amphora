@@ -11,6 +11,7 @@
     "Basics": [
       "version-7.3.2-routes",
       "version-7.3.2-publish",
+      "version-7.3.2-plugin",
       {
         "type": "subcategory",
         "label": "Renderers",
