@@ -1,5 +1,5 @@
 ---
-id: version-7.3.2-bootstrap
+id: version-7.4.0-bootstrap
 title: Bootstrapping
 sidebar_label: Bootstrapping
 original_id: bootstrap

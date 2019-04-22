@@ -1,5 +1,5 @@
 ---
-id: version-7.3.2-install
+id: version-7.4.0-install
 title: Instantiation Arguments
 sidebar_label: Instantiation Arguments
 original_id: install

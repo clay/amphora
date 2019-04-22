@@ -1,5 +1,5 @@
 ---
-id: version-7.3.2-renderer-models
+id: version-7.4.0-renderer-models
 title: Renderer Models
 sidebar_label: Renderer Models
 original_id: renderer-models

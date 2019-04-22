@@ -1,5 +1,5 @@
 ---
-id: version-7.3.2-publish
+id: version-7.4.0-publish
 title: Publishing
 sidebar_label: Publishing
 original_id: publish

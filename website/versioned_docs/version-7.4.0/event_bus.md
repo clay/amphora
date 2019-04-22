@@ -1,5 +1,5 @@
 ---
-id: version-7.3.2-event-bus
+id: version-7.4.0-event-bus
 title: Event Bus
 sidebar_label: Event Bus
 original_id: event-bus
