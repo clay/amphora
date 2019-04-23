@@ -1,0 +1,30 @@
+{
+  "docs": {
+    "Introduction": [
+      "intro"
+    ],
+    "On Startup": [
+      "install",
+      "bootstrap"
+    ],
+    "Basics": [
+      "routes",
+      "publish",
+      "plugin",
+      {
+        "type": "subcategory",
+        "label": "Renderers",
+        "ids": [
+          "building-renderers"
+        ]
+      },
+      "event-bus"
+    ],
+    "Advanced": [
+      "storage",
+      "data_versioning",
+      "renderer-models"
+    ],
+    "Helpful Links": ["glossary-docs"]
+  }
+}
