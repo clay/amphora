@@ -1,5 +1,5 @@
 ---
-id: version-7.3.2-storage
+id: version-7.4.0-storage
 title: Storage API
 sidebar_label: Storage API
 original_id: storage
