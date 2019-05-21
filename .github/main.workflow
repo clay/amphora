@@ -18,5 +18,5 @@ action "Build and push docs" {
   needs = ["Update version"]
   uses = "clay/docusaurus-github-action@master"
   args="deploy"
-  secrets = ["DEPLOY_SSH_KEY"]
+  secrets = ["DEPLOY_SSH_KEY", "ALGOLIA_API_KEY"]
 }
