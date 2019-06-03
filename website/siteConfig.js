@@ -6,6 +6,7 @@
  */
 
 const repoUrl = 'https://github.com/clay/amphora';
+projectName = process.env.PROJECT_NAME || 'amphora';
 
 const siteConfig = {
   title: 'Amphora', // Title for your website.
@@ -14,7 +15,7 @@ const siteConfig = {
   baseUrl: '/amphora/', // Base URL for your project */
 
   // Used for publishing and more
-  projectName: 'Amphora',
+  projectName,
   organizationName: 'amphoraplatform',
 
   // For no header links in the top nav bar -> headerLinks: [],
