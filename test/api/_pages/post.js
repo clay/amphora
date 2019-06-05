@@ -52,8 +52,8 @@ describe(endpointName, function () {
       acceptsJsonBody(path, {}, pageData, 201, function (result) {
         const body = result.body;
 
-        expect(body.center).to.match(/^localhost.example.com\/_components\/valid\/instances\/.+/);
-        expect(body.layout).to.equal(pageData.layout);
+        expect(body.data.center).to.match(/^localhost.example.com\/_components\/valid\/instances\/.+/);
+        expect(body.data.layout).to.equal(pageData.layout);
         expect(body._ref).to.match(/^localhost.example.com\/_pages\/.+/);
       });
       acceptsHtml(path, {}, 406, '406 text/html not acceptable');
