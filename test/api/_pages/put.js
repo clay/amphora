@@ -33,10 +33,13 @@ describe(endpointName, function () {
       cascadingTarget = 'localhost.example.com/_components/validDeep',
       versionedPageData = function (version) {
         return {
-          url: 'http://localhost.example.com',
-          layout: `localhost.example.com/_layouts/layout@${version}`,
-          center: `localhost.example.com/_components/valid@${version}`,
-          side: [`localhost.example.com/_components/valid@${version}`]
+          data: {
+            url: 'http://localhost.example.com',
+            layout: `localhost.example.com/_layouts/layout@${version}`,
+            center: `localhost.example.com/_components/valid@${version}`,
+            side: [`localhost.example.com/_components/valid@${version}`],
+          },
+          siteSlug: 'example'
         };
       },
       versionedDeepData = function (version) {
@@ -44,10 +47,13 @@ describe(endpointName, function () {
       },
       cascadingReturnData = function (version) {
         return {
-          url: 'http://localhost.example.com',
-          layout: `localhost.example.com/_layouts/layoutCascading@${version}`,
-          center: `localhost.example.com/_components/validCascading@${version}`,
-          side: [`localhost.example.com/_components/validCascading@${version}`]
+          data: {
+            url: 'http://localhost.example.com',
+            layout: `localhost.example.com/_layouts/layoutCascading@${version}`,
+            center: `localhost.example.com/_components/validCascading@${version}`,
+            side: [`localhost.example.com/_components/validCascading@${version}`]
+          },
+          siteSlug: 'example'
         };
       },
       data = {
