@@ -41,7 +41,9 @@ npm install --save amphora
 
 ## Usage
 
-Clay separates concerns into two main areas: components and sites. Create two new directories in your project:
+Clay separates concerns into two main areas: components and sites. 
+
+First, create two new directories in your project:
 
 ```text
 /components  (where your custom components live)
