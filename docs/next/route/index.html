@@ -1,0 +1,248 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Technical information · Amphora</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="&lt;p&gt;This is a technical document about how routing in Amphora is performed. It also informs any further technical decisions about the growth of the library and contains many ideas that we&#x27;re adhering to for consistency.&lt;/p&gt;
+"/><meta name="docsearch:version" content="next"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Technical information · Amphora"/><meta property="og:type" content="website"/><meta property="og:url" content="https://clay.github.io/amphora/"/><meta property="og:description" content="&lt;p&gt;This is a technical document about how routing in Amphora is performed. It also informs any further technical decisions about the growth of the library and contains many ideas that we&#x27;re adhering to for consistency.&lt;/p&gt;
+"/><meta name="twitter:card" content="summary"/><link rel="shortcut icon" href="/amphora/"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/amphora/js/scrollSpy.js"></script><link rel="stylesheet" href="/amphora/css/main.css"/><script src="/amphora/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/amphora/"><img class="logo" src="/amphora/img/amphora-logo.svg" alt="Amphora"/><h2 class="headerTitleWithLogo">Amphora</h2></a><a href="/amphora/versions"><h3>next</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/amphora/docs/next/intro" target="_self">Introduction</a></li><li class=""><a href="https://github.com/clay/amphora" target="_self">Github</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Routes</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Introduction<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/amphora/docs/next/intro">Introduction</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">On Startup<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/amphora/docs/next/install">Instantiation Arguments</a></li><li class="navListItem"><a class="navItem" href="/amphora/docs/next/bootstrap">Bootstrapping</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Basics<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Routes</h4><ul><li class="navListItem"><a class="navItem" href="/amphora/docs/next/routes">API definitions</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/amphora/docs/next/route">Technical information</a></li></ul></div><li class="navListItem"><a class="navItem" href="/amphora/docs/next/publish">Publishing</a></li><li class="navListItem"><a class="navItem" href="/amphora/docs/next/plugin">Plugins</a></li><div class="navGroup subNavGroup"><h4 class="navGroupSubcategoryTitle">Renderers</h4><ul><li class="navListItem"><a class="navItem" href="/amphora/docs/next/building-renderers">Building Custom Renderers</a></li></ul></div><li class="navListItem"><a class="navItem" href="/amphora/docs/next/event-bus">Event Bus</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Advanced<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/amphora/docs/next/storage">Storage API</a></li><li class="navListItem"><a class="navItem" href="/amphora/docs/next/data_versioning">Data Versioning (Upgrades)</a></li><li class="navListItem"><a class="navItem" href="/amphora/docs/next/renderer-models">Renderer Models</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle collapsible">Helpful Links<span class="arrow"><svg width="24" height="24" viewBox="0 0 24 24"><path fill="#565656" d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></span></h3><ul class="hide"><li class="navListItem"><a class="navItem" href="/amphora/docs/next/glossary-docs">Glossary</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Technical information</h1></header><article><div><span><p>This is a technical document about how routing in Amphora is performed. It also informs any further technical decisions about the growth of the library and contains many ideas that we're adhering to for consistency.</p>
+<h2><a class="anchor" aria-hidden="true" id="components"></a><a href="#components" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Components</h2>
+<h3><a class="anchor" aria-hidden="true" id="overview"></a><a href="#overview" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Overview</h3>
+<pre><code class="hljs">/components
+/components/<span class="hljs-symbol">:name</span>
+/components/<span class="hljs-symbol">:name</span>@<span class="hljs-symbol">:version</span>
+/components/<span class="hljs-symbol">:name</span>.html
+/components/<span class="hljs-symbol">:name</span>.json
+/components/<span class="hljs-symbol">:name</span>@<span class="hljs-symbol">:version</span>.html
+/components/<span class="hljs-symbol">:name</span>@<span class="hljs-symbol">:version</span>.json
+/components/<span class="hljs-symbol">:name/instances</span>
+/components/<span class="hljs-symbol">:name/instances/</span><span class="hljs-symbol">:id</span>
+/components/<span class="hljs-symbol">:name/intsances/</span><span class="hljs-symbol">:id</span>.html
+/components/<span class="hljs-symbol">:name/intsances/</span><span class="hljs-symbol">:id</span>.json
+/components/<span class="hljs-symbol">:name/instances/</span><span class="hljs-symbol">:id</span>@<span class="hljs-symbol">:version</span>
+/components/<span class="hljs-symbol">:name/instances/</span><span class="hljs-symbol">:id</span>@<span class="hljs-symbol">:version</span>.html
+/components/<span class="hljs-symbol">:name/instances/</span><span class="hljs-symbol">:id</span>@<span class="hljs-symbol">:version</span>.json
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="list-of-components"></a><a href="#list-of-components" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>List of components</h3>
+<p><code>GET /components</code> will return a list of the available known components. This will be all the components defined in the <code>/components</code> folder of the current application, and also any components installed through the node package manager (npm).</p>
+<p>Example: <code>GET /components</code></p>
+<pre><code class="hljs css language-json">[
+  <span class="hljs-string">"text"</span>,
+  <span class="hljs-string">"image"</span>,
+  <span class="hljs-string">"paragraph"</span>,
+  <span class="hljs-string">"article"</span>
+]
+</code></pre>
+<p><code>GET /components/:name/instances</code> will return a list of the available instances within a particular component type.</p>
+<p>Example: <code>GET /components/text/instances</code></p>
+<pre><code class="hljs css language-json">[
+  <span class="hljs-string">"/components/text/instances/abc"</span>,
+  <span class="hljs-string">"/components/text/instances/def"</span>,
+  <span class="hljs-string">"/components/text/instances/def@published"</span>
+]
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="component-data"></a><a href="#component-data" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Component Data</h3>
+<p>You can grab the default data for a component, data for a specific instance, or even data for a specific version (of an instance). GETs and PUTs to these endpoints behave as you would expect from a RESTful API (they return what you send them). GETs and PUTs to the <code>.json</code> and <code>.html</code> extensions also work, but they'll return the composed (i.e. a component and its children) JSON and HTML, respectively.</p>
+<h3><a class="anchor" aria-hidden="true" id="modifying-components"></a><a href="#modifying-components" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Modifying components</h3>
+<p><code>GET /components/:name[/instances/:id][@:version[.:extension]]</code> will return a component. The data is based on the extension (.html, .json, .yaml), or the <code>Accepts</code> header of the request.</p>
+<p>Requesting data without a version will return the latest saved version. Some versions have special rules (see <a href="#propagating-versions">Propagating Versions</a>), but any other version name can be used to specially tag any particular version.</p>
+<p><code>PUT /components/:name[/instances/:id][@version]</code> will save the data such that <code>GET</code>ing the same URI will return exactly what was put there.</p>
+<h3><a class="anchor" aria-hidden="true" id="component-logic"></a><a href="#component-logic" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Component Logic</h3>
+<p>Components may have pre-render and pre-save hooks, which do logic before rendering and saving, respectively. To add these, create a <code>model.js</code> file in the component's folder, and export <code>render</code> and/or <code>save</code> methods. Both of these methods should return objects with the component data, which may be wrapped in promises.</p>
+<p><em>Note:</em> It is much better to do component logic when saving rather than every time it wants to render.</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports.render = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ref, data, locals</span>) </span>{
+  <span class="hljs-comment">// do logic</span>
+  <span class="hljs-keyword">return</span> data; <span class="hljs-comment">// will be sent to the template</span>
+}
+
+<span class="hljs-built_in">module</span>.exports.save = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ref, data, locals</span>) </span>{
+  <span class="hljs-comment">// do logic</span>
+  <span class="hljs-keyword">return</span> data; <span class="hljs-comment">// will be sent to the database</span>
+}
+</code></pre>
+<p>You may pass <code>componenthooks=false</code> as a query param when doing API calls if you want to completely bypass the <code>model.js</code> (e.g. if you've already run through the logic client-side).</p>
+<h3><a class="anchor" aria-hidden="true" id="legacy-server-logic"></a><a href="#legacy-server-logic" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Legacy Server Logic</h3>
+<p>This feature is deprecated as of amphora v2.11.0 and will be removed in the next major version (it is supplanted by the isomorphic <code>model.js</code> files). Legacy server-side logic lives in a <code>server.js</code> or <code>index.js</code> file in the component's folder, and has a few differences from the <code>model.js</code>:</p>
+<ul>
+<li>The default exported function (run on <code>GET</code>) does not automatically receive data from the database and must fetch it manually</li>
+<li>The <code>put()</code> should return a database operation or array of operations (which may be wrapped in promises), rather than the component data itself</li>
+<li>These files are <em>only</em> run server-side, and will not be optimized to work in kiln</li>
+</ul>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ref, locals</span>) </span>{
+  <span class="hljs-comment">//return Promise with data</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve({<span class="hljs-string">"hey"</span>: <span class="hljs-string">"hey"</span>});
+};
+<span class="hljs-built_in">module</span>.exports.put = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">ref, data</span>) </span>{
+  <span class="hljs-comment">//return Promise with operations to be performed in a batch</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve([{
+    <span class="hljs-attr">type</span>: <span class="hljs-string">'put'</span>,
+    <span class="hljs-attr">key</span>: <span class="hljs-string">'/components/text'</span>,
+    <span class="hljs-attr">value</span>:<span class="hljs-string">'{"hey": "hey"}'</span>}
+  ]);
+};
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="pages"></a><a href="#pages" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Pages</h2>
+<h3><a class="anchor" aria-hidden="true" id="overview-1"></a><a href="#overview-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Overview</h3>
+<pre><code class="hljs">/pages
+/pages/:<span class="hljs-type">name</span>
+/pages/:<span class="hljs-type">name</span>.html
+/pages/:<span class="hljs-type">name</span>.json
+/pages/:<span class="hljs-type">name</span>@:<span class="hljs-keyword">version</span>
+/pages/:<span class="hljs-type">name</span>@:<span class="hljs-keyword">version</span>.html
+/pages/:<span class="hljs-type">name</span>@:<span class="hljs-keyword">version</span>.json
+</code></pre>
+<p>Pages consist of a layout and a list of areas. Each area defined in a page maps to an area in the layout template. For example:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"layout"</span>: <span class="hljs-string">"/components/feature-layout"</span>,
+  <span class="hljs-attr">"center"</span>: [<span class="hljs-string">"/components/article/instances/3vf3"</span>],
+  <span class="hljs-attr">"side"</span>: [
+    <span class="hljs-string">"/components/share"</span>,
+    <span class="hljs-string">"/components/newsletter"</span>
+  ]
+}
+</code></pre>
+<p>The layout component in this example has two areas: center and side. When the page is displayed, the components listed here will be placed into the matching areas in the layout.</p>
+<h3><a class="anchor" aria-hidden="true" id="page-data"></a><a href="#page-data" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Page Data</h3>
+<p><code>GET</code>s and <code>PUT</code>s to pages work similarly to components. API calls without an extension will update/return data for that page, while the <code>.json</code> and <code>.html</code> extensions will return the composed (page and layout, and their child components) JSON and HTML, respectively.</p>
+<h3><a class="anchor" aria-hidden="true" id="publishing"></a><a href="#publishing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Publishing</h3>
+<p>Publishing a page has a special convenience behavior where all components referenced by the page will also be published. (Example: <a href="https://github.com/nymag/amphora/pull/78">https://github.com/nymag/amphora/pull/78</a>)</p>
+<h2><a class="anchor" aria-hidden="true" id="uris"></a><a href="#uris" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>URIs</h2>
+<pre><code class="hljs"><span class="hljs-meta-keyword">/uris/</span><span class="hljs-params">&lt;base64(:path)&gt;</span>
+</code></pre>
+<p>A URI is used to redirect some slug or URI to another page or component. They can also redirect to other URIs (establishing a 301 redirect), or several URIs can point to the same resource. URIs are stored as <code>Base64</code>, so:</p>
+<ul>
+<li><code>example.com</code> is <code>/uris/ZXhhbXBsZS5jb20=</code> =&gt; <code>/pages/jdskla@published</code></li>
+<li><code>example.com/other/</code> is <code>/uris/ZXhhbXBsZS5jb20vb3RoZXI=</code> =&gt; <code>/pages/4revd3s@published</code></li>
+</ul>
+<p>A URI is assumed to be pointing at the <code>@published</code> version if another version is not provided. Therefore, only published content or specially tagged versions can be publicly exposed through URIs.</p>
+<h2><a class="anchor" aria-hidden="true" id="lists"></a><a href="#lists" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Lists</h2>
+<pre><code class="hljs"><span class="hljs-string">/lists</span>
+<span class="hljs-string">/lists/</span><span class="hljs-function">:id</span>
+</code></pre>
+<p>Lists are a <em>temporary</em> solution until search functionality is discussed. It is currently used for the tags component and the autocomplete behavior as a temporary place to store lists of information. It can store any list of data on a <code>PUT</code>, and return back the same list of data with a <code>GET</code>.</p>
+<h2><a class="anchor" aria-hidden="true" id="users"></a><a href="#users" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Users</h2>
+<h3><a class="anchor" aria-hidden="true" id="overview-2"></a><a href="#overview-2" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Overview</h3>
+<pre><code class="hljs"><span class="hljs-built_in">/users
+</span>/users/:id
+</code></pre>
+<p>Each user has a <code>username</code> and <code>provider</code>, which determines how they authenticate over OAuth. Users can also have other data, including <code>name</code>, <code>imageUrl</code>, and <code>title</code>.</p>
+<h2><a class="anchor" aria-hidden="true" id="schedule"></a><a href="#schedule" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Schedule</h2>
+<pre><code class="hljs"><span class="hljs-string">/schedule</span>
+<span class="hljs-string">/schedule/</span><span class="hljs-function">:id</span>
+</code></pre>
+<p>Schedule is a list of pages or components that will be published in the future. Items in this list will be published when the time passes. Each item has two properties: <code>at</code>, which is a UNIX timestamp, and the <code>publish</code> property that is a reference to what will be published after that time.</p>
+<p>When an item is scheduled, a <code>@scheduled</code> version is created on the item that will be published. When the item is eventually published, the <code>@scheduled</code> version will be removed. The <code>@scheduled</code> version is a reference to the actual schedule URI that can be deleted to cancel the scheduled publication.</p>
+<h3><a class="anchor" aria-hidden="true" id="list-of-scheduled-items"></a><a href="#list-of-scheduled-items" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>List of scheduled items</h3>
+<p><code>GET /schedule</code> will return a list of scheduled items, such as:</p>
+<pre><code class="hljs css language-json">[
+  {
+    <span class="hljs-attr">"_ref"</span>: <span class="hljs-string">"domain.com/some-path/schedule/3f-abc"</span>,
+    <span class="hljs-attr">"at"</span>: <span class="hljs-number">44392893402093</span>,
+    <span class="hljs-attr">"publish"</span>: <span class="hljs-string">"abc"</span>
+  }
+]
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="add-a-scheduled-item"></a><a href="#add-a-scheduled-item" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Add a scheduled item</h3>
+<p><code>POST /schedule</code> will add an item to be published in the future. The format of the item should be of</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"at"</span>: <span class="hljs-number">44392893402093</span>,
+  <span class="hljs-attr">"publish"</span>: <span class="hljs-string">"&lt;uri to be published&gt;"</span>
+}
+</code></pre>
+<p>Where the <code>at</code> is a UNIX timestamp and the <code>publish</code> is a ref to a page or component. On success, it will return a 201 with a reference to the schedule URI that was created.</p>
+<h3><a class="anchor" aria-hidden="true" id="remove-a-scheduled-item"></a><a href="#remove-a-scheduled-item" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Remove a scheduled item</h3>
+<p><code>DELETE /schedule/:some-id</code> will remove the scheduling of a publish in the future. On success, it will return a 200 with</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"at"</span>: <span class="hljs-number">44392893402093</span>,
+  <span class="hljs-attr">"publish"</span>: <span class="hljs-string">"&lt;uri that was to be published&gt;"</span>
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="versions"></a><a href="#versions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Versions</h2>
+<h3><a class="anchor" aria-hidden="true" id="propagating-versions"></a><a href="#propagating-versions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Propagating Versions</h3>
+<p>Some versions have a special behavior called <em>propagating</em>, which any reference within their data is changed to be the same version as itself.</p>
+<p>The current propagating versions are:</p>
+<ul>
+<li>published</li>
+<li>latest</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="restful-api"></a><a href="#restful-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>RESTful API</h2>
+<p>We try to follow the <a href="https://en.wikipedia.org/wiki/Representational_state_transfer">REST</a> standard when making decisions about changes to the API. In particular, we are adhering to</p>
+<ol>
+<li><p><em>Individual resources are identified by URI.</em>  Therefore, there is no need to return an <code>id</code> as part of the data of a request if that <code>id</code> was used to fetch the data.  In many environments (production, development, staging) hostnames can be dynamic, so we can optionally omit the hostname and assume that the resource is available at the same host as a referring resource.</p></li>
+<li><p><em>When a client holds a representation of a resource, it has enough information to modify the resource.</em>  Any random ordering of <code>GET</code> and <code>PUT</code> requests to the same URI with the returned data will not result in any change of state (beyond the separate audit trail that such operations took place).</p></li>
+<li><p><em>Messages always include enough information to process a resource, including MIME type and cacheability.</em>  All resources are returned with appropriate Content-Type, Cache, and Vary headers.  That means resources that should be cached, like published content, are marked appropriately as cacheable.</p></li>
+<li><p><em>HATEOAS: no assumptions about additional actions are made without being described in the resource itself.</em>  Excluding the basic HTTP method calls, we tell the client about additional resources available related to the current resource.</p>
+<p>Currently, we link to child resources with <code>{ _ref: 'domain.com/full/resource/uri' }</code>. There is no assumption that the client knows about these child resources implicitly.  More importantly, we don't expect the client to know about where resources are, their types, or that they should be linked together in any particular way, so we always reference to linked resources with a full URI.</p>
+<p>For more information about the design decisions of <code>_ref</code>, see <a href="https://github.com/nymag/amphora/issues/108">https://github.com/nymag/amphora/issues/108</a></p></li>
+</ol>
+<h3><a class="anchor" aria-hidden="true" id="namespacing"></a><a href="#namespacing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Namespacing</h3>
+<p>It might be a good idea to namespace this API behind versions, such as <code>/v1/</code> or <code>/v2/</code>, or <code>/services/</code>, or even <code>/clay/</code>. This can be done by adjusting the hostname, or through a reverse proxy like Varnish. Putting different versions behind Varnish might be particularly useful so that previous versions of an application can be run at the same time as newer versions to service old and new clients until previous versions can be deprecated.</p>
+<h2><a class="anchor" aria-hidden="true" id="errors"></a><a href="#errors" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Errors</h2>
+<h3><a class="anchor" aria-hidden="true" id="ordering-of-http-errors"></a><a href="#ordering-of-http-errors" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Ordering of HTTP Errors</h3>
+<p>The API must follow a specific ordering for the priority of errors to return. Even though <em>multiple</em> things might be
+wrong with a request, consistent testability requires that the type of error returned for any particular request should
+not change without deliberate thought. The current order of errors are:</p>
+<ol>
+<li>Component invalid: There is no resource (component) by that name returns 404 for the <em>entire</em> route (including all sub-routes).</li>
+<li>Allow header: That method is not allowed</li>
+<li>Accept header: The request's acceptable data type is not supported by this route.</li>
+<li>Resource missing: A resource with this specific identifier does not exist.</li>
+</ol>
+<h3><a class="anchor" aria-hidden="true" id="304-http-code"></a><a href="#304-http-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>304 HTTP Code</h3>
+<p>We are not going to support returning 304s for several reasons:</p>
+<ol>
+<li>Most people will have a reverse cache like Varnish in front of byline endpoints in production.</li>
+<li>The ROI for supporting 304s is very low for non-browser non-html clients.</li>
+</ol>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/amphora/docs/next/routes"><span class="arrow-prev">← </span><span>API definitions</span></a><a class="docs-next button" href="/amphora/docs/next/publish"><span>Publishing</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#components">Components</a><ul class="toc-headings"><li><a href="#overview">Overview</a></li><li><a href="#list-of-components">List of components</a></li><li><a href="#component-data">Component Data</a></li><li><a href="#modifying-components">Modifying components</a></li><li><a href="#component-logic">Component Logic</a></li><li><a href="#legacy-server-logic">Legacy Server Logic</a></li></ul></li><li><a href="#pages">Pages</a><ul class="toc-headings"><li><a href="#overview-1">Overview</a></li><li><a href="#page-data">Page Data</a></li><li><a href="#publishing">Publishing</a></li></ul></li><li><a href="#uris">URIs</a></li><li><a href="#lists">Lists</a></li><li><a href="#users">Users</a><ul class="toc-headings"><li><a href="#overview-2">Overview</a></li></ul></li><li><a href="#schedule">Schedule</a><ul class="toc-headings"><li><a href="#list-of-scheduled-items">List of scheduled items</a></li><li><a href="#add-a-scheduled-item">Add a scheduled item</a></li><li><a href="#remove-a-scheduled-item">Remove a scheduled item</a></li></ul></li><li><a href="#versions">Versions</a><ul class="toc-headings"><li><a href="#propagating-versions">Propagating Versions</a></li></ul></li><li><a href="#restful-api">RESTful API</a><ul class="toc-headings"><li><a href="#namespacing">Namespacing</a></li></ul></li><li><a href="#errors">Errors</a><ul class="toc-headings"><li><a href="#ordering-of-http-errors">Ordering of HTTP Errors</a></li><li><a href="#304-http-code">304 HTTP Code</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/amphora/" class="nav-home"></a><div><h5>Docs</h5><a href="/amphora/docs/en/intro">Introduction</a><a href="/amphora/docs/en/glossary-docs">Glossary</a></div><div><h5>More</h5><a target="_blank" href="https://github.com/clay/amphora">GitHub</a></div></section><section class="copyright">Copyright © 2019 New York Media</section></footer></div></body></html>
