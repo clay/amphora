@@ -1,6 +1,6 @@
 # Publishing
 
-When setting up a site in your Clay instance you add a controller (`index.js` file) to define the rules around your sites. One of the rules you can define is _how to determine what url to publish a page to_. This can be done in a number of ways, whether it's just using the current date or analyzing the data in the content of the page. The implementation is your decision (as long as the url matches a defined Express route).
+When setting up a site in your Clay instance you add a controller \(`index.js` file\) to define the rules around your sites. One of the rules you can define is _how to determine what url to publish a page to_. This can be done in a number of ways, whether it's just using the current date or analyzing the data in the content of the page. The implementation is your decision \(as long as the url matches a defined Express route\).
 
 ## Setting Publish Rules
 
@@ -12,9 +12,9 @@ module.exports.resolvePublishUrl = [...];
 
 The functions will receive the same arguments as a `model.js`/`upgrade.js`:
 
-- `uri`: corresponds to the uri for the page being published
-- `data`: the data for the page. Is not fully resolved page data, simply any references in page areas
-- `locals`: information around the request, including the site it's being published to
+* `uri`: corresponds to the uri for the page being published
+* `data`: the data for the page. Is not fully resolved page data, simply any references in page areas
+* `locals`: information around the request, including the site it's being published to
 
 Each function in the Array should return a Promise which only resolves a single string value, the url to be published to. The functions will be executed in order, but the _first one that resolves a value_ will be accepted and the rest will be ignored. This is "reject quickly/resolve slowly" pattern, meaning each of the functions should reject quickly if the data doesn't match a format they want.
 
@@ -28,13 +28,13 @@ module.exports.resolvePublishUrl = [
 ];
 ```
 
-The value that the functions return should be the full url (protocol, host, path, etc). This value will be used when creating `uris` to map vanity urls to proper instances of `pages`.
+The value that the functions return should be the full url \(protocol, host, path, etc\). This value will be used when creating `uris` to map vanity urls to proper instances of `pages`.
 
 ## Dynamic Pages & Publishing
 
-[Dynamic pages](/docs/basics/routes.md#dynamic-pages) allow one page template to render data in a variety of ways by letting you build pages that take an input a url and use that to render data. Because a dynamic page's url can be anything the usual 1-to-1 relationship of uri to page instance cannot work. For that reason, publishing a dynamic page is slightly different than other pages. All you have to do is make sure that your page has the `_dynamic` property set to `true` and Amphora will handle the rest. For example:
+[Dynamic pages](routes.md#dynamic-pages) allow one page template to render data in a variety of ways by letting you build pages that take an input a url and use that to render data. Because a dynamic page's url can be anything the usual 1-to-1 relationship of uri to page instance cannot work. For that reason, publishing a dynamic page is slightly different than other pages. All you have to do is make sure that your page has the `_dynamic` property set to `true` and Amphora will handle the rest. For example:
 
-```json
+```javascript
 {
   "_dynamic": true,
   "layout": "domain.com/_components/layout/instances/example",
@@ -76,4 +76,5 @@ Each function in the `modifyPublishedData` will only recieve the page data, not 
 
 ## `publishUrl`
 
-The question often arises of how to determine the vanity url of a page inside of a component's `model.js`. When a page is published, a `@published` instance of the page and every component instance is created. During this process, the `publishUrl` property is added to the `locals` object sent to each component. This essentially allows you to know when a `save` is being run on publish or not and is handy if the vanity url is needed in your component.  
+The question often arises of how to determine the vanity url of a page inside of a component's `model.js`. When a page is published, a `@published` instance of the page and every component instance is created. During this process, the `publishUrl` property is added to the `locals` object sent to each component. This essentially allows you to know when a `save` is being run on publish or not and is handy if the vanity url is needed in your component.
+

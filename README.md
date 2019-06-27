@@ -1,7 +1,6 @@
-Amphora
-=========================
+# Introduction
 
-<img src="https://raw.githubusercontent.com/nymag/media/master/amphora-logo.png" alt="illustration of an amphora" height="150" align="left">
+![illustration of an amphora](https://raw.githubusercontent.com/nymag/media/master/amphora-logo.png)
 
 _"A new way to organize, edit, and deliver the web, one component at a time."_
 
@@ -12,18 +11,18 @@ Created by New York Media.
 
 ## Table of Contents
 
-* [Introduction](#introduction)
-* [Installation](#installation)
-* [Usage](#usage)
-* [Contribution](#contribution)
-* [Advanced Topics](#advanced-topics)
+* [Introduction](./#introduction)
+* [Installation](./#installation)
+* [Usage](./#usage)
+* [Contribution](./#contribution)
+* [Advanced Topics](./#advanced-topics)
 
 ## Introduction
 
 Amphora is a mixin for [Express](https://github.com/strongloop/express) that:
 
 * Composes components into renderable pages
-* Uses any key-value store of your choice (e.g., Mongo, Redis, LevelDB, etc.)
+* Uses any key-value store of your choice \(e.g., Mongo, Redis, LevelDB, etc.\)
 * Provides an API for managing instances of components, uris, and pages
 
 [Components are reusable, configurable, self-contained bits of the web.](https://github.com/nymag/amphora/wiki#clay-is-divided-into-components)
@@ -34,7 +33,7 @@ It follows semver and is stable as of v1.0.0.
 
 ## Installation
 
-```
+```text
 npm install --save amphora
 ```
 
@@ -42,14 +41,14 @@ npm install --save amphora
 
 Clay separates concerns into two main areas: components and sites. Create two new directories in your project:
 
-```
+```text
 /components  (where your custom components live)
 /sites       (for site-specific settings, routes, and assets)
 ```
 
-In your project's main server file (e.g. `app.js`), instantiate a new Amphora instance.
+In your project's main server file \(e.g. `app.js`\), instantiate a new Amphora instance.
 
-```js
+```javascript
 var amphora = require('amphora'),
   port = process.env.PORT || 3000;
 
@@ -59,9 +58,9 @@ return amphora()
   });
 ```
 
-For additional configuration, you may pass in an Express app / router. You can also override the default templating engine(s) with your own.
+For additional configuration, you may pass in an Express app / router. You can also override the default templating engine\(s\) with your own.
 
-```js
+```javascript
 var app = require('express')(),
   amphora = require('amphora'),
   amphoraHtml = require('amphora-html'),
@@ -89,7 +88,8 @@ return amphora({
 ### How to create a component
 
 Components in Clay have the following structure:
-```
+
+```text
 /component-name     unique name of your component
     template.handlebars   your template
     schema.yml            describes how the component's data is edited
@@ -111,7 +111,8 @@ Fork the project and submit a PR on a branch that is not named `master`. We use 
 
 ## Advanced Topics
 
-- [New Concepts For Developers and Designers](https://github.com/nymag/amphora/wiki#for-developers-and-designers)
-- [Bootstrapping Data](https://github.com/nymag/amphora/tree/master/lib/bootstrap.md)
-- [Routing](https://github.com/nymag/amphora/tree/master/lib/routes)
-- [Plugins](https://github.com/nymag/amphora/tree/master/lib/plugins)
+* [New Concepts For Developers and Designers](https://github.com/nymag/amphora/wiki#for-developers-and-designers)
+* [Bootstrapping Data](https://github.com/nymag/amphora/tree/master/lib/bootstrap.md)
+* [Routing](https://github.com/nymag/amphora/tree/master/lib/routes)
+* [Plugins](https://github.com/nymag/amphora/tree/master/lib/plugins)
+

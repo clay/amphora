@@ -13,7 +13,6 @@ describe(endpointName, function () {
       acceptsJson = apiAccepts.acceptsJson(_.camelCase(filename)),
       data = { name: 'Manny', species: 'cat' },
       deepData = { d: 'e' },
-      // todo: Stop putting internal information into something we're going to open-source
       componentList = ['clay-c5', 'clay-c3', 'clay-c4'],
       cascadingData = function (ref) {
         return {a: 'b', c: {_ref: `localhost.example.com/_components/${ref}`}};

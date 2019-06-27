@@ -22,7 +22,7 @@
     // best practices
     "complexity": [2, 8],
     "default-case": 2,
-    "guard-for-in": 2,
+    "guard-for-in": 0,
     "no-alert": 1,
     "no-floating-decimal": 1,
     "no-self-compare": 2,
