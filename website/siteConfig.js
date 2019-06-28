@@ -6,6 +6,7 @@
  */
 
 const repoUrl = 'https://github.com/clay/amphora';
+projectName = process.env.PROJECT_NAME || 'amphora';
 
 const siteConfig = {
   title: 'Amphora', // Title for your website.
@@ -14,7 +15,7 @@ const siteConfig = {
   baseUrl: '/amphora/', // Base URL for your project */
 
   // Used for publishing and more
-  projectName: 'Amphora',
+  projectName,
   organizationName: 'amphoraplatform',
 
   // For no header links in the top nav bar -> headerLinks: [],
@@ -30,8 +31,8 @@ const siteConfig = {
 
   /* Colors for website */
   colors: {
-    primaryColor: '#99D3DF',
-    secondaryColor: '#99D3DF',
+    primaryColor: '#607d8b',
+    secondaryColor: '#1976d2'
   },
 
   // This copyright info is used in /core/Footer.js and blog RSS/Atom feeds.
