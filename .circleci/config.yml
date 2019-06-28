@@ -4,7 +4,7 @@ version: 2
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: circleci/node:8.9.1
+    - image: circleci/node:8.10.0
 
 jobs:
   test:
@@ -14,34 +14,26 @@ jobs:
 
       - restore_cache:
           keys:
-          - v2-dependencies-
-          # fallback to using the latest cache if no exact match is found
-          - v2-dependencies-
+            - v2-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v2-dependencies-
 
       - run: npm install
       - run:
           name: Run tests
           command: npm test
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v2-dependencies-
-
-      - persist_to_workspace:
-          root: ~/repo
-          paths: .
-  deploy:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/repo
       - run:
           name: Send to Coveralls
           command: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
-      - run:
-          name: Put To Pages
-          command: npm run docs:publish
+      - save_cache:
+          paths:
+            - node_modules
+          key: v2-dependencies-{{ checksum "package.json" }}
+
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - "."
 
 workflows:
   version: 2
@@ -51,11 +43,3 @@ workflows:
           filters:
             tags:
               only: /^v[0-9]+\.[0-9]+\.[0-9]+/
-      - deploy:
-          requires:
-            - test
-          filters:
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+/
-            branches:
-              ignore: /.*/
