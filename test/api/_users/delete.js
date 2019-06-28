@@ -54,9 +54,9 @@ describe(endpointName, function () {
         }});
       });
 
-      acceptsJson(path, {name: 'invalid'}, 404, { message: 'Not Found', code: 404 });
+      acceptsJson(path, {name: 'invalid'}, 404, { message: 'Key not found in database [/_users/invalid]', code: 404 });
       acceptsJson(path, {name: 'valid'}, 200, data);
-      acceptsJson(path, {name: 'missing'}, 404, { message: 'Not Found', code: 404 });
+      acceptsJson(path, {name: 'missing'}, 404, { message: 'Key not found in database [/_users/missing]', code: 404 });
 
       acceptsHtml(path, {name: 'invalid'}, 406, '406 text/html not acceptable');
       acceptsHtml(path, {name: 'valid'}, 406, '406 text/html not acceptable');

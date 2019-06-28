@@ -1,6 +1,6 @@
 {
   "name": "amphora",
-  "version": "7.2.0",
+  "version": "7.5.2",
   "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
   "scripts": {
@@ -16,6 +16,7 @@
   "author": "New York Media",
   "license": "MIT",
   "dependencies": {
+    "amphora-auth": "^1.0.0",
     "amphora-fs": "^1.0.1",
     "basic-auth": "^1.0.4",
     "bluebird": "^3.5.1",
@@ -42,7 +43,6 @@
     "passport-twitter": "^1.0.4",
     "template2env": "^1.0.4",
     "through2-filter": "^2.0.0",
-    "through2-map": "^3.0.0",
     "vhost": "^3.0.0"
   },
   "devDependencies": {
