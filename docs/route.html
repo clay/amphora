@@ -173,10 +173,19 @@
 <p>Lists are a <em>temporary</em> solution until search functionality is discussed. It is currently used for the tags component and the autocomplete behavior as a temporary place to store lists of information. It can store any list of data on a <code>PUT</code>, and return back the same list of data with a <code>GET</code>.</p>
 <h2><a class="anchor" aria-hidden="true" id="users"></a><a href="#users" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Users</h2>
 <h3><a class="anchor" aria-hidden="true" id="overview-2"></a><a href="#overview-2" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Overview</h3>
-<pre><code class="hljs"><span class="hljs-built_in">/users
-</span>/users/:id
+<pre><code class="hljs">&lt;!-- list<span class="hljs-built_in"> users </span>(GET) --&gt;
+  /_users
+
+&lt;!-- create new<span class="hljs-built_in"> user </span>(POST) --&gt;
+  /_users
+
+&lt;!-- <span class="hljs-builtin-name">get</span> <span class="hljs-keyword">and</span> update<span class="hljs-built_in"> users </span>(GET, PUT, DELETE) --&gt;
+  /_users/:name
+  /_users/:id
 </code></pre>
+<p>Amphora adds the <code>users</code> route with the help of <a href="https://github.com/clay/amphora-auth">amphora-auth</a> where all the user's endpoints are defined.</p>
 <p>Each user has a <code>username</code> and <code>provider</code>, which determines how they authenticate over OAuth. Users can also have other data, including <code>name</code>, <code>imageUrl</code>, and <code>title</code>.</p>
+<p>Check the <a href="https://github.com/clay/amphora-auth#amphora-auth-">amphora-auth</a> to see all the config and variables that you need to set on your site.</p>
 <h2><a class="anchor" aria-hidden="true" id="schedule"></a><a href="#schedule" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Schedule</h2>
 <pre><code class="hljs"><span class="hljs-string">/schedule</span>
 <span class="hljs-string">/schedule/</span><span class="hljs-function">:id</span>
