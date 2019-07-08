@@ -165,11 +165,22 @@ Lists are a _temporary_ solution until search functionality is discussed. It is 
 
 ### Overview
 ```
-/users
-/users/:id
+<!-- list users (GET) -->
+  /_users
+
+<!-- create new user (POST) -->
+  /_users
+
+<!-- get and update users (GET, PUT, DELETE) -->
+  /_users/:name
+  /_users/:id
 ```
 
+Amphora adds the `users` route with the help of [amphora-auth](https://github.com/clay/amphora-auth) where all the user's endpoints are defined.
+
 Each user has a `username` and `provider`, which determines how they authenticate over OAuth. Users can also have other data, including `name`, `imageUrl`, and `title`.
+
+Check the [amphora-auth](https://github.com/clay/amphora-auth#amphora-auth-) to see all the config and variables that you need to set on your site.
 
 ## Schedule
 
