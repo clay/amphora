@@ -36,7 +36,7 @@ describe(endpointName, function () {
           url: 'http://localhost.example.com',
           layout: `localhost.example.com/_layouts/layout@${version}`,
           center: `localhost.example.com/_components/valid@${version}`,
-          side: [`localhost.example.com/_components/valid@${version}`]
+          side: [`localhost.example.com/_components/valid@${version}`],
         };
       },
       versionedDeepData = function (version) {
