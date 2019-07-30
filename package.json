@@ -16,7 +16,7 @@
   "author": "New York Media",
   "license": "MIT",
   "dependencies": {
-    "amphora-auth": "^1.0.0",
+    "amphora-auth": "git+ssh://git@github.com:clay/amphora-auth.git#subsite-support",
     "amphora-fs": "^1.0.1",
     "basic-auth": "^1.0.4",
     "bluebird": "^3.5.1",
