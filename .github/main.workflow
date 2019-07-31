@@ -8,13 +8,21 @@ action "Filter branch" {
   args = "branch master"
 }
 
-action "Update version" {
+action "Install" {
   needs = ["Filter branch"]
-  uses = "clay/docusaurus-github-action/versions@master"
+  uses = "actions/npm@master"
+  args = "install --prefix ./website"
+}
+
+action "Update version" {
+  needs = ["Install"]
+  uses = "clay/docusaurus-github-action@master"
+  args = "version"
 }
 
 action "Build and push docs" {
   needs = ["Update version"]
-  uses = "clay/docusaurus-github-action/build_deploy@master"
+  uses = "clay/docusaurus-github-action@master"
+  args = "deploy"
   secrets = ["DEPLOY_SSH_KEY"]
 }
