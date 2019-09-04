@@ -17,7 +17,7 @@ There might be a time when you want to expand your site, whether regionally, cat
 - [`claycli`](https://github.com/clay/claycli): v3.11.0
 
 ### Configuration
-Subsites fall underneath a parent site inside of its own `/sites/site-name/subsites/subsite-name` directory. All sites/subsites inside of the `/sites/site-name` directory share the same `site.slug` property, but they all have a unique `site.subsiteSlug` property that is generated from the concatination of the subsite name & parent site name in the format: `site/subsite`.
+Subsites fall underneath a parent site inside of its own `/sites/site-name/subsites/subsite-name` directory. All sites/subsites inside of the `/sites/site-name` directory share the same `site.slug` property, but they all have a unique `site.subsiteSlug` property that is generated from the concatenation of the subsite name & parent site name in the format: `site/subsite`.
 
 A subsite by default copies all configurations, media assets, and bootstrapping from the parent site. The subsite config then *overrides* any parent properties provided in the `config.yaml`, `index.js`, or `/media` directory. 
 
