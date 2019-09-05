@@ -5,15 +5,15 @@ sidebar_label: Creating Subsites
 ---
 
 ## Creating a Subsite
-
 Subsites are versions of a main site that have a different host/path configuration and different content, but site application code is shared. This feature works great with locale and internationalization support. 
 
 There might be a time when you want to expand your site, whether regionally, categorically, or for a variety of other reasons. For instance, say you have a sports site. In the US, you'd want your site to use a .com TLD and have its content focused on the American sports of Baseball, Football, etc. Now, if you want to expand into the UK, you might want to use a .co.uk domain, and have content more geared toward Football (Soccer), Rugby, and Cricket. Subsites give you this ability, while allowing for shared logic in components, styles, etc.
 
-example component model.js:
+#### Example
 ```javascript
+  // inside of /components/component-name/model.js
   module.exports.render = (uri, data, locals) => {
-    // shared logic between parent and subsites
+    // shared logic between parent and all of its subsites
     if (locals.site.slug === 'site-name') {
       // do something
     }
