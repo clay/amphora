@@ -66,3 +66,23 @@ The parent site controller is also inherited by each subsite. If you'd like to a
 
 #### media
 On build, `claycli` will first copy all parent media assets to the public directory, `public/media/sites/site-name/subsite-name`. Afterwards, it will copy all subsite media assets to the same directory, overriding any of the previously copied assets from the parent.
+
+## Upgrading Existing Site
+If you are adding a new subsite to an existing sites project, there might be a little more work to do. If you are using [Amphora Search](https://github.com/clay/amphora-search), you will need to run a quick mapping update on existing Elasticsearch indices. There is no need to reindex as long as existing sites are not being converted into subsites.
+
+```shell
+INDEXES=("${ELASTIC_PREFIX}_layouts" "${ELASTIC_PREFIX}_pages" "${ELASTIC_PREFIX}_sites")
+for index in ${INDEXES[@]}; do
+  curl -X PUT "${ELASTIC_HOST}:9200/${index}/_mapping/_doc" -H 'Content-Type: application/json' -d'
+  {
+    "_doc": {
+      "properties": {
+        "subsiteSlug": {
+          "type": "keyword"
+        }
+      }
+    }
+  }
+  '
+done
+```
