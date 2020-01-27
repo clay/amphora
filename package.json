@@ -29,7 +29,6 @@
     "express-flash": "0.0.2",
     "express-session": "^1.14.1",
     "glob": "^7.0.0",
-    "handlebars": "^4.0.5",
     "highland": "^2.11.1",
     "ioredis": "^4.0.0",
     "js-yaml": "^3.2.0",
