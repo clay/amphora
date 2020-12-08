@@ -20,7 +20,6 @@ class Storage {
     this.clearMem         = this.clear;
     this.pipeToPromise    = db.pipeToPromise;
     this.createReadStream = (ops) => this.inMem.createReadStream(ops);
-    this.paginate = (ops) => this.inMem.createReadStream(ops);
     this.getLatestData    = sinon.stub();
 
     db.registerStorage(this);
