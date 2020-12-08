@@ -107,4 +107,7 @@ workflows:
       - deploy_docs:
           context:
             - Documentation
+          requires:
+            - test_node12
+            - test_node14
           <<: *filter_stg
