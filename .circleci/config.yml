@@ -1,45 +1,110 @@
 version: 2
 
-# Set defaults to reuse
-defaults: &defaults
-  working_directory: ~/repo
-  docker:
-    - image: circleci/node:8.10.0
+references:
+  filter_all: &filter_all
+    filters:
+      branches:
+        only: /.*/
+      tags:
+        only: /.*/
+
+  filter_stg: &filter_stg
+    filters:
+      branches:
+        only: master
+      tags:
+        only: stg
+
+  filter_prd: &filter_prd
+    filters:
+      branches:
+        ignore: /.*/
+      tags:
+        only: /v[0-9]+\.[0-9]+\.[0-9]+/
 
 jobs:
-  test:
-    <<: *defaults
+
+  test_node10:
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/src
     steps:
       - checkout
-
       - restore_cache:
           keys:
-            - v2-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v2-dependencies-
-
+            - v3-node10-dependencies-{{ checksum "package.json" }}
+            - v3-node10-dependencies-
       - run: npm install
-      - run:
-          name: Run tests
-          command: npm test
-      - run:
-          name: Send to Coveralls
-          command: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
       - save_cache:
+          key: v3-node10-dependencies-{{ checksum "package.json" }}
           paths:
             - node_modules
-          key: v2-dependencies-{{ checksum "package.json" }}
+      - run: npm test
 
-      - persist_to_workspace:
-          root: ~/repo
+  test_node12:
+    docker:
+      - image: circleci/node:12
+    working_directory: ~/src
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v3-node12-dependencies-{{ checksum "package.json" }}
+            - v3-node12-dependencies-
+      - run: npm install
+      - save_cache:
+          key: v3-node12-dependencies-{{ checksum "package.json" }}
           paths:
-            - "."
+            - node_modules
+      - run: npm test
+      - run: cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
+
+  test_node14:
+    docker:
+      - image: circleci/node:14
+    working_directory: ~/src
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v3-node14-dependencies-{{ checksum "package.json" }}
+            - v3-node14-dependencies-
+      - run: npm install
+      - save_cache:
+          key: v3-node14-dependencies-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run: npm test
+
+  deploy_docs:
+    docker:
+      - image: circleci/node:14
+    working_directory: ~/src
+    steps:
+      - checkout
+      - restore_cache:
+          key: v3-website-dependencies-{{ checksum "website/package.json" }}
+      - run:
+          name: Build
+          command: |
+            sudo apt-get -y install awscli
+            bash ./.circleci/scripts/deploy-docs.sh
+      - save_cache:
+          key: v3-website-dependencies-{{ checksum "website/package.json" }}
+          paths:
+            - website/node_modules
 
 workflows:
   version: 2
-  test-deploy:
+  test:
     jobs:
-      - test:
-          filters:
-            tags:
-              only: /^v[0-9]+\.[0-9]+\.[0-9]+/
+      - test_node10:
+          <<: *filter_all
+      - test_node12:
+          <<: *filter_all
+      - test_node14:
+          <<: *filter_all
+      - deploy_docs:
+          context:
+            - Documentation
+          <<: *filter_stg
