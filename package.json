@@ -6,7 +6,8 @@
   "scripts": {
     "test": "npm run eslint && npm run mocha",
     "eslint": "eslint --max-warnings 0 lib test",
-    "mocha": "istanbul cover _mocha"
+    "mocha": "istanbul cover _mocha",
+    "release": "./.circleci/scripts/release.sh"
   },
   "repository": {
     "type": "git",
