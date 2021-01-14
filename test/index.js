@@ -13,7 +13,7 @@ chai.config.truncateThreshold = 0;
 
 // when we are testing to make sure errors are being thrown,
 // we don't want to log errors because it makes it seem like the test is failing
-process.env.LOG = 'silent';
+process.env.LOG = process.env.LOG || 'silent';
 
 // make sure the index file can be loaded at least
 require('..');
