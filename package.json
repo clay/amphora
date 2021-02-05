@@ -30,7 +30,6 @@
     "express-flash": "0.0.2",
     "express-session": "^1.14.1",
     "glob": "^7.0.0",
-    "handlebars": "^4.7.6",
     "highland": "^2.11.1",
     "ioredis": "^4.0.0",
     "js-yaml": "^3.2.0",
@@ -58,6 +57,9 @@
     "rimraf": "^2.6.2",
     "sinon": "^4.4.8",
     "supertest": "^3.0.0"
+  },
+  "peerDependencies": {
+    "handlebars": "4"
   },
   "engines": {
     "node": "^8.9.0"
