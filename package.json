@@ -1,6 +1,6 @@
 {
   "name": "amphora",
-  "version": "7.9.1",
+  "version": "8.0.0",
   "description": "An API mixin for Express that saves, publishes and composes data with the key-value store of your choice.",
   "main": "index.js",
   "scripts": {
@@ -17,20 +17,19 @@
   "author": "New York Media",
   "license": "MIT",
   "dependencies": {
-    "amphora-auth": "^1.2.0",
-    "amphora-fs": "^1.0.1",
+    "amphora-auth": "^2.0.0",
+    "amphora-fs": "^2.0.0",
     "basic-auth": "^1.0.4",
     "bluebird": "^3.5.1",
     "body-parser": "^1.12",
     "clay-log": "^1.2.0",
-    "clayutils": "^2.5.0",
+    "clayutils": "^3.0.0",
     "cuid": "^1.2.5",
     "eventify": "^2.0.0",
     "express": "^4.15.3",
     "express-flash": "0.0.2",
     "express-session": "^1.14.1",
     "glob": "^7.0.0",
-    "handlebars": "^4.0.5",
     "highland": "^2.11.1",
     "ioredis": "^4.0.0",
     "js-yaml": "^3.2.0",
@@ -58,6 +57,9 @@
     "rimraf": "^2.6.2",
     "sinon": "^4.4.8",
     "supertest": "^3.0.0"
+  },
+  "peerDependencies": {
+    "handlebars": "4"
   },
   "engines": {
     "node": "^8.9.0"
