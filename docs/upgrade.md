@@ -1,5 +1,5 @@
 ---
-id: data_versioning
+id: data-versioning
 title: Data Versioning (Upgrades)
 sidebar_label: Data Versioning (Upgrades)
 ---
@@ -10,7 +10,7 @@ Data versioning is a feature of Amphora that aims to address the problem of iter
 
 Components follow a very defined path when they're requested. First, the data is retrieved from the database and then it's passed to a `model.js` `render` function for the component \(if one exists\). After that, the component data proceeds to the final output destination, whether that's to be templated into HTML or to be consumed as JSON. Upgrades take place immediately after a component's data is retrieved from the database, making the modified data accessible the `model.js`.
 
-![Upgrade data flow](/amphora/images/upgrade_flow.png)
+![Upgrade data flow](/amphora/img/upgrade_flow.png)
 
 ## How To Upgrade
 

@@ -1,7 +1,8 @@
 ---
-id: plugin
-title: Plugins
-sidebar_label: Plugins
+id: version-7.4.0-plugins
+title: Plugin
+sidebar_label: Plugin
+original_id: plugins
 ---
 
 Plugins allow you to extend the functionality of your site by allowing you to attach routes to each site's router in your instance. While this may not seem any different than [defining routes for your site](routes), the basic site router will assign routes that only respond to `GET` requests and will run through Amphora's composition/rendering functionality. Plugins allow you to assign routes that respond to any [Express supported request method](https://expressjs.com/en/4x/api.html#app.METHOD) with your own custom handlers.

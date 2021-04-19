@@ -1,4 +1,8 @@
-# Event Bus
+---
+id: event-bus
+title: Event Bus
+sidebar_label: Event Bus
+---
 
 As of Amphora version `6.6.0` the option of using [Redis as an event bus](https://redis.io/topics/pubsub) has been introduced. This event bus is intended to make it easier to a destructure a Clay instance and supporting platform packages \(i.e. Amphora Search\). By default the Bus module is not instantiated. Only by setting the [Redis Bus Host env var](event-bus.md#redis-bus-host) will the Bus module be active.
 

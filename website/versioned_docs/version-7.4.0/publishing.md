@@ -1,4 +1,9 @@
-# Publishing
+---
+id: version-7.4.0-publishing
+title: Publishing
+sidebar_label: Publishing
+original_id: publishing
+---
 
 When setting up a site in your Clay instance you add a controller \(`index.js` file\) to define the rules around your sites. One of the rules you can define is _how to determine what url to publish a page to_. This can be done in a number of ways, whether it's just using the current date or analyzing the data in the content of the page. The implementation is your decision \(as long as the url matches a defined Express route\).
 
@@ -32,7 +37,7 @@ The value that the functions return should be the full url \(protocol, host, pat
 
 ## Dynamic Pages & Publishing
 
-[Dynamic pages](routes.md#dynamic-pages) allow one page template to render data in a variety of ways by letting you build pages that take an input a url and use that to render data. Because a dynamic page's url can be anything the usual 1-to-1 relationship of uri to page instance cannot work. For that reason, publishing a dynamic page is slightly different than other pages. All you have to do is make sure that your page has the `_dynamic` property set to `true` and Amphora will handle the rest. For example:
+[Dynamic pages](routes#dynamic-pages) allow one page template to render data in a variety of ways by letting you build pages that take an input a url and use that to render data. Because a dynamic page's url can be anything the usual 1-to-1 relationship of uri to page instance cannot work. For that reason, publishing a dynamic page is slightly different than other pages. All you have to do is make sure that your page has the `_dynamic` property set to `true` and Amphora will handle the rest. For example:
 
 ```javascript
 {
@@ -72,9 +77,8 @@ module.exports.modifyPublishedData = [
 ];
 ```
 
-Each function in the `modifyPublishedData` will only recieve the page data, not the `locals` or `uri` of the page. The purpose of this is to discourage complex/time consuming modifications of the data. While functions in this Array can be both synchronous or asynchronous, it's advised to keep these functions simple.
+Each function in the `modifyPublishedData` will only receive the page data, not the `locals` or `uri` of the page. The purpose of this is to discourage complex/time consuming modifications of the data. While functions in this Array can be both synchronous or asynchronous, it's advised to keep these functions simple.
 
-## `publishUrl`
+## publishUrl
 
 The question often arises of how to determine the vanity url of a page inside of a component's `model.js`. When a page is published, a `@published` instance of the page and every component instance is created. During this process, the `publishUrl` property is added to the `locals` object sent to each component. This essentially allows you to know when a `save` is being run on publish or not and is handy if the vanity url is needed in your component.
-
