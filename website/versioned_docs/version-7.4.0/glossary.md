@@ -1,7 +1,8 @@
 ---
-id: glossary-docs
+id: version-7.4.0-glossary
 title: Glossary
 sidebar_label: Glossary
+original_id: glossary-docs
 ---
 ## bootstrap
 
