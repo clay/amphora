@@ -34,7 +34,7 @@
     "ioredis": "^4.0.0",
     "js-yaml": "^3.2.0",
     "lodash": "^4.14.2",
-    "node-fetch": "^1.3.0",
+    "node-fetch": "^3.1.1",
     "passport": "^0.3.2",
     "passport-google-oauth": "^1.0.0",
     "passport-http-header-token": "^1.1.0",
