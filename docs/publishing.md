@@ -1,8 +1,7 @@
 ---
-id: version-7.4.0-publish
+id: publishing
 title: Publishing
 sidebar_label: Publishing
-original_id: publish
 ---
 
 When setting up a site in your Clay instance you add a controller \(`index.js` file\) to define the rules around your sites. One of the rules you can define is _how to determine what url to publish a page to_. This can be done in a number of ways, whether it's just using the current date or analyzing the data in the content of the page. The implementation is your decision \(as long as the url matches a defined Express route\).
