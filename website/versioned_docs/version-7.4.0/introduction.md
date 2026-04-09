@@ -108,6 +108,13 @@ The template you create is dependent on whichever renderer you'd like to use. Th
 
 [Kiln](https://github.com/nymag/clay-kiln) uses a component's schema.yml to determine how it is edited.
 
+Amphora also supports two optional schema keys for page cloning in `pages.create`:
+
+* `_resetOnPageClone`: an object whose keys are top-level instance fields and whose values overwrite the cloned data.
+* `_omitOnPageClone`: an array of top-level instance fields to remove from the cloned data after resets are applied.
+
+If a field is configured in both keys, Amphora logs a warning and omits the field from the stored clone.
+
 ## Contribution
 
 Fork the project and submit a PR on a branch that is not named `master`. We use linting tools and unit tests, which are built constantly using continuous integration. If you find a bug, it would be appreciated if you could also submit a branch with a failing unit test to show your case.
