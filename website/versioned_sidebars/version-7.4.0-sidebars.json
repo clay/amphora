@@ -1,22 +1,22 @@
 {
   "version-7.4.0-docs": {
     "Introduction": [
-      "version-7.4.0-intro"
+      "version-7.4.0-introduction"
     ],
     "On Startup": [
       "version-7.4.0-startup",
-      "version-7.4.0-install",
+      "version-7.4.0-instantiation",
       "version-7.4.0-bootstrap"
     ],
     "Basics": [
       "version-7.4.0-routes",
-      "version-7.4.0-publish",
-      "version-7.4.0-plugin",
+      "version-7.4.0-publishing",
+      "version-7.4.0-plugins",
       {
         "type": "subcategory",
         "label": "Renderers",
         "ids": [
-          "version-7.4.0-building-renderers"
+          "version-7.4.0-custom-renderers"
         ]
       },
       "version-7.4.0-event-bus"
@@ -24,11 +24,11 @@
     "Advanced": [
       "version-7.4.0-advanced",
       "version-7.4.0-storage",
-      "version-7.4.0-data_versioning",
+      "version-7.4.0-data-versioning",
       "version-7.4.0-renderer-models"
     ],
     "Helpful Links": [
-      "version-7.4.0-glossary-docs"
+      "version-7.4.0-glossary"
     ]
   }
 }

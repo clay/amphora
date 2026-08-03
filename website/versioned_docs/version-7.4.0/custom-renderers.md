@@ -1,5 +1,5 @@
 ---
-id: version-7.4.0-building-renderers
+id: version-7.4.0-custom-renderers
 title: Building Custom Renderers
 sidebar_label: Building Custom Renderers
 original_id: building-renderers

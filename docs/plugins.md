@@ -1,6 +1,10 @@
-# Plugins
+---
+id: plugins
+title: Plugins
+sidebar_label: Plugins
+---
 
-Plugins allow for you to extend the functionality of your site by allowing you to attach routes to each site's router in your instance. While this may not seem any different than [defining routes for your site](/docs/basics/routes.md), the basic site router will assign routes that only respond to `GET` requests and will run through Amphora's composition/rendering functionality. Plugins allow you to assign routes that respond to any [Express supported request method](https://expressjs.com/en/4x/api.html#app.METHOD) with your own custom handlers.
+Plugins allow you to extend the functionality of your site by allowing you to attach routes to each site's router in your instance. While this may not seem any different than [defining routes for your site](routes), the basic site router will assign routes that only respond to `GET` requests and will run through Amphora's composition/rendering functionality. Plugins allow you to assign routes that respond to any [Express supported request method](https://expressjs.com/en/4x/api.html#app.METHOD) with your own custom handlers.
 
 ## Anatomy of a Plugin
 
@@ -9,7 +13,7 @@ A plugin should be a function and will receive the following arguments:
 - `router`: the router for the site. Attach listeners and handlers as you would to any Express router.
 - `db`: an instance of Amphora's internal database connector.
 - `bus`: a passthrough of Amphora's internal event bus publish method so that a plugin can publish to the event bus on its own.
-- `sites`: the internal `sites` service, used for discovering which site in your instance a uri belongs to.
+- `sites`: the internal `sites` service, used for discovering which site in your instance a URI belongs to.
 
 An example plugin might look like the following:
 
@@ -26,7 +30,7 @@ module.exports = (router, db, bus, sites) => {
       });
   });
 
-  // Note: we're not explicity returning anything, but if we were
+  // Note: we're not explicitly returning anything, but if we were
   // performing some async action we could return a Promise
 }
 ```

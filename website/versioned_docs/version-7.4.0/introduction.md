@@ -1,8 +1,8 @@
 ---
-id: version-7.4.0-intro
+id: version-7.4.0-introduction
 title: Introduction
 sidebar_label: Introduction
-original_id: intro
+original_id: introduction
 ---
 
 ![illustration of an amphora](/amphora/img/amphora-logo.svg)

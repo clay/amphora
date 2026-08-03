@@ -1,5 +1,5 @@
 ---
-id: intro
+id: introduction
 title: Introduction
 sidebar_label: Introduction
 ---
@@ -116,6 +116,6 @@ Fork the project and submit a PR on a branch that is not named `master`. We use 
 ## Advanced Topics
 
 * [New Concepts For Developers and Designers](https://github.com/nymag/amphora/wiki#for-developers-and-designers)
-* [Bootstrapping Data](bootstrap)
-* [Routing](routes)
-* [Plugins](publish)
+* [Bootstrapping Data](bootstrap.md)
+* [Routing](routing.md)
+* [Plugins](plugins.md)

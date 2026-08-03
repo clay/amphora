@@ -1,5 +1,5 @@
 ---
-id: building-renderers
+id: custom-renderers
 title: Building Custom Renderers
 sidebar_label: Building Custom Renderers
 ---

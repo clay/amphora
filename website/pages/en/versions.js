@@ -33,7 +33,7 @@ function Versions(props) {
               <tr>
                 <th>{latestVersion}</th>
                 <td>
-                  <a href={`${siteConfig.baseUrl}docs/intro`}>Documentation</a>
+                  <a href={`${siteConfig.baseUrl}docs/introduction`}>Documentation</a>
                 </td>
                 <td>
                   <a href={`https://github.com/clay/amphora/releases/tag/v${latestVersion}`} target="_blank">Release Notes</a>
@@ -51,7 +51,7 @@ function Versions(props) {
               <tr>
                 <th>master</th>
                 <td>
-                  <a href={`${siteConfig.baseUrl}docs/next/intro`}>Documentation</a>
+                  <a href={`${siteConfig.baseUrl}docs/next/introduction`}>Documentation</a>
                 </td>
                 <td>
                   <a href="https://github.com/clay/amphora/releases" target="_blank">Release Notes</a>
@@ -69,7 +69,7 @@ function Versions(props) {
                     <tr>
                       <th>{version}</th>
                       <td>
-                        <a href={`${siteConfig.baseUrl}docs/${version}/intro`}>Documentation</a>
+                        <a href={`${siteConfig.baseUrl}docs/${version}/introduction`}>Documentation</a>
                       </td>
                       <td>
                         <a href={`https://github.com/clay/amphora/releases/tag/v${version}`}>Release Notes</a>

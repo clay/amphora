@@ -1,10 +1,11 @@
 {
   "docs": {
     "Introduction": [
-      "intro"
+      "introduction"
     ],
     "On Startup": [
-      "install",
+      "startup",
+      "instantiation",
       "bootstrap"
     ],
     "Basics": [
@@ -16,22 +17,23 @@
           "route"
         ]
       },
-      "publish",
-      "plugin",
+      "publishing",
+      "plugins",
       {
         "type": "subcategory",
         "label": "Renderers",
         "ids": [
-          "building-renderers"
+          "custom-renderers"
         ]
       },
       "event-bus"
     ],
     "Advanced": [
+      "advanced",
       "storage",
-      "data_versioning",
+      "data-versioning",
       "renderer-models"
     ],
-    "Helpful Links": ["glossary-docs"]
+    "Helpful Links": ["glossary"]
   }
 }

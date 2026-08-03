@@ -48,4 +48,4 @@ module.exports.routes = [
 ];
 ```
 
-By adding this path object into your `routes` object you'll be able to create one page to handle all the requests to the `/archive/*` route. **Make sure your** [**dynamic page is published**](publish#dynamic-pages-publishing) **or else this won't work!**
+By adding this path object into your `routes` object you'll be able to create one page to handle all the requests to the `/archive/*` route. **Make sure your** [**dynamic page is published**](publishing.md#dynamic-pages-publishing) **or else this won't work!**

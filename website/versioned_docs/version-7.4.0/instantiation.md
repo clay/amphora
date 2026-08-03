@@ -1,7 +1,8 @@
 ---
-id: install
+id: version-7.4.0-instantiation
 title: Instantiation Arguments
 sidebar_label: Instantiation Arguments
+original_id: install
 ---
 
 The most basic Amphora instantiation might look something like the following code:
@@ -39,3 +40,4 @@ At instantiation time Amphora accepts a config object which contains properties 
 * `plugins`: an Array of Objects that have handlers for different plugin hooks that Amphora exposes. Different hooks are exposed for the startup, request and publish life cycles. For more information see the [Plugins](https://github.com/clay/amphora/tree/3a300d4ec7af113afd102b4506e7566eb617c9c8/docs/lifecycle/startup/plugins.md) page.
 * `env`: an accommodation for renderers to expose environment variables used in `model.js` files on the client-side for [Kiln](https://github.com/clay/clay-kiln). These are only rendered in edit mode for a page. For a more thorough understanding of when/how these values are gathered and used, please see the [Component Models](renderer-models) documentation.
 * `bootstrap`: a Boolean value which defaults to `true`. When set to `false` the internal [bootstrapping process](bootstrap#skipping-bootstrapping) will be skipped entirely. **It's advised not to set the value to** `false` **for production instances.**
+
