@@ -34,6 +34,9 @@ amphora({
 | `hiddenPollInterval` | `20000` | ms between syncs from background tabs. |
 | `idlePollInterval` | `30000` | ms between syncs after 5 minutes without input. |
 | `presenceTtl` | `45000` | ms without a sync before an editor disappears (kept longer than the slowest poll). |
+| `hiddenPresenceTtl` | `150000` | Same, for background tabs (browsers slow their timers to about once a minute). |
+| `lockTtl` | `15000` | ms a write may hold its uri, in case its instance dies mid-write. |
+| `lockWait` | `5000` | ms a write waits for another write to the same uri before going ahead unchecked. |
 | `feedSize` / `feedTtl` | `200` / `3600` s | Change-feed events kept per page/layout, and for how long. |
 | `revisionTtl` | `604800` s | How long an untouched revision is kept (an expired revision just costs one extra merge). |
 | `timeout` | `500` | ms to wait for the store before carrying on without it. |
@@ -52,13 +55,18 @@ Plain HTTP was chosen over WebSockets or server-sent events on purpose: it goes 
 Amphora keeps a revision number for every component, layout and page. With collaboration on:
 
 * Every write to the latest version (`PUT`/`PATCH`/`DELETE` of a component, layout or page) gets a new revision, returned in the `X-Clay-Rev` response header.
-* A write that sends `X-Clay-Rev: <n>` is only applied if `n` is still the current revision. Otherwise amphora answers **`412 Precondition Failed`** with the current revision and data, and the client merges and retries. The check-and-bump is a single atomic Redis script, so two simultaneous saves can't both pass.
-* Writes without `X-Clay-Rev` (scripts, importers, other tools) are unconditional, as before, but still bump the revision, so a stale kiln save can't overwrite them.
+* Revisions are two-phase. A write holds its uri (a short lock) while it runs, and its new revision only becomes visible once the write succeeded. A second write to the same uri waits for the first, so nobody can see a new revision paired with data that isn't written yet. Check, lock and publish are atomic Redis scripts, so two simultaneous saves can't both pass.
+* A write that sends `X-Clay-Rev: <n>` is only applied if `n` is still the current revision. Otherwise amphora answers **`412 Precondition Failed`** with the current revision and data (read after that revision was published), and the client merges and retries. `X-Clay-Rev: -1` means "I don't know my base revision": the answer is always a 412 with the current data to merge. When nothing is saved there, the 412 says `missing: true`; when the data can't be read, amphora answers 503 rather than an empty 412.
+* Writes without `X-Clay-Rev` (scripts, importers, other tools) are unconditional, as before, but still move the revision on, so a stale kiln save can't overwrite them. (Child components created by a nested save aren't revisioned until they're saved on their own; they're new, so nobody else has them open.)
 * `GET`s from a collaborating client (`X-Clay-Collab-Session` header) also return `X-Clay-Rev`.
+
+### Starting over (resync)
+
+Each sync response carries the store's `epoch`, a random id created with its data. Amphora tells a client to start over (`resync: true`) when the epoch it saw has changed (Redis lost its data), its cursor is ahead of the feed, or events it hadn't seen yet were trimmed from the feed. Kiln then re-learns every revision on the page and refreshes whatever changed; it does the same after 20 minutes without a successful sync (a sleeping laptop).
 
 ### Change feed and presence
 
-Successful writes from kiln are recorded in a short feed for the page or layout they belong to (`X-Clay-Collab-Doc` header), with who made them. Publishing, unpublishing, scheduling and page-meta changes are recorded too. Presence is stored per page, per user and tab: an editor can only update or remove their own entry, and other editors only ever see their display name, avatar and a color (never usernames or email addresses).
+Successful writes from kiln are recorded in a short feed for the page or layout they belong to (`X-Clay-Collab-Doc` header; writes to a page or layout always go to its own feed), with who made them. Publishing, unpublishing (`DELETE /_uris/...`), scheduling (`/_schedule`) and page-meta changes are recorded too. Presence is stored per page, per user and tab: an editor can only update or remove their own entry. Other editors only see a display name, avatar, color and an opaque id: user ids are keyed hashes (HMAC with a secret kept in the store), so they can't be matched back to usernames or email addresses, and tab ids are opaque too (a tab's session id is never sent to anyone else). `/_collab/sync` only accepts JSON from the site's own origin.
 
 ### Edit mode
 
@@ -68,14 +76,15 @@ When an authenticated user opens a page in edit mode, amphora adds `locals.colla
 
 Collaboration never stands between an editor and a save:
 
-* Every store call has a short timeout (`timeout`), and after a failure amphora leaves the store alone for `retryAfter` ms. While it's unavailable, saves go through unguarded (exactly as without collaboration), edit mode renders without collaboration and `/_collab/sync` answers 503. Kiln shows "Reconnecting…" and keeps retrying; nothing else changes for the editor.
+* Every store call has a short timeout (`timeout`), and after a failure amphora leaves the store alone for `retryAfter` ms. While it's unavailable, saves go through unchecked (exactly as without collaboration) and `/_collab/sync` answers 503; kiln shows "Reconnecting…" and keeps retrying. Writes made meanwhile are remembered (up to 2,000 uris per instance) and, once the store is back, their revisions move on and other editors hear about them, so nobody overwrites them from an older copy.
+* A page opened in edit mode while the store is down still turns collaboration on, without a feed position; kiln then treats the revisions it learns as unverified, so its first saves merge with the server's data.
 * Redis connection errors are logged at most once a minute.
 
 ## Endpoints
 
 | | |
 | --- | --- |
-| `POST /_collab/sync` | `{ page, session, docs?, cursor, focus?, state?, uris? }` → `{ now, cursor, pollInterval, hiddenPollInterval, presence, events, revs? }`. Requires a logged-in user. |
+| `POST /_collab/sync` | `{ page, session, docs?, cursor, epoch?, focus?, state?, uris? }` → `{ now, epoch, cursor, resync, pollInterval, hiddenPollInterval, presence, events, revs? }`. Requires a logged-in user; JSON only, same origin. |
 | `POST /_collab/leave` | `{ page, session }` → 204. Accepts `text/plain` (for `sendBeacon`). |
 
 Request headers kiln sends with every write: `X-Clay-Collab-Session` (the tab), `X-Clay-Collab-Doc` (page or layout uri) and `X-Clay-Rev` (base revision).
