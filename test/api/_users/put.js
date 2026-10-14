@@ -17,7 +17,7 @@ describe(endpointName, function () {
       expectedData = _.assign({_ref: '/_users/bWFubnlAZ29vZ2xl'}, data);
 
     beforeEach(function () {
-      sandbox = sinon.sandbox.create();
+      sandbox = sinon.createSandbox();
     });
 
     afterEach(function () {

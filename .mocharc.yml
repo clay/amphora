@@ -1,0 +1,7 @@
+spec: test/index.js
+reporter: dot
+ui: bdd
+slow: 50
+timeout: 200
+# Needed to close all open connections to the redis session store
+exit: true

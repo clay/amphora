@@ -17,7 +17,7 @@ describe(endpointName, function () {
       data = {username: 'foo', provider: 'bar', auth: 'admin'};
 
     beforeEach(function () {
-      sandbox = sinon.sandbox.create();
+      sandbox = sinon.createSandbox();
     });
 
     afterEach(function () {
