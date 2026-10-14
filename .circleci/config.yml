@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 references:
   filter_all: &filter_all
@@ -20,64 +20,36 @@ references:
       branches:
         ignore: /.*/
       tags:
-        only: /v[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?/
+        only: /^v[0-9]+\.[0-9]+\.[0-9]+(-.+)?$/
 
 jobs:
 
-  test_node10:
+  test:
+    parameters:
+      node-version:
+        type: string
     docker:
-      - image: circleci/node:10
+      - image: cimg/node:<< parameters.node-version >>
+      - image: cimg/redis:7.2
+    environment:
+      CLAY_COLLAB_TEST_REDIS: redis://localhost:6379
     working_directory: ~/src
     steps:
       - checkout
       - restore_cache:
           keys:
-            - v3-node10-dependencies-{{ checksum "package.json" }}
-            - v3-node10-dependencies-
-      - run: npm install
+            - v4-npm-{{ checksum "package-lock.json" }}
+            - v4-npm-
+      - run: npm ci
       - save_cache:
-          key: v3-node10-dependencies-{{ checksum "package.json" }}
+          key: v4-npm-{{ checksum "package-lock.json" }}
           paths:
-            - node_modules
-      - run: npm test
-
-  test_node12:
-    docker:
-      - image: circleci/node:12
-    working_directory: ~/src
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v3-node12-dependencies-{{ checksum "package.json" }}
-            - v3-node12-dependencies-
-      - run: npm install
-      - save_cache:
-          key: v3-node12-dependencies-{{ checksum "package.json" }}
-          paths:
-            - node_modules
-      - run: npm test
-
-  test_node14:
-    docker:
-      - image: circleci/node:14
-    working_directory: ~/src
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v3-node14-dependencies-{{ checksum "package.json" }}
-            - v3-node14-dependencies-
-      - run: npm install
-      - save_cache:
-          key: v3-node14-dependencies-{{ checksum "package.json" }}
-          paths:
-            - node_modules
+            - ~/.npm
       - run: npm test
 
   deploy_docs:
     docker:
-      - image: circleci/node:14
+      - image: cimg/node:14.21
     working_directory: ~/src
     steps:
       - checkout
@@ -86,6 +58,7 @@ jobs:
       - run:
           name: Build
           command: |
+            sudo apt-get update
             sudo apt-get -y install awscli
             bash ./.circleci/scripts/deploy-docs.sh
       - save_cache:
@@ -95,15 +68,15 @@ jobs:
 
   deploy_package:
     docker:
-      - image: circleci/node:12
+      - image: cimg/node:24.21
     working_directory: ~/repo
     steps:
       - checkout
       - restore_cache:
           keys:
-          - v3-node12-dependencies-{{ checksum "package.json" }}
-          - v3-node12-dependencies-
-      - run: npm install
+            - v4-npm-{{ checksum "package-lock.json" }}
+            - v4-npm-
+      - run: npm ci
       - run: |
           echo "$NPMRC" > ~/.npmrc
           chmod 600 ~/.npmrc
@@ -114,28 +87,33 @@ jobs:
           fi
 
 workflows:
-  version: 2
   test:
     jobs:
-      - test_node10:
+      - test:
           <<: *filter_all
-      - test_node12:
+          name: test_node20
+          node-version: "20.20"
+      - test:
           <<: *filter_all
-      - test_node14:
+          name: test_node22
+          node-version: "22.23"
+      - test:
           <<: *filter_all
+          name: test_node24
+          node-version: "24.21"
       - deploy_docs:
           <<: *filter_head
           context:
             - Documentation
           requires:
-            - test_node10
-            - test_node12
-            - test_node14
+            - test_node20
+            - test_node22
+            - test_node24
       - deploy_package:
           <<: *filter_release
           context:
             - npm-publish
           requires:
-            - test_node10
-            - test_node12
-            - test_node14
+            - test_node20
+            - test_node22
+            - test_node24
