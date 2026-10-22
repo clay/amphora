@@ -35,6 +35,7 @@ amphora({
 | `idlePollInterval` | `30000` | ms between syncs after 5 minutes without input. |
 | `presenceTtl` | `45000` | ms without a sync before an editor disappears (kept longer than the slowest poll). |
 | `hiddenPresenceTtl` | `150000` | Same, for background tabs (browsers slow their timers to about once a minute). |
+| `takeoverAfter` | `60000` | ms a field someone has open must go without changes before someone else can take it over (see [one person per field](#one-person-per-field)). |
 | `lockTtl` | `15000` | ms a write may hold its uri, in case its instance dies mid-write. |
 | `lockWait` | `5000` | ms a write waits for another write to the same uri before going ahead unchecked. |
 | `feedSize` / `feedTtl` | `200` / `3600` s | Change-feed events kept per page/layout, and for how long. |
@@ -82,6 +83,10 @@ Kiln also catches up when a sync answered 503 (the store was unreachable, so the
 
 Successful writes from kiln are recorded in a short feed for the page or layout they belong to (`X-Clay-Collab-Doc` header; writes to a page or layout always go to its own feed), with who made them. Publishing, unpublishing (`DELETE /_uris/...`), scheduling (`/_schedule`) and page-meta changes are recorded too. Presence is stored per page, per user and tab: an editor can only update or remove their own entry. Other editors only see a display name, avatar, color and an opaque id: user ids are keyed hashes (HMAC with a secret kept in the store), so they can't be matched back to usernames or email addresses, and tab ids are opaque too (a tab's session id is never sent to anyone else). `/_collab/sync` only accepts JSON from the site's own origin.
 
+### One person per field
+
+Kiln lets only one person edit a field at a time, and amphora only relays what it needs for that through presence: each tab's `focus` says what it has open, how long since it last changed it (`quiet`, ms) and whether it's asking whoever has it open to hand it over (`claim: true`), and each presence entry carries `seen`, when that tab last synced (server time, comparable with the response's `now`). Everything else happens in the editors' tabs: someone who changed a field in the last `takeoverAfter` ms (and is connected, with the tab in front) keeps it; otherwise another editor can take it over, and the holder's own tab saves what they typed and closes it before the newcomer's form opens. Amphora doesn't enforce any of it: it's a courtesy between kiln tabs, and saves are still checked and merged as usual if two people do end up changing the same thing.
+
 ### Edit mode
 
 When an authenticated user opens a page in edit mode, amphora adds `locals.collaboration` (settings plus the feed position the page was rendered at), which is how kiln knows to turn collaboration on and catch anything saved while the page was loading. View mode, public pages and API responses are unchanged.
@@ -99,7 +104,7 @@ Collaboration never stands between an editor and a save:
 
 | | |
 | --- | --- |
-| `POST /_collab/sync` | `{ page, session, docs?, cursor, epoch?, focus?, state?, uris?, unguarded? }` → `{ now, epoch, gap, cursor, resync, pollInterval, hiddenPollInterval, presence, events, revs? }`. Requires a logged-in user; JSON only, same origin. `unguarded` (up to 100 `{ uri, doc }`) lists the client's saves that came back without a revision. |
+| `POST /_collab/sync` | `{ page, session, docs?, cursor, epoch?, focus?, state?, uris?, unguarded? }` → `{ now, epoch, gap, cursor, resync, pollInterval, hiddenPollInterval, presence, events, revs? }`. Requires a logged-in user; JSON only, same origin. `focus` is `{ uri, path?, label?, typing?, quiet?, claim? }`; each `presence` entry is `{ tab, self, user, focus, state, seen }`. `unguarded` (up to 100 `{ uri, doc }`) lists the client's saves that came back without a revision. |
 | `POST /_collab/leave` | `{ page, session }` → 204. Accepts `text/plain` (for `sendBeacon`). |
 
 Request headers kiln sends with every write: `X-Clay-Collab-Session` (the tab), `X-Clay-Collab-Doc` (page or layout uri), `X-Clay-Rev` (base revision) and `X-Clay-Collab-Gap` (the gap that revision comes from). A 412 body is `{ code, message, uri, rev, gap, by, data, missing }`; `by` (`{ user }`, as other editors see them, or `null`) is who last saved it according to the page's or layout's feed, so the client can say "Ada also changed Headline".
