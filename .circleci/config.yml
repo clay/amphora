@@ -91,14 +91,6 @@ workflows:
     jobs:
       - test:
           <<: *filter_all
-          name: test_node20
-          node-version: "20.20"
-      - test:
-          <<: *filter_all
-          name: test_node22
-          node-version: "22.23"
-      - test:
-          <<: *filter_all
           name: test_node24
           node-version: "24.21"
       - deploy_docs:
@@ -106,14 +98,10 @@ workflows:
           context:
             - Documentation
           requires:
-            - test_node20
-            - test_node22
             - test_node24
       - deploy_package:
           <<: *filter_release
           context:
             - npm-publish
           requires:
-            - test_node20
-            - test_node22
             - test_node24
