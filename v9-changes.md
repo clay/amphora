@@ -4,7 +4,7 @@ Amphora 9 is a maintenance release plus one new, opt-in feature. Sites that don'
 
 ## Breaking
 
-- **Node 20 or newer.** `engines` is now `>=20`. CI runs on Node 20, 22 and 24 (24 is the current LTS).
+- **Node 24 or newer.** `engines` is now `>=24` and CI runs on Node 24, the current LTS (Node 20 reached end of life in April 2026).
 - **Smaller install.** Dependencies amphora never used were removed: `basic-auth`, `eventify`, `express-flash`, `express-session`, `js-yaml`, `template2env` and `vhost`, plus the `handlebars` peer dependency. If your site `require`s any of these, add them to your own `package.json` (nymag/sites already declares the ones it uses).
 - **Published files.** The package now ships only `index.js`, `lib/` (without tests), `README.md` and `LICENSE`. Deep requires of `amphora/lib/...` keep working.
 
