@@ -14,7 +14,7 @@ Amphora 9 is a maintenance release. Apart from the changes listed under Breaking
   - A short, hex, octal or zero-padded IPv4 address is written in full (`127.1` and `0x7f.1` become `127.0.0.1`, `010.0.0.1` becomes `8.0.0.1`), and an IPv6 address is shortened (`[0:0::1]` becomes `[::1]`, `[::ffff:1.2.3.4]` becomes `[::ffff:102:304]`).
   - Percent escapes in the host are decoded (`nym%41g.com` becomes `nymag.com`).
   - A host with `"`, `'`, `;`, `` ` ``, `{` or `}` keeps that character and is lower-cased as a whole. 8.x cut the host at the character and moved the rest into the path.
-  - A host name longer than 255 characters is accepted. 8.x treated the url as having no host.
+  - Some urls that 8.x rejected are now valid, so `isUrl()` is `true` and a page can be published at them: a host name longer than 255 characters or a host that starts with one of the characters above or a `%` escape, right after `//` or `user@` (`http://;/x` gives the uri `;/x`, `http://%6e%79mag.com/x` gives `nymag.com/x`), where 8.x treated the url as having no host, and a user name or password with an invalid `%` escape (`http://user%@nymag.com/x`), where 8.x threw `URIError`.
   - `uriToUrl()` drops a `user@` in front of the host.
 
   Urls with other protocols can differ in more edge cases. `javascript:` urls are still never valid.
