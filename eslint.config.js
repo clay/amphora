@@ -9,7 +9,8 @@ module.exports = [
   {
     files: ['**/*.js'],
     languageOptions: {
-      ecmaVersion: 2018,
+      // parse whatever syntax the supported Node version runs (the old .eslintrc said 2018)
+      ecmaVersion: 'latest',
       sourceType: 'commonjs',
       globals: {
         ...globals.node,
