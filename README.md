@@ -33,6 +33,8 @@ It follows semver and is stable as of v1.0.0.
 
 ## Installation
 
+Amphora 9 requires Node 24 or newer. See [v9-changes.md](v9-changes.md) for what changed from 8.x.
+
 ```text
 npm install --save amphora
 ```

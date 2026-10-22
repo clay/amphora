@@ -22,7 +22,7 @@ describe(endpointName, function () {
       };
 
     beforeEach(function () {
-      sandbox = sinon.sandbox.create();
+      sandbox = sinon.createSandbox();
     });
 
     afterEach(function () {

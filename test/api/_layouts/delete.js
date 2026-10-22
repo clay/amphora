@@ -15,7 +15,7 @@ describe(endpointName, function () {
       data = { main: 'main' };
 
     before(function () {
-      sandbox = sinon.sandbox.create();
+      sandbox = sinon.createSandbox();
       this.timeout(500);
       return apiAccepts.beforeTesting(this, {
         hostname,
@@ -27,7 +27,7 @@ describe(endpointName, function () {
     });
 
     beforeEach(function () {
-      sandbox = sinon.sandbox.create();
+      sandbox = sinon.createSandbox();
     });
 
     afterEach(function () {
