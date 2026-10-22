@@ -30,6 +30,9 @@ jobs:
         type: string
     docker:
       - image: cimg/node:<< parameters.node-version >>
+      - image: cimg/redis:7.2
+    environment:
+      CLAY_COLLAB_TEST_REDIS: redis://localhost:6379
     working_directory: ~/src
     steps:
       - checkout

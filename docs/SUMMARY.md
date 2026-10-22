@@ -14,6 +14,7 @@
   * [Storage API](advanced/storage.md)
   * [Data Versioning \(Upgrades\)](advanced/upgrade.md)
   * [Renderer Models](advanced/renderer-models.md)
+  * [Real-time Collaboration](advanced/collaboration.md)
 * [Plugins](plugins/README.md)
   * [Hooks](plugins/hooks.md)
   * [Writing A Plugin](plugins/writing-a-plugin.md)

@@ -118,3 +118,4 @@ Fork the project and submit a PR on a branch that is not named `master`. We use 
 * [Routing](https://github.com/clay/amphora/tree/master/lib/routes)
 * [Plugins](https://github.com/clay/amphora/tree/master/docs/plugin.md)
 * [Subsites](https://github.com/clay/amphora/tree/master/docs/subsites.md)
+* [Real-time Collaboration](https://github.com/clay/amphora/tree/master/docs/advanced/collaboration.md) (opt-in, used by clay-kiln 10.3+)

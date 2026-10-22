@@ -1,12 +1,16 @@
 # Amphora 9
 
-Amphora 9 is a maintenance release. Apart from the changes listed under Breaking, sites get the same responses as on 8.x.
+Amphora 9 is a maintenance release plus one new, opt-in feature. Apart from the changes listed under Breaking, sites that don't turn the feature on get the same responses as on 8.x.
 
 ## Breaking
 
 - **Node 24 or newer.** `engines` is now `>=24` and CI runs on Node 24, the current LTS (Node 20 reached end of life in April 2026).
 - **Smaller install.** Dependencies amphora never used were removed: `basic-auth`, `eventify`, `express-flash`, `express-session`, `js-yaml`, `template2env` and `vhost`, plus the `handlebars` peer dependency. If your site `require`s any of these, add them to your own `package.json` (nymag/sites already declares the ones it uses, and gets `handlebars` through `clayhandlebars`).
 - **Published files.** The package now ships only `index.js`, `lib/` (without tests), `README.md` and `LICENSE`. Deep requires of `amphora/lib/...` keep working.
+
+## New
+
+- **Real-time collaboration for editors (opt-in).** Presence, live updates and merging of simultaneous saves, used by clay-kiln 10.3+. Off unless you pass `collaboration` to `amphora()`. See [docs/advanced/collaboration.md](docs/advanced/collaboration.md).
 
 ## Improved
 
