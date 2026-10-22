@@ -27,7 +27,7 @@ amphora({
 | Option | Default | |
 | --- | --- | --- |
 | `redis` | — | Redis URL or ioredis client. Required for more than one instance. |
-| `store` | — | A custom store (same interface as `lib/collab/stores/memory.js`, including `gap()` and `newGap()`). |
+| `store` | — | A custom store (same interface as `lib/collab/stores/memory.js`, including `gap()`, `newGap()` and `beat()`). |
 | `keyPrefix` | `clay:collab` | Prefix for every Redis key. Keys of a site share a hash tag, so Redis Cluster works. |
 | `pollInterval` | `2000` | ms between syncs while others are on the page. |
 | `soloPollInterval` | `4000` | ms between syncs while nobody else is. |
@@ -40,7 +40,9 @@ amphora({
 | `feedSize` / `feedTtl` | `200` / `3600` s | Change-feed events kept per page/layout, and for how long. |
 | `revisionTtl` | `604800` s | How long an untouched revision is kept (an expired revision just costs one extra merge). |
 | `timeout` | `500` | ms to wait for the store before carrying on without it. |
-| `retryAfter` | `10000` | ms to leave the store alone after a failure. |
+| `retryAfter` | `10000` | ms to leave the store alone after a failure (at most: see `probeInterval`). |
+| `probeInterval` | `1000` | ms between checks on a store that failed, so collaboration resumes about a second after it's back. |
+| `heartbeatInterval` | `10000` | ms between each instance's stamps on the store (see [the gap](#catching-up-after-the-store-was-unreachable-the-gap)). |
 
 ## How it works
 
@@ -68,7 +70,8 @@ Each sync response carries the store's `epoch`, a random id created with its dat
 
 Revisions only protect writes the store saw. A save made while the store was unreachable goes through unchecked, and if the instance that made it stops before the store is back (a deploy, a crash, a scale-in), nothing remembers it: its revision never moves on, and an editor with an older copy could overwrite it without a 412. Three things close that hole:
 
-* **The gap.** Each sync response (and `locals.collaboration`) carries the store's `gap`, a random id. Any instance that fails to reach the store, or can't reach it as it starts up (it checks once at startup, because the process before it may have saved without the store and been stopped), starts a new gap as soon as the store answers again. A client that sees the gap change can't be sure it heard about every save, so it re-reads everything on its page (kiln calls this catching up).
+* **The gap.** Each sync response (and `locals.collaboration`) carries the store's `gap`, a random id. Any instance that fails to reach the store, or can't reach it as it starts up (the process before it may have saved without the store and been stopped), starts a new gap as soon as the store answers again; while it can't, it checks every `probeInterval`, so that's about a second after the store is back.
+* **Nobody left to tell.** Every instance stamps the store every `heartbeatInterval`. If an instance finds the stamp more than three intervals old, nothing could reach the store for a while (it was unreachable, or every instance was down), so writes may have gone around it on instances that are gone now: it starts a new gap. Rolling deploys keep the stamp fresh; this doesn't need instances to shut down cleanly (they don't, today). A client that sees the gap change can't be sure it heard about every save, so it re-reads everything on its page (kiln calls this catching up).
 * **Saves name their gap.** Kiln sends the gap its revisions come from (`X-Clay-Collab-Gap`) with every save. A revision from before the current gap is treated as unknown (`-1`): the answer is a 412 with the current data and the current `gap`, so a tab that hasn't synced since the store came back (a background tab, say) merges instead of overwriting, and learns that it has to catch up.
 * **Revisions move on.** Each instance remembers the writes it made without the store (up to 2,000 uris, with who made them) and, once the store is back, moves their revisions on and records them in the feed under that person's name. If it fails to, it keeps them and tries again.
 * **The writer's tab remembers too.** A save whose response has no `X-Clay-Rev` went through unchecked. Kiln reports those (`unguarded: [{ uri, doc }]` in its next successful sync); amphora moves their revisions on and records them in the feed for everyone else, so they're covered even if the instance that took them is gone. A sync that can't do this answers 503, and the tab reports them again next time.
@@ -87,7 +90,7 @@ When an authenticated user opens a page in edit mode, amphora adds `locals.colla
 
 Collaboration never stands between an editor and a save:
 
-* Every store call has a short timeout (`timeout`), and after a failure amphora leaves the store alone for `retryAfter` ms. While it's unavailable, saves go through unchecked (exactly as without collaboration) and `/_collab/sync` answers 503; kiln shows "Reconnecting…" and keeps retrying. Once the store is back, those writes' revisions move on, other editors hear about them, and every editor re-reads their page (see [the gap](#catching-up-after-the-store-was-unreachable-the-gap)), so nobody overwrites them from an older copy, even if the instance that took them has restarted.
+* Every store call has a short timeout (`timeout`), and after a failure amphora leaves the store alone (checking on it every `probeInterval`) until it answers, at most `retryAfter` ms. While it's unavailable, saves go through unchecked (exactly as without collaboration) and `/_collab/sync` answers 503; kiln shows "Reconnecting…" and keeps retrying. Once the store is back, those writes' revisions move on, other editors hear about them, and every editor re-reads their page (see [the gap](#catching-up-after-the-store-was-unreachable-the-gap)), so nobody overwrites them from an older copy, even if the instance that took them has restarted.
 * While the store is down, two editors saving the same component both go through unchecked: the later save wins, as without collaboration.
 * A page opened in edit mode while the store is down still turns collaboration on, without a feed position or gap; kiln re-reads the page once the store is back, and its saves merge with the server's data until then.
 * Redis connection errors are logged at most once a minute.
