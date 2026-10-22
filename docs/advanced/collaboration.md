@@ -27,7 +27,7 @@ amphora({
 | Option | Default | |
 | --- | --- | --- |
 | `redis` | — | Redis URL or ioredis client. Required for more than one instance. |
-| `store` | — | A custom store (same interface as `lib/collab/stores/memory.js`). |
+| `store` | — | A custom store (same interface as `lib/collab/stores/memory.js`, including `gap()` and `newGap()`). |
 | `keyPrefix` | `clay:collab` | Prefix for every Redis key. Keys of a site share a hash tag, so Redis Cluster works. |
 | `pollInterval` | `2000` | ms between syncs while others are on the page. |
 | `soloPollInterval` | `4000` | ms between syncs while nobody else is. |
@@ -64,6 +64,16 @@ Amphora keeps a revision number for every component, layout and page. With colla
 
 Each sync response carries the store's `epoch`, a random id created with its data. Amphora tells a client to start over (`resync: true`) when the epoch it saw has changed (Redis lost its data), its cursor is ahead of the feed, or events it hadn't seen yet were trimmed from the feed. Kiln then re-learns every revision on the page and refreshes whatever changed; it does the same after 20 minutes without a successful sync (a sleeping laptop).
 
+### Catching up after the store was unreachable (the gap)
+
+Revisions only protect writes the store saw. A save made while the store was unreachable goes through unchecked, and if the instance that made it stops before the store is back (a deploy, a crash, a scale-in), nothing remembers it: its revision never moves on, and an editor with an older copy could overwrite it without a 412. Three things close that hole:
+
+* **The gap.** Each sync response (and `locals.collaboration`) carries the store's `gap`, a random id. Any instance that fails to reach the store, or can't reach it as it starts up (it checks once at startup, because the process before it may have saved without the store and been stopped), starts a new gap as soon as the store answers again. A client that sees the gap change can't be sure it heard about every save, so it re-reads everything on its page (kiln calls this catching up).
+* **Revisions move on.** Each instance remembers the writes it made without the store (up to 2,000 uris) and, once the store is back, moves their revisions on and records them in the feed. If it fails to, it keeps them and tries again.
+* **The writer's tab remembers too.** A save whose response has no `X-Clay-Rev` went through unchecked. Kiln reports those (`unguarded: [{ uri, doc }]` in its next successful sync); amphora moves their revisions on and records them in the feed for everyone else, so they're covered even if the instance that took them is gone. A sync that can't do this answers 503, and the tab reports them again next time.
+
+Kiln also catches up when a sync answered 503 (the store was unreachable, so the feed may be missing saves) and when a page was rendered without a feed position. Until it has, it forgets the revisions it knows, so its saves send `X-Clay-Rev: -1` and merge with whatever the server has instead of overwriting it.
+
 ### Change feed and presence
 
 Successful writes from kiln are recorded in a short feed for the page or layout they belong to (`X-Clay-Collab-Doc` header; writes to a page or layout always go to its own feed), with who made them. Publishing, unpublishing (`DELETE /_uris/...`), scheduling (`/_schedule`) and page-meta changes are recorded too. Presence is stored per page, per user and tab: an editor can only update or remove their own entry. Other editors only see a display name, avatar, color and an opaque id: user ids are keyed hashes (HMAC with a secret kept in the store), so they can't be matched back to usernames or email addresses, and tab ids are opaque too (a tab's session id is never sent to anyone else). `/_collab/sync` only accepts JSON from the site's own origin.
@@ -76,15 +86,16 @@ When an authenticated user opens a page in edit mode, amphora adds `locals.colla
 
 Collaboration never stands between an editor and a save:
 
-* Every store call has a short timeout (`timeout`), and after a failure amphora leaves the store alone for `retryAfter` ms. While it's unavailable, saves go through unchecked (exactly as without collaboration) and `/_collab/sync` answers 503; kiln shows "Reconnecting…" and keeps retrying. Writes made meanwhile are remembered (up to 2,000 uris per instance) and, once the store is back, their revisions move on and other editors hear about them, so nobody overwrites them from an older copy.
-* A page opened in edit mode while the store is down still turns collaboration on, without a feed position; kiln then treats the revisions it learns as unverified, so its first saves merge with the server's data.
+* Every store call has a short timeout (`timeout`), and after a failure amphora leaves the store alone for `retryAfter` ms. While it's unavailable, saves go through unchecked (exactly as without collaboration) and `/_collab/sync` answers 503; kiln shows "Reconnecting…" and keeps retrying. Once the store is back, those writes' revisions move on, other editors hear about them, and every editor re-reads their page (see [the gap](#catching-up-after-the-store-was-unreachable-the-gap)), so nobody overwrites them from an older copy, even if the instance that took them has restarted.
+* While the store is down, two editors saving the same component both go through unchecked: the later save wins, as without collaboration.
+* A page opened in edit mode while the store is down still turns collaboration on, without a feed position or gap; kiln re-reads the page once the store is back, and its saves merge with the server's data until then.
 * Redis connection errors are logged at most once a minute.
 
 ## Endpoints
 
 | | |
 | --- | --- |
-| `POST /_collab/sync` | `{ page, session, docs?, cursor, epoch?, focus?, state?, uris? }` → `{ now, epoch, cursor, resync, pollInterval, hiddenPollInterval, presence, events, revs? }`. Requires a logged-in user; JSON only, same origin. |
+| `POST /_collab/sync` | `{ page, session, docs?, cursor, epoch?, focus?, state?, uris?, unguarded? }` → `{ now, epoch, gap, cursor, resync, pollInterval, hiddenPollInterval, presence, events, revs? }`. Requires a logged-in user; JSON only, same origin. `unguarded` (up to 100 `{ uri, doc }`) lists the client's saves that came back without a revision. |
 | `POST /_collab/leave` | `{ page, session }` → 204. Accepts `text/plain` (for `sendBeacon`). |
 
 Request headers kiln sends with every write: `X-Clay-Collab-Session` (the tab), `X-Clay-Collab-Doc` (page or layout uri) and `X-Clay-Rev` (base revision).
