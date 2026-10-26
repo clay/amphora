@@ -28,7 +28,6 @@
     "highland": "^2.13.5",
     "ioredis": "^4.28.5",
     "lodash": "^4.17.21",
-    "node-fetch": "^2.7.0",
     "through2-filter": "^2.0.0"
   },
   "devDependencies": {
