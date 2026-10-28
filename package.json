@@ -11,9 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nymag/amphora.git"
+    "url": "https://github.com/clay/amphora.git"
   },
-  "homepage": "https://github.com/nymag/amphora",
+  "bugs": {
+    "url": "https://github.com/clay/amphora/issues"
+  },
+  "homepage": "https://github.com/clay/amphora",
   "author": "New York Media",
   "license": "MIT",
   "dependencies": {
