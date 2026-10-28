@@ -4,7 +4,7 @@
 
 _"A new way to organize, edit, and deliver the web, one component at a time."_
 
-[![CircleCI](https://circleci.com/gh/clay/amphora.svg?style=svg)](https://circleci.com/gh/clay/amphora) [![Coverage Status](https://coveralls.io/repos/nymag/amphora/badge.svg?branch=master&service=github&t=WhTOg8)](https://coveralls.io/github/nymag/amphora?branch=master)
+[![CI](https://github.com/clay/amphora/actions/workflows/ci.yml/badge.svg)](https://github.com/clay/amphora/actions/workflows/ci.yml)
 
 Powering [New York Magazine](http://nymag.com/), [Vulture](http://www.vulture.com/), [The Cut](http://www,thecut.com/), [Grub Street](http://www.grubstreet.com/).  
 Created by New York Media.
@@ -32,6 +32,8 @@ Amphora is a core part of New York Media's Clay project, an open-source content 
 It follows semver and is stable as of v1.0.0.
 
 ## Installation
+
+Amphora 9 requires Node 26.12.1 or newer (the first 26.x with the October 2026 security fixes). See [v9-changes.md](v9-changes.md) for what changed from 8.x.
 
 ```text
 npm install --save amphora

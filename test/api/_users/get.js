@@ -16,7 +16,7 @@ describe(endpointName, function () {
       message406 = '406 text/html not acceptable';
 
     beforeEach(function () {
-      sandbox = sinon.sandbox.create();
+      sandbox = sinon.createSandbox();
     });
 
     afterEach(function () {

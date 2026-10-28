@@ -16,7 +16,7 @@ describe(endpointName, function () {
       data = ['item1', 'item2'];
 
     beforeEach(function () {
-      sandbox = sinon.sandbox.create();
+      sandbox = sinon.createSandbox();
       return apiAccepts.beforeEachTest({ sandbox, hostname, pathsAndData: {'/_lists/valid': data} });
     });
 

@@ -16,7 +16,7 @@ describe(endpointName, function () {
       data = 'mock uri';
 
     beforeEach(function () {
-      sandbox = sinon.sandbox.create();
+      sandbox = sinon.createSandbox();
     });
 
     afterEach(function () {

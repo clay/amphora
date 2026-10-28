@@ -17,7 +17,7 @@ describe(endpointName, function () {
       data = { name: 'Manny', species: 'cat' };
 
     beforeEach(function () {
-      sandbox = sinon.sandbox.create();
+      sandbox = sinon.createSandbox();
     });
 
     afterEach(function () {

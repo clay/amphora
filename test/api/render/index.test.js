@@ -10,7 +10,7 @@ describe('Custom Rendering', function () {
   let sandbox;
 
   beforeEach(function () {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
     sandbox.stub(render, 'rendererExists');
     sandbox.stub(render, 'renderComponent');
     sandbox.stub(render, 'renderPage');
